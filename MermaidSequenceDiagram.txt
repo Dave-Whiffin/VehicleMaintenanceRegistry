@@ -1,0 +1,21 @@
+sequenceDiagram
+participant C as Customer
+participant G as Garage
+participant VR as VehicleReg
+participant VMR as VehicleMaintenanceReg
+C ->> VR: Register Car (VIN, LicencePlate, owner)
+Note over C,VR: VIN is treat as unique, LicencePlate for lookup
+VR -->> VMR: Deploy VMR Contract
+Note over VR,VMR: Add VIN to VMR Contract Mapping
+C ->> VR: Get Maintenance Contract for Vehicle
+VR -->> C: Returns address of contract
+C ->> VMR: Authorise Garage (only owner, garage address)
+G ->> VR: Request Maintenance Contract (VIN)
+VR -->> G: Maintenance Contract Address
+G ->> VMR: Log Service Work (if authorised)
+Note over G, VMR: (date, description, IPFS address for docs)
+C ->> VMR: Request unverified services
+VMR -->> C: Unverified service work
+C ->> VMR: Verify service (Service ID)
+
+
