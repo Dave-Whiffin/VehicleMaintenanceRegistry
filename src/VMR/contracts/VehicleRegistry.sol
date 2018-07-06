@@ -5,6 +5,7 @@ import "./IVehicleManufacturerRegistry.sol";
 import "./ByteUtils.sol";
 import "./VehicleRegistryStorage.sol";
 import "./VehicleManufacturerRegistry.sol";
+import "./VehicleRegistryFeeChecker.sol";
 import "../node_modules/openzeppelin-solidity/contracts/AddressUtils.sol";
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructible.sol";
@@ -12,25 +13,53 @@ import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 /** @title Vehicle Registry. */
 contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Pausable {
-    
+
     using ByteUtils for bytes32;
     using AddressUtils for address;
 
     address private vehicleRegistryStorageAddress;
     address private vehicleManufacturerRegistryAddress;
+    address private feeCheckerAddress;
 
-    constructor(address _vehicleRegistryStorageAddress, address _vehicleManufacturerRegistryAddress) public {
-        vehicleRegistryStorageAddress = _vehicleRegistryStorageAddress;
-        vehicleManufacturerRegistryAddress = _vehicleManufacturerRegistryAddress;
+//admin only functions
+    function setStorageAddress(address _address) 
+        public 
+        payable 
+        onlyOwner() 
+        addressIsContract(_address) {
+        vehicleRegistryStorageAddress = _address;
     }
 
-    //events
+    function setManufacturerRegistryAddress(address _address) 
+        public 
+        payable 
+        onlyOwner() 
+        addressIsContract(_address) {
+        vehicleManufacturerRegistryAddress = _address;
+    } 
+
+    function setFeeCheckerAddress(address _address) 
+        public 
+        payable 
+        onlyOwner() 
+        addressIsContract(_address) {
+        feeCheckerAddress = _address;
+    }        
+
+//constructor
+    constructor(address _vehicleRegistryStorageAddress, address _vehicleManufacturerRegistryAddress, address _feeCheckerAddress) public {
+        vehicleRegistryStorageAddress = _vehicleRegistryStorageAddress;
+        vehicleManufacturerRegistryAddress = _vehicleManufacturerRegistryAddress;
+        feeCheckerAddress = _feeCheckerAddress;
+    }
+
+//events
     event Registered(bytes32 _VIN);
     event VehicleOwnershipTransferRequest(bytes32 _VIN, address _from, address _to);
     event VehicleOwnershipTransferAccepted(bytes32 _VIN, address _newOwner);
     event VehicleServiceHistoryAddressChanged(bytes32 _VIN, address _from, address _to);
 
-    //modifiers
+//modifiers
     modifier vehicleOwner (bytes32 _VIN) {
         address owner = VehicleRegistryStorage.getOwner(vehicleRegistryStorageAddress, _VIN);
         require(msg.sender == owner, "Only the vehicle owner can perform this function"); 
@@ -95,7 +124,7 @@ contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Paus
         _;
     }    
   
-    //external methods
+//external methods
 
 //view
     function isRegistered(bytes32 _VIN) 
@@ -207,12 +236,12 @@ contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Paus
         return VehicleRegistryStorage.exists(vehicleRegistryStorageAddress, _VIN);
     }    
 
-    function getMinRegistrationFee() private pure returns(uint) {
-        return 100;
+    function getMinRegistrationFee() private view returns(uint) {
+        return IVehicleRegistryFeeChecker(feeCheckerAddress).getRegistrationFeeEth();
     }
 
-    function getMinTransferFee() private pure returns(uint) {
-        return 100;
+    function getMinTransferFee() private view returns(uint) {
+        return IVehicleRegistryFeeChecker(feeCheckerAddress).getTransferFeeEth();
     }    
  
 }
