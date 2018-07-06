@@ -1,111 +1,60 @@
 pragma solidity ^0.4.23;
 
-import "openzeppelin-solidity/contracts/AddressUtils.sol";
-
-interface IVehicleRegistry {
-    //VIN must be 17 digits long
-    function register(bytes32 _VIN, bytes32 _licencePlate) external payable;
-    function isRegistered(bytes32 _VIN) external view returns (bool);
-    function getVehicle(bytes32 _VIN) 
-        external view returns (bytes32 _vin, bytes32 _licencePlate, address _owner, address _maintenanceContractAddress, uint256 _registered);
-
-    function transferVehicleOwnership(bytes32 _VIN, address _newOwner) external payable;
-    function setContractMaintenanceAddress(bytes32 _VIN, address _maintenanceContractAddress) external payable;
-
-    event Registered (bytes _VIN);
-    event VehicleOwnershipTransferred(bytes _VIN, address _from, address _to);
-    event VehicleMaintenanceContractChanged(bytes _VIN, address _from, address _to);
-}
-
-contract Mortal {
-    //TODO:
-}
-
-contract Owned {
-    address owner;
-
-    constructor() public {
-        owner = msg.sender;
-    }
-
-    modifier onlyOwner () {
-        require(msg.sender == owner, "Only the owner can perform this function"); 
-        _;
-    }    
-}
-
-contract EmergencyStop is Owned {
-    bool private enabled = true;
-
-    modifier isEnabled() {
-        require(enabled);
-        _;
-    }
-
-    modifier isDisabled() {
-        require(!enabled);
-        _;
-    }    
-
-    function disable()
-        onlyOwner()
-        isEnabled()
-        public payable {
-        enabled = false;
-    }
-
-    function enable()
-        onlyOwner()
-        isDisabled()
-        public payable {
-        enabled = true;
-    }    
-}
+import "./IVehicleRegistry.sol";
+import "./IVehicleManufacturerRegistry.sol";
+import "./ByteUtils.sol";
+import "./VehicleRegistryStorage.sol";
+import "./VehicleManufacturerRegistry.sol";
+import "../node_modules/openzeppelin-solidity/contracts/AddressUtils.sol";
+import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
+import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructible.sol";
+import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 /** @title Vehicle Registry. */
-contract VehicleRegistry is IVehicleRegistry, Owned, EmergencyStop {
-
-//todo
-//emergency stop
-//use deferral to allow registry to be upgraded
-//use eternal storage 
-//-- new storage for each vehicle
-// master storage of VIN to eternal storage contracts
-
-//charge for each registration
-//charge for transferral
-//use oracle for current price ??
-
+contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Pausable {
+    
+    using ByteUtils for bytes32;
     using AddressUtils for address;
 
-    struct Vehicle {
-        bytes32 vin;
-        bytes32 licencePlate;
-        address owner;
-        address maintenanceContractAddress;
-        uint256 registered;
-    }
+    address private vehicleRegistryStorageAddress;
+    address private vehicleManufacturerRegistryAddress;
 
-    mapping(bytes32 => bytes32) private licencePlateToVIN;
-    mapping(bytes32 => Vehicle) private vehicles;
+    constructor(address _vehicleRegistryStorageAddress, address _vehicleManufacturerRegistryAddress) public {
+        vehicleRegistryStorageAddress = _vehicleRegistryStorageAddress;
+        vehicleManufacturerRegistryAddress = _vehicleManufacturerRegistryAddress;
+    }
 
     //events
     event Registered(bytes32 _VIN);
-    event VehicleOwnershipTransferred(bytes32 _VIN, address _from, address _to);
-    event VehicleMaintenanceContractChanged(bytes32 _VIN, address _from, address _to);
+    event VehicleOwnershipTransferRequest(bytes32 _VIN, address _from, address _to);
+    event VehicleOwnershipTransferAccepted(bytes32 _VIN, address _newOwner);
+    event VehicleServiceHistoryAddressChanged(bytes32 _VIN, address _from, address _to);
 
     //modifiers
     modifier vehicleOwner (bytes32 _VIN) {
-        require(msg.sender == vehicles[_VIN].owner, "Only the vehicle owner can perform this function"); 
+        address owner = VehicleRegistryStorage.getOwner(vehicleRegistryStorageAddress, _VIN);
+        require(msg.sender == owner, "Only the vehicle owner can perform this function"); 
         _;
     }
 
-    modifier registered (bytes32 _VIN) {
+    modifier pendingVehicleOwner (bytes32 _VIN) {
+        address owner = VehicleRegistryStorage.getPendingOwner(vehicleRegistryStorageAddress, _VIN);
+        require(msg.sender == owner, "Only the pending vehicle owner can perform this function"); 
+        _;
+    }    
+
+    modifier transferKeyMatches(bytes32 _VIN, bytes32 _keyHash) {
+        bytes32 transferKey = VehicleRegistryStorage.getTransferKey(vehicleRegistryStorageAddress, _VIN);
+        require(transferKey == _keyHash, "The key provided must match the existing transfer key");
+        _;        
+    }
+
+    modifier registered(bytes32 _VIN) {
         require(privateIsRegistered(_VIN), "The vehicle must be registered to perform this function"); 
         _;
     }
 
-    modifier unregistered (bytes32 _VIN) {
+    modifier unregistered(bytes32 _VIN) {
         require(privateIsUnRegistered(_VIN), "The vehicle must be unregistered to perform this function"); 
         _;
     }    
@@ -115,11 +64,37 @@ contract VehicleRegistry is IVehicleRegistry, Owned, EmergencyStop {
         _;
     }
 
-//TODO - ensure it's 17 digits long
     modifier validVin(bytes32 _VIN) {
+        require(_VIN.getStringLength() == 17);
         _;
     }
 
+    modifier paidEnoughToRegister() {
+        uint minRegistrationFee = getMinRegistrationFee();
+        require(msg.value < minRegistrationFee, "Not enough Eth was sent to cover a registration");
+        _;
+    }
+
+    modifier paidEnoughToTransfer() {
+        uint minTransferFee = getMinTransferFee();
+        require(msg.value < minTransferFee, "Not enough Eth was sent to cover a transfer");
+        _;
+    }    
+
+    modifier isARegisteredManufacturer(bytes32 _name) {
+        require (
+            IVehicleManufacturerRegistry(vehicleManufacturerRegistryAddress).isRegistered(_name),
+            "The manufacturer must be registered to invoke this function");
+        _;
+    }
+
+    modifier manufacturerMustBeEnabled(bytes32 _name) {
+        require (
+            IVehicleManufacturerRegistry(vehicleManufacturerRegistryAddress).isEnabled(_name),
+            "The manufacturer must be enabled to invoke this function");
+        _;
+    }    
+  
     //external methods
 
 //view
@@ -130,64 +105,96 @@ contract VehicleRegistry is IVehicleRegistry, Owned, EmergencyStop {
         return privateIsRegistered(_VIN);
     }
 
-    function getVehicle(bytes32 _VIN) 
-        external view 
-        validVin(_VIN) 
-        registered(_VIN)
-        returns (bytes32 _vin, bytes32 _licencePlate, address _owner, address _maintenanceContractAddress, uint256 _registered) {
+    function getVehicleManufacturerName(bytes32 _VIN) external view validVin(_VIN) registered(_VIN) returns (bytes32 manufacturerName) {
+        return VehicleRegistryStorage.getManufacturerName(vehicleRegistryStorageAddress, _VIN);
+    }
 
-        Vehicle memory v = vehicles[_vin];
-        return (v.vin, v.licencePlate, v.owner, v.maintenanceContractAddress, v.registered);
-    }    
+    function getVehicleLicencePlate(bytes32 _VIN) external view validVin(_VIN) registered(_VIN) returns (bytes32 licencePlate) {
+        return VehicleRegistryStorage.getLicencePlate(vehicleRegistryStorageAddress, _VIN);
+    }
+
+    function getVehicleOwner(bytes32 _VIN) external view validVin(_VIN) registered(_VIN) returns (address owner) {
+        return VehicleRegistryStorage.getOwner(vehicleRegistryStorageAddress, _VIN);
+    }
+
+    function getVehicleServiceHistoryAddress(bytes32 _VIN) 
+        external view 
+        validVin(_VIN) registered(_VIN) 
+        returns (address serviceHistoryAddress) {
+        return VehicleRegistryStorage.getServiceHistoryAddress(vehicleRegistryStorageAddress, _VIN);
+    }
+
+    function getVehicleRegisteredDate(bytes32 _VIN) external view validVin(_VIN) registered(_VIN) returns (uint256 registeredDate) {
+        return VehicleRegistryStorage.getRegistered(vehicleRegistryStorageAddress, _VIN);
+    }
 
 //state altering
 
     /** @dev Registers a vehicle.
       * @param _VIN the vehicle identification number.
       * @param _licencePlate the licence / number plate of the vehicle.
+      * @param _manufacturerName - the unique id of the manufacturer
       */
-    function register(bytes32 _VIN, bytes32 _licencePlate) 
+    function register(bytes32 _VIN, bytes32 _licencePlate, bytes32 _manufacturerName) 
         external payable 
-        isEnabled()
+        whenNotPaused()
         validVin(_VIN) 
-        unregistered(_VIN) {
-        //can't already be registered
-        Vehicle memory v = Vehicle({
-            vin : _VIN, licencePlate : _licencePlate, owner : msg.sender, maintenanceContractAddress: 0, registered : now});
-        vehicles[_VIN] = v;
+        unregistered(_VIN) 
+        paidEnoughToRegister()
+        isARegisteredManufacturer(_manufacturerName)
+        manufacturerMustBeEnabled(_manufacturerName)
+        {
 
-        //deploy new ContractMaintenanceAddress
+        VehicleRegistryStorage.storeVehicle(vehicleRegistryStorageAddress, _VIN, _manufacturerName, _licencePlate, msg.sender, 0, now);
+        VehicleRegistryStorage.setServiceHistoryAddress(vehicleRegistryStorageAddress, _VIN, 0);
+        //deploy new serviceHistoryAddress
+        //which contract - how do we know...?
         //set contract address
         //v.maintenanceContractAddress = newAddress;
 
         emit Registered(_VIN);
     }
 
-    function transferVehicleOwnership(bytes32 _VIN, address _newOwner) 
+    function transferVehicleOwnership(bytes32 _VIN, address _newOwner, bytes32 _keyHash) 
         external payable 
-        isEnabled()
+        whenNotPaused()
         validVin(_VIN) 
         registered(_VIN) 
         vehicleOwner(_VIN) 
+        paidEnoughToTransfer()
         {
-        Vehicle memory v = vehicles[_VIN];
-        address oldOwner = v.owner;
-        v.owner = _newOwner;
-        emit VehicleOwnershipTransferred(_VIN, oldOwner, v.owner);
+        address oldOwner = VehicleRegistryStorage.getOwner(vehicleRegistryStorageAddress, _VIN);
+        VehicleRegistryStorage.setPendingOwner(vehicleRegistryStorageAddress, _VIN, _newOwner);
+        VehicleRegistryStorage.setTransferKey(vehicleRegistryStorageAddress, _VIN, _keyHash);
+        emit VehicleOwnershipTransferRequest(_VIN, oldOwner, _newOwner);
     }
 
-    function setContractMaintenanceAddress(bytes32 _VIN, address _maintenanceContractAddress) 
+    function acceptVehicleOwnership(bytes32 _VIN, bytes32 _keyHash)
         external payable
-        isEnabled()
+        whenNotPaused()
+        validVin(_VIN)
+        registered(_VIN)
+        pendingVehicleOwner(_VIN)
+        transferKeyMatches(_VIN, _keyHash)
+        {
+        VehicleRegistryStorage.setOwner(vehicleRegistryStorageAddress, _VIN, msg.sender);
+        VehicleRegistryStorage.setPendingOwner(vehicleRegistryStorageAddress, _VIN, 0);
+        emit VehicleOwnershipTransferAccepted(_VIN, msg.sender);         
+    }
+
+    //allow contract to be upgraded
+    function setServiceHistoryAddress(bytes32 _VIN, address _serviceHistoryAddress) 
+        external payable
+        whenNotPaused()
         validVin(_VIN)
         registered(_VIN)
         vehicleOwner(_VIN)
-        addressIsContract(_maintenanceContractAddress)
-         {
-        address oldAddress = vehicles[_VIN].maintenanceContractAddress;
-        require(oldAddress != _maintenanceContractAddress, "The new address must be different to the old address");
-        vehicles[_VIN].maintenanceContractAddress = _maintenanceContractAddress;
-        emit VehicleMaintenanceContractChanged(_VIN, oldAddress, _maintenanceContractAddress);
+        addressIsContract(_serviceHistoryAddress)
+        {
+        address oldAddress = VehicleRegistryStorage.getServiceHistoryAddress(vehicleRegistryStorageAddress, _VIN);
+        require(oldAddress != _serviceHistoryAddress, "The new address must be different to the old address");
+        VehicleRegistryStorage.setServiceHistoryAddress(vehicleRegistryStorageAddress, _VIN, _serviceHistoryAddress);
+        emit VehicleServiceHistoryAddressChanged(_VIN, oldAddress, _serviceHistoryAddress);
     }    
 
 //private functions
@@ -197,7 +204,15 @@ contract VehicleRegistry is IVehicleRegistry, Owned, EmergencyStop {
     }      
 
     function privateIsRegistered(bytes32 _VIN) private view returns(bool)  {
-        return vehicles[_VIN].owner != 0;
+        return VehicleRegistryStorage.exists(vehicleRegistryStorageAddress, _VIN);
+    }    
+
+    function getMinRegistrationFee() private pure returns(uint) {
+        return 100;
+    }
+
+    function getMinTransferFee() private pure returns(uint) {
+        return 100;
     }    
  
 }
