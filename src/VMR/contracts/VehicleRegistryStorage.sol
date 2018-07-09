@@ -10,7 +10,7 @@ library VehicleRegistryStorage {
         bytes32 _manufacturerName,        
         bytes32 _licencePlate, 
         address _owner, 
-        address _serviceHistoryAddress, 
+        address _maintenanceLogAddress, 
         uint256 _registered) 
         public {
 
@@ -18,7 +18,7 @@ library VehicleRegistryStorage {
         setManufacturerName(_storageAccount, _VIN, _manufacturerName);
         setLicencePlate(_storageAccount, _VIN, _licencePlate);
         setOwner(_storageAccount, _VIN, _owner);
-        setServiceHistoryAddress(_storageAccount, _VIN, _serviceHistoryAddress);
+        setMaintenanceLogAddress(_storageAccount, _VIN, _maintenanceLogAddress);
         setRegistered(_storageAccount, _VIN, _registered);
     }
 
@@ -40,8 +40,8 @@ library VehicleRegistryStorage {
         return EternalStorage(_storageAccount).getAddressValue(keccak256(abi.encodePacked(_VIN, "owner")));
     }
 
-    function getServiceHistoryAddress(address _storageAccount, bytes32 _VIN) public view returns(address) {
-        return EternalStorage(_storageAccount).getAddressValue(keccak256(abi.encodePacked(_VIN, "serviceHistoryAddress")));
+    function getMaintenanceLogAddress(address _storageAccount, bytes32 _VIN) public view returns(address) {
+        return EternalStorage(_storageAccount).getAddressValue(keccak256(abi.encodePacked(_VIN, "maintenanceLogAddress")));
     }
 
     function getRegistered(address _storageAccount, bytes32 _VIN) public view returns(uint256) {
@@ -76,9 +76,9 @@ library VehicleRegistryStorage {
         return EternalStorage(_storageAccount).setAddressValue(keccak256(abi.encodePacked(_VIN, "owner")), _owner);
     }
 
-    function setServiceHistoryAddress(address _storageAccount, bytes32 _VIN, address _serviceHistoryAddress) public {
-        bytes32 key = keccak256(abi.encodePacked(_VIN, "serviceHistoryAddress"));
-        return EternalStorage(_storageAccount).setAddressValue(key, _serviceHistoryAddress);
+    function setMaintenanceLogAddress(address _storageAccount, bytes32 _VIN, address _maintenanceLogAddress) public {
+        bytes32 key = keccak256(abi.encodePacked(_VIN, "maintenanceLogAddress"));
+        return EternalStorage(_storageAccount).setAddressValue(key, _maintenanceLogAddress);
     }
 
     function setRegistered(address _storageAccount, bytes32 _VIN, uint256 _registered) public {

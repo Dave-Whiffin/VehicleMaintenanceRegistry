@@ -1,0 +1,16 @@
+readme file
+design desision
+security implications
+upgradeability
+
+tests!!  (5 per contract)
+
+uport integration
+vyper contract
+add vehicle untyped attributes (for extensibility)
+add vehicle maintenance log attributes (for extensibility)
+
+add comments on contracts
+decouple maintenanceLog from vehicleRegistry
+
+//register vehicle

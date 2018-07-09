@@ -18,8 +18,8 @@ contract VehicleRegistryFeeChecker is usingOraclize, IVehicleRegistryFeeChecker 
         return registrationPriceEth;
     }    
 
-    event newOraclizeQuery(string _description);
-    event newRegistrationPrice(string price);
+    event NewOraclizeQuery(string _description);
+    event NewRegistrationPrice(string price);
 
     constructor (string _oracleQuery, uint _refreshSeconds) public {
         oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
@@ -31,16 +31,16 @@ contract VehicleRegistryFeeChecker is usingOraclize, IVehicleRegistryFeeChecker 
     function __callback(bytes32 myid, string result) public {
         require(msg.sender == oraclize_cbAddress());
         registrationPriceEth = parseInt(result);
-        emit newRegistrationPrice(result);
+        emit NewRegistrationPrice(result);
     }
 
     function updatePrices() public payable {
         // "json(https://pricehost.com/vehicleregistration/prices).prices.registration.ETH"
 
         if (oraclize_getPrice("URL") > address(this).balance) {
-            emit newOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
+            emit NewOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
         } else {
-            emit newOraclizeQuery("Oraclize query was sent - waiting for the answer");
+            emit NewOraclizeQuery("Oraclize query was sent - waiting for the answer");
             oraclize_query(refreshSeconds, "URL", oracleQuery);
         }
     }

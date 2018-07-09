@@ -6,17 +6,17 @@ import "./IVehicleManufacturerRegistry.sol";
 
 contract VehicleManufacturerRegistry is IVehicleManufacturerRegistry, Claimable {
 
-    address internal vehicleManufacturerStorageAddress;
+    address private vehicleManufacturerStorageAddress;
 
     constructor(address _vehicleManufacturerStorageAddress) public {
         vehicleManufacturerStorageAddress = _vehicleManufacturerStorageAddress;
     }
 
-    event ManufacturerRegistered(bytes32 _name);
-    event ManufacturerEnabled(bytes32 _name);
-    event ManufacturerDisabled(bytes32 _name);
-    event ManufacturerOwnershipTransferRequest(bytes32 _name, address _from, address _to);
-    event ManufacturerOwnershipTransferAccepted(bytes32 _name, address _newOwner);
+    event ManufacturerRegistered(bytes32 indexed _name);
+    event ManufacturerEnabled(bytes32 indexed indexed _name);
+    event ManufacturerDisabled(bytes32 indexed _name);
+    event ManufacturerOwnershipTransferRequest(bytes32 indexed _name, address indexed _from, address indexed _to);
+    event ManufacturerOwnershipTransferAccepted(bytes32 indexed _name, address indexed _newOwner);
 
     modifier isARegisteredManufacturer(bytes32 _name) {
         require(VehicleManufacturerStorage.exists(vehicleManufacturerStorageAddress, _name), "Manufacturer must be registered");

@@ -12,9 +12,9 @@ interface IVehicleManufacturerRegistry {
     function isRegistered(bytes32 _name) external view returns (bool);
     function isEnabled(bytes32 _name) external view returns (bool);
 
-    event ManufacturerRegistered(bytes32 _name);
-    event ManufacturerEnabled(bytes32 _name);
-    event ManufacturerDisabled(bytes32 _name);    
-    event ManufacturerOwnershipTransferRequest(bytes32 _name, address _from, address _to);
-    event ManufacturerOwnershipTransferAccepted(bytes32 _name, address _newOwner);
+    event ManufacturerRegistered(bytes32 indexed _name);
+    event ManufacturerEnabled(bytes32 indexed _name);
+    event ManufacturerDisabled(bytes32 indexed _name);    
+    event ManufacturerOwnershipTransferRequest(bytes32 indexed _name, address indexed _from, address indexed _to);
+    event ManufacturerOwnershipTransferAccepted(bytes32 indexed _name, address indexed _newOwner);
 }

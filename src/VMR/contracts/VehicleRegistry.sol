@@ -17,6 +17,13 @@ contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Paus
     using ByteUtils for bytes32;
     using AddressUtils for address;
 
+//events
+    event Registered(bytes32 indexed _VIN);
+    event VehicleOwnershipTransferRequest(bytes32 indexed _VIN, address indexed _from, address indexed _to);
+    event VehicleOwnershipTransferAccepted(bytes32 indexed _VIN, address indexed _newOwner);
+    event VehicleMaintenanceLogAddressChanged(bytes32 indexed _VIN, address indexed _from, address indexed _to);
+
+//storage vars
     address private vehicleRegistryStorageAddress;
     address private vehicleManufacturerRegistryAddress;
     address private feeCheckerAddress;
@@ -52,12 +59,6 @@ contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Paus
         vehicleManufacturerRegistryAddress = _vehicleManufacturerRegistryAddress;
         feeCheckerAddress = _feeCheckerAddress;
     }
-
-//events
-    event Registered(bytes32 _VIN);
-    event VehicleOwnershipTransferRequest(bytes32 _VIN, address _from, address _to);
-    event VehicleOwnershipTransferAccepted(bytes32 _VIN, address _newOwner);
-    event VehicleServiceHistoryAddressChanged(bytes32 _VIN, address _from, address _to);
 
 //modifiers
     modifier vehicleOwner (bytes32 _VIN) {
@@ -146,11 +147,11 @@ contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Paus
         return VehicleRegistryStorage.getOwner(vehicleRegistryStorageAddress, _VIN);
     }
 
-    function getVehicleServiceHistoryAddress(bytes32 _VIN) 
+    function getVehicleMaintenanceLogAddress(bytes32 _VIN) 
         external view 
         validVin(_VIN) registered(_VIN) 
         returns (address serviceHistoryAddress) {
-        return VehicleRegistryStorage.getServiceHistoryAddress(vehicleRegistryStorageAddress, _VIN);
+        return VehicleRegistryStorage.getMaintenanceLogAddress(vehicleRegistryStorageAddress, _VIN);
     }
 
     function getVehicleRegisteredDate(bytes32 _VIN) external view validVin(_VIN) registered(_VIN) returns (uint256 registeredDate) {
@@ -174,8 +175,9 @@ contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Paus
         manufacturerMustBeEnabled(_manufacturerName)
         {
 
+        address maintenanceLogAddress = 0;
         VehicleRegistryStorage.storeVehicle(vehicleRegistryStorageAddress, _VIN, _manufacturerName, _licencePlate, msg.sender, 0, now);
-        VehicleRegistryStorage.setServiceHistoryAddress(vehicleRegistryStorageAddress, _VIN, 0);
+        VehicleRegistryStorage.setMaintenanceLogAddress(vehicleRegistryStorageAddress, _VIN, maintenanceLogAddress);
         //deploy new serviceHistoryAddress
         //which contract - how do we know...?
         //set contract address
@@ -212,18 +214,18 @@ contract VehicleRegistry is IVehicleRegistry, TokenDestructible, Claimable, Paus
     }
 
     //allow contract to be upgraded
-    function setServiceHistoryAddress(bytes32 _VIN, address _serviceHistoryAddress) 
+    function setVehicleMaintenanceLogAddress(bytes32 _VIN, address _maintenanceLogAddress) 
         external payable
         whenNotPaused()
         validVin(_VIN)
         registered(_VIN)
         vehicleOwner(_VIN)
-        addressIsContract(_serviceHistoryAddress)
+        addressIsContract(_maintenanceLogAddress)
         {
-        address oldAddress = VehicleRegistryStorage.getServiceHistoryAddress(vehicleRegistryStorageAddress, _VIN);
-        require(oldAddress != _serviceHistoryAddress, "The new address must be different to the old address");
-        VehicleRegistryStorage.setServiceHistoryAddress(vehicleRegistryStorageAddress, _VIN, _serviceHistoryAddress);
-        emit VehicleServiceHistoryAddressChanged(_VIN, oldAddress, _serviceHistoryAddress);
+        address oldAddress = VehicleRegistryStorage.getMaintenanceLogAddress(vehicleRegistryStorageAddress, _VIN);
+        require(oldAddress != _maintenanceLogAddress, "The new address must be different to the old address");
+        VehicleRegistryStorage.setMaintenanceLogAddress(vehicleRegistryStorageAddress, _VIN, _maintenanceLogAddress);
+        emit VehicleMaintenanceLogAddressChanged(_VIN, oldAddress, _maintenanceLogAddress);
     }    
 
 //private functions

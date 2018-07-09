@@ -8,15 +8,15 @@ interface IVehicleRegistry {
     function getVehicleManufacturerName(bytes32 _VIN) external view returns (bytes32 manufacturerName);
     function getVehicleLicencePlate(bytes32 _VIN) external view returns (bytes32 licencePlate);
     function getVehicleOwner(bytes32 _VIN) external view returns (address owner);
-    function getVehicleServiceHistoryAddress(bytes32 _VIN) external view returns (address serviceHistoryAddress);
+    function getVehicleMaintenanceLogAddress(bytes32 _VIN) external view returns (address maintenanceLogAddress);
     function getVehicleRegisteredDate(bytes32 _VIN) external view returns (uint256 registeredDate);
 
     function transferVehicleOwnership(bytes32 _VIN, address _newOwner, bytes32 _keyHash) external payable;
     function acceptVehicleOwnership(bytes32 _VIN, bytes32 _keyHash) external payable;
-    function setServiceHistoryAddress(bytes32 _VIN, address _serviceHistoryAddress) external payable;
+    function setVehicleMaintenanceLogAddress(bytes32 _VIN, address _serviceHistoryAddress) external payable;
 
-    event Registered(bytes32 _VIN);
-    event VehicleOwnershipTransferRequest(bytes32 _VIN, address _from, address _to);
-    event VehicleOwnershipTransferAccepted(bytes32 _VIN, address _newOwner);
-    event VehicleServiceHistoryAddressChanged(bytes32 _VIN, address _from, address _to);
+    event Registered(bytes32 indexed _VIN);
+    event VehicleOwnershipTransferRequest(bytes32 indexed _VIN, address indexed _from, address indexed _to);
+    event VehicleOwnershipTransferAccepted(bytes32 indexed _VIN, address indexed _newOwner);
+    event VehicleMaintenanceLogAddressChanged(bytes32 indexed _VIN, address indexed _from, address indexed _to);
 }
