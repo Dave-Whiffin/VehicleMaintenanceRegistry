@@ -1,6 +1,8 @@
 pragma solidity ^0.4.23;
 
-contract EternalStorage{
+import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
+
+contract EternalStorage is Claimable {
 
     mapping(bytes32 => uint256) private UIntStorage;
     mapping(bytes32 => int) private IntStorage;
@@ -9,11 +11,38 @@ contract EternalStorage{
     mapping(bytes32 => bytes32) private BytesStorage;    
     mapping(bytes32 => bool) private BooleanStorage;    
 
+    modifier onlyRegisteredCaller() {
+        // The owner is only allowed to set the storage upon deployment to register the initial contracts, afterwards their direct access is disabled
+        if (msg.sender == owner) {
+            require(getStorageInitialised() == false, "Once the contract is initialised - only the contract address can invoke this function");
+        } else {
+            // Make sure the access is permitted to the contract address
+            require(getContractAddress() != 0x0, "Only the contract address can invoke this function");
+        }
+        _;
+    }    
+
+    function setContractAddress(address _address) onlyOwner() public {
+        AddressStorage[keccak256("contract.address")] = _address;
+    }
+
+    function getContractAddress() public view returns (address) {
+        return AddressStorage[keccak256("contract.address")];
+    }    
+
+    function setStorageInitialised(bool _initialised) onlyOwner() public {
+        BooleanStorage[keccak256("contract.storage.initialised")] = _initialised;
+    }
+
+    function getStorageInitialised() public view returns (bool) {
+        return BooleanStorage[keccak256("contract.storage.initialised")];
+    }
+
     function getUint256Value(bytes32 record) public view returns (uint256){
         return UIntStorage[record];
     }
 
-    function setUint256Value(bytes32 record, uint256 value256) public
+    function setUint256Value(bytes32 record, uint256 value256) onlyRegisteredCaller() public
     {
         UIntStorage[record] = value256;
     }
@@ -22,7 +51,7 @@ contract EternalStorage{
         return StringStorage[record];
     }
 
-    function setStringValue(bytes32 record, string value) public
+    function setStringValue(bytes32 record, string value) onlyRegisteredCaller() public
     {
         StringStorage[record] = value;
     }
@@ -31,7 +60,7 @@ contract EternalStorage{
         return AddressStorage[record];
     }
 
-    function setAddressValue(bytes32 record, address value) public
+    function setAddressValue(bytes32 record, address value) onlyRegisteredCaller() public
     {
         AddressStorage[record] = value;
     }
@@ -40,7 +69,7 @@ contract EternalStorage{
         return BytesStorage[record];
     }
 
-    function setBytes32Value(bytes32 record, bytes32 value) public
+    function setBytes32Value(bytes32 record, bytes32 value)  onlyRegisteredCaller() public
     {
         BytesStorage[record] = value;
     }
@@ -49,7 +78,7 @@ contract EternalStorage{
         return BooleanStorage[record];
     }
 
-    function setBooleanValue(bytes32 record, bool value) public
+    function setBooleanValue(bytes32 record, bool value) onlyRegisteredCaller() public
     {
         BooleanStorage[record] = value;
     }
@@ -58,7 +87,7 @@ contract EternalStorage{
         return IntStorage[record];
     }
 
-    function setIntValue(bytes32 record, int value) public
+    function setIntValue(bytes32 record, int value) onlyRegisteredCaller() public
     {
         IntStorage[record] = value;
     }

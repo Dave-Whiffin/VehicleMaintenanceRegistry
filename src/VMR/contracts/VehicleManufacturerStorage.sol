@@ -35,6 +35,15 @@ library VehicleManufacturerStorage {
         return EternalStorage(_storageAccount).getAddressValue(keccak256(abi.encodePacked(_name, "owner"))) > 0;
     } 
 
+      
+    function getTransferKey(address _storageAccount, bytes32 _name) public view returns(bytes32) {
+        return EternalStorage(_storageAccount).getBytes32Value(keccak256(abi.encodePacked(_name, "transferKey")));
+    }    
+
+    function getPendingOwner(address _storageAccount, bytes32 _name) public view returns(address) {
+        return EternalStorage(_storageAccount).getAddressValue(keccak256(abi.encodePacked(_name, "pendingOwner")));
+    } 
+
     function setName(address _storageAccount, bytes32 _name) public {
         return EternalStorage(_storageAccount).setBytes32Value(keccak256(abi.encodePacked(_name, "name")), _name);
     }    
@@ -45,15 +54,7 @@ library VehicleManufacturerStorage {
 
     function setEnabled(address _storageAccount, bytes32 _name, bool _enabled) public {
         return EternalStorage(_storageAccount).setBooleanValue(keccak256(abi.encodePacked(_name, "enabled")), _enabled);
-    }        
-
-    function getTransferKey(address _storageAccount, bytes32 _name) public view returns(bytes32) {
-        return EternalStorage(_storageAccount).getBytes32Value(keccak256(abi.encodePacked(_name, "transferKey")));
-    }    
-
-    function getPendingOwner(address _storageAccount, bytes32 _name) public view returns(address) {
-        return EternalStorage(_storageAccount).getAddressValue(keccak256(abi.encodePacked(_name, "pendingOwner")));
-    }     
+    }          
 
     function setPendingOwner(address _storageAccount, bytes32 _name, address _pendingOwner) public {
         return EternalStorage(_storageAccount).setAddressValue(keccak256(abi.encodePacked(_name, "pendingOwner")), _pendingOwner);
