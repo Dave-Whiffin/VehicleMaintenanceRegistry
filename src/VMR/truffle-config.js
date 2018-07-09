@@ -1,3 +1,7 @@
+require('dotenv').config();
+require('babel-register');
+require('babel-polyfill');
+
 /*
  * NB: since truffle-hdwallet-provider 0.0.5 you must wrap HDWallet providers in a 
  * function when declaring them. Failure to do so will cause commands to hang. ex:
@@ -11,6 +15,8 @@
  *     gasPrice: 10000000000,
  *   },
  */
+
+
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>

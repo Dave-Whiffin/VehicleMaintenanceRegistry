@@ -82,13 +82,4 @@ contract EternalStorage is Claimable {
     {
         BooleanStorage[record] = value;
     }
-    
-    function getIntValue(bytes32 record) public view returns (int){
-        return IntStorage[record];
-    }
-
-    function setIntValue(bytes32 record, int value) onlyRegisteredCaller() public
-    {
-        IntStorage[record] = value;
-    }
 }
