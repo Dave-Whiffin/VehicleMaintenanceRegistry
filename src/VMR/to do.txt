@@ -14,3 +14,12 @@ add comments on contracts
 decouple maintenanceLog from vehicleRegistry
 
 //register vehicle
+
+FLOWS -
+Vehicle Registration
+
+Vehicle Ownership Transfer
+
+Maintenance Authorisation
+
+Maintenance Work
