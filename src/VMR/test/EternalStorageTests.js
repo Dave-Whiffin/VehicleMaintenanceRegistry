@@ -12,28 +12,28 @@ contract('EternalStorage', function (accounts) {
   });
 
   it('should have an owner', async function () {
-    let owner = await claimable.owner();
+    let owner = await eternalStorage.owner();
     assert.isTrue(owner !== 0);
   });
 
   it('changes pendingOwner after transfer', async function () {
     let newOwner = accounts[1];
-    await claimable.transferOwnership(newOwner);
-    let pendingOwner = await claimable.pendingOwner();
+    await eternalStorage.transferOwnership(newOwner);
+    let pendingOwner = await eternalStorage.pendingOwner();
 
     assert.isTrue(pendingOwner === newOwner);
   });
 
   it('should prevent to claimOwnership from no pendingOwner', async function () {
-    await assertRevert(claimable.claimOwnership({ from: accounts[2] }));
+    await assertRevert(eternalStorage.claimOwnership({ from: accounts[2] }));
   });
 
   it('should prevent non-owners from transfering', async function () {
     const other = accounts[2];
-    const owner = await claimable.owner.call();
+    const owner = await eternalStorage.owner.call();
 
     assert.isTrue(owner !== other);
-    await assertRevert(claimable.transferOwnership(other, { from: other }));
+    await assertRevert(eternalStorage.transferOwnership(other, { from: other }));
   });
 
   describe('after initiating a transfer', function () {
@@ -41,12 +41,12 @@ contract('EternalStorage', function (accounts) {
 
     beforeEach(async function () {
       newOwner = accounts[1];
-      await claimable.transferOwnership(newOwner);
+      await eternalStorage.transferOwnership(newOwner);
     });
 
     it('changes allow pending owner to claim ownership', async function () {
-      await claimable.claimOwnership({ from: newOwner });
-      let owner = await claimable.owner();
+      await eternalStorage.claimOwnership({ from: newOwner });
+      let owner = await eternalStorage.owner();
 
       assert.isTrue(owner === newOwner);
     });
