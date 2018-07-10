@@ -135,11 +135,17 @@ contract('VehicleManufacturerRegistry', function (accounts) {
       assert.equal(0, await registry.getAttributeCount(name));
     });  
 
+    it('non owner can not add attribute', async function () {
+      await assertRevert(registry.addAttribute(name, web3.fromAscii("Country"), "UK", {from: accounts[1]}));
+    });
+
     describe('Attributes can be added', function () {
       let attribName;
       let attribVal;
+      let attribWatcher;
 
       beforeEach(async function () {
+        attribWatcher = registry.ManufacturerAttributeSet();
         attribName = web3.fromAscii("Country");
         attribVal = "USA";
         assert.equal(0, await registry.getAttributeCount(name));
@@ -149,6 +155,10 @@ contract('VehicleManufacturerRegistry', function (accounts) {
       it('the attribute count should be 1', async function () {
         assert.equal(1, await registry.getAttributeCount(name));
       });  
+
+      it('can not add duplicate', async function () {
+        await assertRevert(registry.addAttribute(name, attribName, attribVal));
+      });        
 
       it('the attribute name should be correct', async function () {
         assert.equal(
@@ -160,11 +170,41 @@ contract('VehicleManufacturerRegistry', function (accounts) {
         assert.equal(attribVal, await registry.getAttributeValue(name, 1));
       });   
       
-      it('the attribute value can be changed', async function () {
+      it('the attribute value can be changed and emits event', async function () {
         let newVal = "UK";
         await registry.setAttributeValue(name, attribName, newVal);
-        assert.equal(newVal, await registry.getAttributeValue(name, 1));
-      });   
+        assert.equal(newVal, await registry.getAttributeValue(name, 1));        
+        
+        let events = await attribWatcher.get();
+        assert.equal(1, events.length);
+        assert.equal(
+          web3.toUtf8(events[0].args.name.valueOf()), 
+          web3.toUtf8(name));  
+        assert.equal(
+            web3.toUtf8(events[0].args.attributeName.valueOf()), 
+            web3.toUtf8(attribName));
+        assert.equal(
+          events[0].args.value.valueOf(), 
+          newVal);  
+      });
+
+      it('emits expected event', async function () {
+        let events = await attribWatcher.get();
+        assert.equal(1, events.length);
+        assert.equal(
+          web3.toUtf8(events[0].args.name.valueOf()), 
+          web3.toUtf8(name));  
+        assert.equal(
+            web3.toUtf8(events[0].args.attributeName.valueOf()), 
+            web3.toUtf8(attribName));
+        assert.equal(
+          events[0].args.value.valueOf(), 
+          attribVal);        
+      });          
+      
+      it('non owner can not set attribute', async function () {
+        await assertRevert(registry.setAttributeValue(name, web3.fromAscii("Country"), "UK", {from: accounts[1]}));
+      });      
     });
 
     describe('The manufacturer can be disabled', function () {

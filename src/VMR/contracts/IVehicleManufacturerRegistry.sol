@@ -23,7 +23,8 @@ interface IVehicleManufacturerRegistry {
 
     event ManufacturerRegistered(bytes32 indexed name);
     event ManufacturerEnabled(bytes32 indexed name);
-    event ManufacturerDisabled(bytes32 indexed name);    
+    event ManufacturerDisabled(bytes32 indexed name);
+    event ManufacturerAttributeSet(bytes32 indexed name, bytes32 indexed attributeName, string value);    
     event ManufacturerOwnershipTransferRequest(bytes32 indexed name, address indexed from, address indexed to);
     event ManufacturerOwnershipTransferAccepted(bytes32 indexed name, address indexed newOwner);
 }

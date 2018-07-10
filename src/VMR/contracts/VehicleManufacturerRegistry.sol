@@ -16,6 +16,7 @@ contract VehicleManufacturerRegistry is IVehicleManufacturerRegistry, Claimable,
     event ManufacturerRegistered(bytes32 indexed name);
     event ManufacturerEnabled(bytes32 indexed indexed name);
     event ManufacturerDisabled(bytes32 indexed name);
+    event ManufacturerAttributeSet(bytes32 indexed name, bytes32 indexed attributeName, string value);    
     event ManufacturerOwnershipTransferRequest(bytes32 indexed name, address indexed from, address indexed to);
     event ManufacturerOwnershipTransferAccepted(bytes32 indexed name, address indexed newOwner);
 
@@ -158,6 +159,7 @@ contract VehicleManufacturerRegistry is IVehicleManufacturerRegistry, Claimable,
         attributeNameDoesNotExist(_name, _attributeName)
         returns (uint256) {
         uint256 attribNumber = VehicleManufacturerStorage.storeAttribute(storageAddress, getNum(_name), _attributeName, _val);
+        emit ManufacturerAttributeSet(_name, _attributeName, _val);
         return attribNumber;
     } 
 
@@ -169,6 +171,7 @@ contract VehicleManufacturerRegistry is IVehicleManufacturerRegistry, Claimable,
         attributeNameExists(_name, _attributeName) {
         uint256 attribNumber = VehicleManufacturerStorage.getAttributeNumber(storageAddress, getNum(_name), _attributeName);
         VehicleManufacturerStorage.setAttributeValue(storageAddress, getNum(_name), attribNumber, _val);
+        emit ManufacturerAttributeSet(_name, _attributeName, _val);
     }        
 
     function getManufacturerOwner(bytes32 _name)
