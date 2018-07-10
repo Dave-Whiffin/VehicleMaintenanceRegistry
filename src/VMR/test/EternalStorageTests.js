@@ -36,6 +36,87 @@ contract('EternalStorage', function (accounts) {
     await assertRevert(eternalStorage.transferOwnership(other, { from: other }));
   });
 
+  describe('when storage is not initialised', function () {
+    let owner;
+    let key;
+    let rogueAddress;
+    let contractAddress;
+
+    beforeEach(async function () {
+      key = web3.sha3("myval");
+      owner = await eternalStorage.owner.call();
+      rogueAddress = accounts[2];
+      contractAddress = accounts[1];
+      await eternalStorage.setContractAddress(contractAddress);
+      await eternalStorage.setStorageInitialised(false);
+    });
+
+    it('the owner can call setters', async function () {
+      await eternalStorage.setAddressValue(key, owner, { from: owner });      
+      await eternalStorage.setBytes32Value(key, web3.sha3("test"), { from: owner });
+      await eternalStorage.setBooleanValue(key, true, { from: owner });
+      await eternalStorage.setStringValue(key, "test", { from: owner });
+      await eternalStorage.setUint256Value(key, 9, { from: owner });      
+    });
+  
+    it('the contract address can not call setters', async function () {
+      await assertRevert(eternalStorage.setAddressValue(key, owner, { from: contractAddress }));      
+      await assertRevert(eternalStorage.setBytes32Value(key, web3.sha3("test"), { from: contractAddress }));
+      await assertRevert(eternalStorage.setBooleanValue(key, true, { from: contractAddress }));
+      await assertRevert(eternalStorage.setStringValue(key, "test", { from: contractAddress }));
+      await assertRevert(eternalStorage.setUint256Value(key, 9, { from: contractAddress }));  
+    }); 
+
+    it('a rogue address can not call setters', async function () {
+      await assertRevert(eternalStorage.setAddressValue(key, owner, { from: rogueAddress }));      
+      await assertRevert(eternalStorage.setBytes32Value(key, web3.sha3("test"), { from: rogueAddress }));
+      await assertRevert(eternalStorage.setBooleanValue(key, true, { from: rogueAddress }));
+      await assertRevert(eternalStorage.setStringValue(key, "test", { from: rogueAddress }));
+      await assertRevert(eternalStorage.setUint256Value(key, 9, { from: rogueAddress }));   
+    });  
+       
+  });    
+
+  describe('when storage is initialised', function () {
+    let contractAddress;
+    let owner;
+    let key;
+    let rogueAddress;
+
+    beforeEach(async function () {
+      key = web3.sha3("myval");
+      owner = await eternalStorage.owner.call();
+      contractAddress = accounts[1];
+      rogueAddress = accounts[2];
+      await eternalStorage.setContractAddress(contractAddress);
+      await eternalStorage.setStorageInitialised(true);
+    });
+
+    it('the contract address can call setters', async function () {
+      await eternalStorage.setAddressValue(key, contractAddress, { from: contractAddress });      
+      await eternalStorage.setBytes32Value(key, web3.sha3("test"), { from: contractAddress });
+      await eternalStorage.setBooleanValue(key, true, { from: contractAddress });
+      await eternalStorage.setStringValue(key, "test", { from: contractAddress });
+      await eternalStorage.setUint256Value(key, 9, { from: contractAddress });      
+    });
+
+    it('the owner can no longer call setters', async function () {
+      await assertRevert(eternalStorage.setAddressValue(key, owner, { from: owner }));      
+      await assertRevert(eternalStorage.setBytes32Value(key, web3.sha3("test"), { from: owner }));
+      await assertRevert(eternalStorage.setBooleanValue(key, true, { from: owner }));
+      await assertRevert(eternalStorage.setStringValue(key, "test", { from: owner }));
+      await assertRevert(eternalStorage.setUint256Value(key, 9, { from: owner })); 
+    }); 
+    
+    it('a rogue address can not call setters', async function () {
+      await assertRevert(eternalStorage.setAddressValue(key, owner, { from: rogueAddress }));      
+      await assertRevert(eternalStorage.setBytes32Value(key, web3.sha3("test"), { from: rogueAddress }));
+      await assertRevert(eternalStorage.setBooleanValue(key, true, { from: rogueAddress }));
+      await assertRevert(eternalStorage.setStringValue(key, "test", { from: rogueAddress }));
+      await assertRevert(eternalStorage.setUint256Value(key, 9, { from: rogueAddress }));  
+    });     
+  });  
+
   describe('after initiating a transfer', function () {
     let newOwner;
 

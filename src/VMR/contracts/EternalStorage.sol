@@ -12,12 +12,11 @@ contract EternalStorage is Claimable {
     mapping(bytes32 => bool) private BooleanStorage;    
 
     modifier onlyRegisteredCaller() {
-        // The owner is only allowed to set the storage upon deployment to register the initial contracts, afterwards their direct access is disabled
-        if (msg.sender == owner) {
-            require(getStorageInitialised() == false, "Once the contract is initialised - only the contract address can invoke this function");
-        } else {
-            // Make sure the access is permitted to the contract address
-            require(getContractAddress() != 0x0, "Only the contract address can invoke this function");
+        if(getStorageInitialised()) {
+            require(getContractAddress() == msg.sender, "Once storage is initialised - only the contract address can invoke this function");
+        }
+        else{
+            require(msg.sender == owner, "Until the storage is initialised - only the owner can invoke this function");
         }
         _;
     }    
