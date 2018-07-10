@@ -135,8 +135,10 @@ contract('VehicleManufacturerRegistry', function (accounts) {
       let transferKey;
       let newOwner;
       let initialOwner;
+      let transferEventWatcher;
 
       beforeEach(async function () {
+        transferEventWatcher = registry.ManufacturerOwnershipTransferRequest();        
         transferKey = web3.sha3("transfer secret");
         newOwner = accounts[1];
         initialOwner = await registry.getManufacturerOwner(name);
@@ -157,13 +159,40 @@ contract('VehicleManufacturerRegistry', function (accounts) {
         await assertRevert(registry.acceptManufacturerOwnership(name, incorrectTransferKey, {from: newOwner}));
       });        
       
-      it('the new owner can accept the transfer', async function () {      
-        await registry.acceptManufacturerOwnership(name, transferKey, {from: newOwner});
-        assert.equal(newOwner, await registry.getManufacturerOwner(name));
-      });       
+      it('emits the ManufacturerOwnershipTransferRequest event', async function () {
+        let events = await transferEventWatcher.get();
+        assert.equal(1, events.length);
+        assert.equal(
+          web3.toUtf8(events[0].args.name.valueOf()), 
+          web3.toUtf8(name));
+        assert.equal(events[0].args.from.valueOf(), initialOwner);
+        assert.equal(events[0].args.to.valueOf(), newOwner);
+      });
 
+      describe('when acceptManufacturerOwnership is called by the pending owner', function () {
+
+        let transferAcceptedEventWatcher;
+
+        beforeEach(async function () {
+          transferAcceptedEventWatcher = registry.ManufacturerOwnershipTransferAccepted();        
+          await registry.acceptManufacturerOwnership(name, transferKey, {from: newOwner});
+        });
+
+        it('getManufacturerOwner returns the new owner', async function () {      
+           assert.equal(newOwner, await registry.getManufacturerOwner(name));
+        }); 
+
+        it('emits ManufacturerOwnershipTransferAccepted event', async function () {
+          let events = await transferAcceptedEventWatcher.get();
+          assert.equal(1, events.length);
+          assert.equal(
+            web3.toUtf8(events[0].args.name.valueOf()), 
+            web3.toUtf8(name));
+          assert.equal(events[0].args.newOwner.valueOf(), newOwner);
+        });        
+
+      });
     })
-
 
   });
 
