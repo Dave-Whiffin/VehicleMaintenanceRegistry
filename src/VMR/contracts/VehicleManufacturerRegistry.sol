@@ -68,6 +68,18 @@ contract VehicleManufacturerRegistry is IVehicleManufacturerRegistry, Claimable,
         _;        
     }
 
+    modifier attributeNameDoesNotExist(bytes32 _name, bytes32 _attribName) {
+        require(VehicleManufacturerStorage.getAttributeNumber(storageAddress, getNum(_name), _attribName) == 0,
+        "Attribute name must not already exist");
+        _;
+    }
+
+    modifier attributeNameExists(bytes32 _name, bytes32 _attribName) {
+        require(VehicleManufacturerStorage.getAttributeNumber(storageAddress, getNum(_name), _attribName) > 0,
+        "Attribute name must exist");
+        _;
+    }    
+
     function getStorageAddress() 
         public view 
         returns(address) {
@@ -106,6 +118,27 @@ contract VehicleManufacturerRegistry is IVehicleManufacturerRegistry, Claimable,
         return VehicleManufacturerStorage.getName(storageAddress, _number);
     }
 
+    function getAttributeCount(bytes32 _name) 
+        external view
+        isARegisteredManufacturer(_name)
+        returns (uint256) {
+        return VehicleManufacturerStorage.getAttributeCount(storageAddress, getNum(_name));
+    }
+
+    function getAttributeValue(bytes32 _name, uint256 _attributeNumber) 
+        external view 
+        isARegisteredManufacturer(_name)
+        returns (string) {
+        return VehicleManufacturerStorage.getAttributeValue(storageAddress, getNum(_name), _attributeNumber);
+    }
+
+    function getAttributeName(bytes32 _name, uint256 _attributeNumber) 
+        external view 
+        isARegisteredManufacturer(_name)
+        returns (bytes32) {
+        return VehicleManufacturerStorage.getAttributeName(storageAddress, getNum(_name), _attributeNumber);
+    }
+
     function registerManufacturer(bytes32 _name) 
         external payable
         whenNotPaused()
@@ -116,6 +149,27 @@ contract VehicleManufacturerRegistry is IVehicleManufacturerRegistry, Claimable,
         emit ManufacturerRegistered(_name);
         return number;
     }
+
+    function addAttribute(bytes32 _name, bytes32 _attributeName, string _val) 
+        external payable 
+        whenNotPaused()
+        onlyOwner()
+        isARegisteredManufacturer(_name)
+        attributeNameDoesNotExist(_name, _attributeName)
+        returns (uint256) {
+        uint256 attribNumber = VehicleManufacturerStorage.storeAttribute(storageAddress, getNum(_name), _attributeName, _val);
+        return attribNumber;
+    } 
+
+    function setAttributeValue(bytes32 _name, bytes32 _attributeName, string _val) 
+        external payable 
+        whenNotPaused()
+        onlyOwner()
+        isARegisteredManufacturer(_name)
+        attributeNameExists(_name, _attributeName) {
+        uint256 attribNumber = VehicleManufacturerStorage.getAttributeNumber(storageAddress, getNum(_name), _attributeName);
+        VehicleManufacturerStorage.setAttributeValue(storageAddress, getNum(_name), attribNumber, _val);
+    }        
 
     function getManufacturerOwner(bytes32 _name)
         external view 
@@ -174,5 +228,5 @@ contract VehicleManufacturerRegistry is IVehicleManufacturerRegistry, Claimable,
         private view 
         returns (uint256) {
         return VehicleManufacturerStorage.getNumber(storageAddress, _name);  
-    }
+    }   
 }

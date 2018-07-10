@@ -21,6 +21,69 @@ library VehicleManufacturerStorage {
         return number;
     }
 
+    function storeAttribute (
+        address _storageAccount,
+        uint256 _number,
+        bytes32 _attributeName,
+        string _val) 
+        public 
+        returns (uint256) {
+
+        uint256 currentCount = getAttributeCount(_storageAccount, _number);
+        uint256 attribNumber = currentCount + 1;
+
+        setAttributeNumber(_storageAccount, _number, _attributeName, attribNumber);
+        setAttributeName(_storageAccount, _number, attribNumber, _attributeName);
+        setAttributeValue(_storageAccount, _number, attribNumber, _val);
+
+        setAttributeCount(_storageAccount, _number, attribNumber);
+        return attribNumber;
+    }
+
+    function setAttributeCount(address _storageAccount, uint256 _number, uint256 _count) public {
+        EternalStorage(_storageAccount).setUint256Value(
+            keccak256(abi.encodePacked(_number, "attribCount")), _count);   
+    }
+
+    function setAttributeNumber(address _storageAccount, uint256 _number, bytes32 _attributeName, uint256 _attribNumber) public {
+        EternalStorage(_storageAccount).setUint256Value(
+            keccak256(abi.encodePacked(_number, _attributeName, "number")), _attribNumber);   
+    }   
+
+    function setAttributeName(address _storageAccount, uint256 _number, uint256 _attribNumber, bytes32 _attributeName) public {
+        EternalStorage(_storageAccount).setBytes32Value(
+            keccak256(abi.encodePacked(_number, _attribNumber, "name")), _attributeName);   
+    }  
+
+    function setAttributeValue(address _storageAccount, uint256 _number, uint256 _attribNumber, string _val) public {
+        EternalStorage(_storageAccount).setStringValue(
+            keccak256(abi.encodePacked(_number, _attribNumber, "value")), _val);   
+    }    
+
+    function getAttributeNumber(address _storageAccount, uint256 _number, bytes32 _attributeName) 
+        public view returns(uint256) {
+        return EternalStorage(_storageAccount).getUint256Value(
+            keccak256(abi.encodePacked(_number, _attributeName, "number")));   
+    }
+
+    function getAttributeName(address _storageAccount,  uint256 _number, uint256 _attribNumber) 
+        public view returns(bytes32) {
+        return EternalStorage(_storageAccount).getBytes32Value(
+            keccak256(abi.encodePacked(_number, _attribNumber, "name")));   
+    }
+
+    function getAttributeValue(address _storageAccount,  uint256 _number, uint256 _attribNumber) 
+        public view returns(string) {
+        return EternalStorage(_storageAccount).getStringValue(
+            keccak256(abi.encodePacked(_number, _attribNumber, "value")));   
+    }
+
+    function getAttributeCount(address _storageAccount, uint256 _number) 
+        public view returns(uint256) {
+        return EternalStorage(_storageAccount).getUint256Value(
+            keccak256(abi.encodePacked(_number, "attribCount")));   
+    }    
+
     function getTotalCount(address _storageAccount) public view returns(uint256) {
         return EternalStorage(_storageAccount).getUint256Value(
             keccak256(abi.encodePacked("totalCount")));

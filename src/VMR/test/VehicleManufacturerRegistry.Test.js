@@ -129,7 +129,43 @@ contract('VehicleManufacturerRegistry', function (accounts) {
       assert.equal(
         web3.toUtf8(events[0].args.name.valueOf()), 
         web3.toUtf8(name));
-    });     
+    });
+
+    it('the attribute count should be 0', async function () {
+      assert.equal(0, await registry.getAttributeCount(name));
+    });  
+
+    describe('Attributes can be added', function () {
+      let attribName;
+      let attribVal;
+
+      beforeEach(async function () {
+        attribName = web3.fromAscii("Country");
+        attribVal = "USA";
+        assert.equal(0, await registry.getAttributeCount(name));
+        await registry.addAttribute(name, attribName, attribVal);
+      });
+
+      it('the attribute count should be 1', async function () {
+        assert.equal(1, await registry.getAttributeCount(name));
+      });  
+
+      it('the attribute name should be correct', async function () {
+        assert.equal(
+          web3.toUtf8(attribName), 
+          web3.toUtf8(await registry.getAttributeName(name, 1)));
+      }); 
+      
+      it('the attribute value should be correct', async function () {
+        assert.equal(attribVal, await registry.getAttributeValue(name, 1));
+      });   
+      
+      it('the attribute value can be changed', async function () {
+        let newVal = "UK";
+        await registry.setAttributeValue(name, attribName, newVal);
+        assert.equal(newVal, await registry.getAttributeValue(name, 1));
+      });   
+    });
 
     describe('The manufacturer can be disabled', function () {
       let disabledEventWatcher;

@@ -40,14 +40,14 @@
     "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistryFeeChecker.sol",
     "exportedSymbols": {
       "IVehicleRegistryFeeChecker": [
-        558
+        620
       ]
     },
-    "id": 559,
+    "id": 621,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 547,
+        "id": 609,
         "literals": [
           "solidity",
           "^",
@@ -63,9 +63,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 558,
+        "id": 620,
         "linearizedBaseContracts": [
-          558
+          620
         ],
         "name": "IVehicleRegistryFeeChecker",
         "nodeType": "ContractDefinition",
@@ -73,7 +73,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 552,
+            "id": 614,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -81,22 +81,22 @@
             "name": "getRegistrationFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 548,
+              "id": 610,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "102:2:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 551,
+              "id": 613,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 550,
+                  "id": 612,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 552,
+                  "scope": 614,
                   "src": "128:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -105,7 +105,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 549,
+                    "id": 611,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "128:7:4",
@@ -120,7 +120,7 @@
               ],
               "src": "127:9:4"
             },
-            "scope": 558,
+            "scope": 620,
             "src": "72:65:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -129,7 +129,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 557,
+            "id": 619,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -137,22 +137,22 @@
             "name": "getTransferFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 553,
+              "id": 615,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "169:2:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 556,
+              "id": 618,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 555,
+                  "id": 617,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 557,
+                  "scope": 619,
                   "src": "195:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -161,7 +161,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 554,
+                    "id": 616,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "195:7:4",
@@ -176,14 +176,14 @@
               ],
               "src": "194:9:4"
             },
-            "scope": 558,
+            "scope": 620,
             "src": "143:61:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 559,
+        "scope": 621,
         "src": "28:179:4"
       }
     ],
@@ -193,14 +193,14 @@
     "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistryFeeChecker.sol",
     "exportedSymbols": {
       "IVehicleRegistryFeeChecker": [
-        558
+        620
       ]
     },
-    "id": 559,
+    "id": 621,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 547,
+        "id": 609,
         "literals": [
           "solidity",
           "^",
@@ -216,9 +216,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 558,
+        "id": 620,
         "linearizedBaseContracts": [
-          558
+          620
         ],
         "name": "IVehicleRegistryFeeChecker",
         "nodeType": "ContractDefinition",
@@ -226,7 +226,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 552,
+            "id": 614,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -234,22 +234,22 @@
             "name": "getRegistrationFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 548,
+              "id": 610,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "102:2:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 551,
+              "id": 613,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 550,
+                  "id": 612,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 552,
+                  "scope": 614,
                   "src": "128:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -258,7 +258,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 549,
+                    "id": 611,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "128:7:4",
@@ -273,7 +273,7 @@
               ],
               "src": "127:9:4"
             },
-            "scope": 558,
+            "scope": 620,
             "src": "72:65:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -282,7 +282,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 557,
+            "id": 619,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -290,22 +290,22 @@
             "name": "getTransferFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 553,
+              "id": 615,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "169:2:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 556,
+              "id": 618,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 555,
+                  "id": 617,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 557,
+                  "scope": 619,
                   "src": "195:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -314,7 +314,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 554,
+                    "id": 616,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "195:7:4",
@@ -329,14 +329,14 @@
               ],
               "src": "194:9:4"
             },
-            "scope": 558,
+            "scope": 620,
             "src": "143:61:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 559,
+        "scope": 621,
         "src": "28:179:4"
       }
     ],
@@ -348,5 +348,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-10T12:03:57.483Z"
+  "updatedAt": "2018-07-10T21:01:41.985Z"
 }

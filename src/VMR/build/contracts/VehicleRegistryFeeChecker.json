@@ -142,14 +142,14 @@
     "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/VehicleRegistryFeeChecker.sol",
     "exportedSymbols": {
       "VehicleRegistryFeeChecker": [
-        1996
+        2774
       ]
     },
-    "id": 1997,
+    "id": 2775,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1879,
+        "id": 2657,
         "literals": [
           "solidity",
           "^",
@@ -162,10 +162,10 @@
       {
         "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistryFeeChecker.sol",
         "file": "./IVehicleRegistryFeeChecker.sol",
-        "id": 1880,
+        "id": 2658,
         "nodeType": "ImportDirective",
-        "scope": 1997,
-        "sourceUnit": 559,
+        "scope": 2775,
+        "sourceUnit": 621,
         "src": "28:42:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -173,10 +173,10 @@
       {
         "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/installed_contracts/oraclize-api/contracts/usingOraclize.sol",
         "file": "../installed_contracts/oraclize-api/contracts/usingOraclize.sol",
-        "id": 1881,
+        "id": 2659,
         "nodeType": "ImportDirective",
-        "scope": 1997,
-        "sourceUnit": 8279,
+        "scope": 2775,
+        "sourceUnit": 9057,
         "src": "72:73:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -187,17 +187,17 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1882,
+              "id": 2660,
               "name": "usingOraclize",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 8278,
+              "referencedDeclaration": 9056,
               "src": "187:13:8",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_usingOraclize_$8278",
+                "typeIdentifier": "t_contract$_usingOraclize_$9056",
                 "typeString": "contract usingOraclize"
               }
             },
-            "id": 1883,
+            "id": 2661,
             "nodeType": "InheritanceSpecifier",
             "src": "187:13:8"
           },
@@ -205,43 +205,43 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1884,
+              "id": 2662,
               "name": "IVehicleRegistryFeeChecker",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 558,
+              "referencedDeclaration": 620,
               "src": "202:26:8",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IVehicleRegistryFeeChecker_$558",
+                "typeIdentifier": "t_contract$_IVehicleRegistryFeeChecker_$620",
                 "typeString": "contract IVehicleRegistryFeeChecker"
               }
             },
-            "id": 1885,
+            "id": 2663,
             "nodeType": "InheritanceSpecifier",
             "src": "202:26:8"
           }
         ],
         "contractDependencies": [
-          558,
-          8278
+          620,
+          9056
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1996,
+        "id": 2774,
         "linearizedBaseContracts": [
-          1996,
-          558,
-          8278
+          2774,
+          620,
+          9056
         ],
         "name": "VehicleRegistryFeeChecker",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 1887,
+            "id": 2665,
             "name": "registrationPriceEth",
             "nodeType": "VariableDeclaration",
-            "scope": 1996,
+            "scope": 2774,
             "src": "238:35:8",
             "stateVariable": true,
             "storageLocation": "default",
@@ -250,7 +250,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1886,
+              "id": 2664,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "238:7:8",
@@ -264,10 +264,10 @@
           },
           {
             "constant": false,
-            "id": 1889,
+            "id": 2667,
             "name": "oracleQuery",
             "nodeType": "VariableDeclaration",
-            "scope": 1996,
+            "scope": 2774,
             "src": "280:26:8",
             "stateVariable": true,
             "storageLocation": "default",
@@ -276,7 +276,7 @@
               "typeString": "string"
             },
             "typeName": {
-              "id": 1888,
+              "id": 2666,
               "name": "string",
               "nodeType": "ElementaryTypeName",
               "src": "280:6:8",
@@ -290,10 +290,10 @@
           },
           {
             "constant": false,
-            "id": 1891,
+            "id": 2669,
             "name": "refreshSeconds",
             "nodeType": "VariableDeclaration",
-            "scope": 1996,
+            "scope": 2774,
             "src": "313:27:8",
             "stateVariable": true,
             "storageLocation": "default",
@@ -302,7 +302,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1890,
+              "id": 2668,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "313:4:8",
@@ -316,33 +316,33 @@
           },
           {
             "body": {
-              "id": 1898,
+              "id": 2676,
               "nodeType": "Block",
               "src": "414:46:8",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1896,
+                    "id": 2674,
                     "name": "registrationPriceEth",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 1887,
+                    "referencedDeclaration": 2665,
                     "src": "432:20:8",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 1895,
-                  "id": 1897,
+                  "functionReturnParameters": 2673,
+                  "id": 2675,
                   "nodeType": "Return",
                   "src": "425:27:8"
                 }
               ]
             },
             "documentation": null,
-            "id": 1899,
+            "id": 2677,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -350,22 +350,22 @@
             "name": "getRegistrationFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1892,
+              "id": 2670,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "379:2:8"
             },
             "payable": false,
             "returnParameters": {
-              "id": 1895,
+              "id": 2673,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1894,
+                  "id": 2672,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1899,
+                  "scope": 2677,
                   "src": "405:7:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -374,7 +374,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1893,
+                    "id": 2671,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "405:7:8",
@@ -389,41 +389,41 @@
               ],
               "src": "404:9:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "349:111:8",
             "stateMutability": "view",
-            "superFunction": 552,
+            "superFunction": 614,
             "visibility": "external"
           },
           {
             "body": {
-              "id": 1906,
+              "id": 2684,
               "nodeType": "Block",
               "src": "529:135:8",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1904,
+                    "id": 2682,
                     "name": "registrationPriceEth",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 1887,
+                    "referencedDeclaration": 2665,
                     "src": "636:20:8",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 1903,
-                  "id": 1905,
+                  "functionReturnParameters": 2681,
+                  "id": 2683,
                   "nodeType": "Return",
                   "src": "629:27:8"
                 }
               ]
             },
             "documentation": null,
-            "id": 1907,
+            "id": 2685,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -431,22 +431,22 @@
             "name": "getTransferFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1900,
+              "id": 2678,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "494:2:8"
             },
             "payable": false,
             "returnParameters": {
-              "id": 1903,
+              "id": 2681,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1902,
+                  "id": 2680,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1907,
+                  "scope": 2685,
                   "src": "520:7:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -455,7 +455,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1901,
+                    "id": 2679,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "520:7:8",
@@ -470,29 +470,29 @@
               ],
               "src": "519:9:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "468:196:8",
             "stateMutability": "view",
-            "superFunction": 557,
+            "superFunction": 619,
             "visibility": "external"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1911,
+            "id": 2689,
             "name": "NewOraclizeQuery",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1910,
+              "id": 2688,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1909,
+                  "id": 2687,
                   "indexed": false,
                   "name": "_description",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1911,
+                  "scope": 2689,
                   "src": "699:19:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -501,7 +501,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1908,
+                    "id": 2686,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "699:6:8",
@@ -521,20 +521,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1915,
+            "id": 2693,
             "name": "NewRegistrationPrice",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1914,
+              "id": 2692,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1913,
+                  "id": 2691,
                   "indexed": false,
                   "name": "price",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1915,
+                  "scope": 2693,
                   "src": "753:12:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -543,7 +543,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1912,
+                    "id": 2690,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "753:6:8",
@@ -562,7 +562,7 @@
           },
           {
             "body": {
-              "id": 1939,
+              "id": 2717,
               "nodeType": "Block",
               "src": "838:182:8",
               "statements": [
@@ -576,18 +576,18 @@
                           "typeIdentifier": "t_bytes1",
                           "typeString": "bytes1"
                         },
-                        "id": 1925,
+                        "id": 2703,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "lValueRequested": false,
                         "leftExpression": {
                           "argumentTypes": null,
-                          "id": 1923,
+                          "id": 2701,
                           "name": "proofType_TLSNotary",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2605,
+                          "referencedDeclaration": 3383,
                           "src": "867:19:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes1",
@@ -598,11 +598,11 @@
                         "operator": "|",
                         "rightExpression": {
                           "argumentTypes": null,
-                          "id": 1924,
+                          "id": 2702,
                           "name": "proofStorage_IPFS",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2617,
+                          "referencedDeclaration": 3395,
                           "src": "889:17:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes1",
@@ -623,18 +623,18 @@
                           "typeString": "bytes1"
                         }
                       ],
-                      "id": 1922,
+                      "id": 2700,
                       "name": "oraclize_setProof",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 5920,
+                      "referencedDeclaration": 6698,
                       "src": "849:17:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_bytes1_$returns$__$",
                         "typeString": "function (bytes1)"
                       }
                     },
-                    "id": 1926,
+                    "id": 2704,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -648,7 +648,7 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1927,
+                  "id": 2705,
                   "nodeType": "ExpressionStatement",
                   "src": "849:58:8"
                 },
@@ -658,18 +658,18 @@
                     "arguments": [],
                     "expression": {
                       "argumentTypes": [],
-                      "id": 1928,
+                      "id": 2706,
                       "name": "updatePrices",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1995,
+                      "referencedDeclaration": 2773,
                       "src": "918:12:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$__$returns$__$",
                         "typeString": "function ()"
                       }
                     },
-                    "id": 1929,
+                    "id": 2707,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -683,25 +683,25 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1930,
+                  "id": 2708,
                   "nodeType": "ExpressionStatement",
                   "src": "918:14:8"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1933,
+                    "id": 2711,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1931,
+                      "id": 2709,
                       "name": "oracleQuery",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1889,
+                      "referencedDeclaration": 2667,
                       "src": "943:11:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_storage",
@@ -712,11 +712,11 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 1932,
+                      "id": 2710,
                       "name": "_oracleQuery",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1917,
+                      "referencedDeclaration": 2695,
                       "src": "957:12:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_memory_ptr",
@@ -729,25 +729,25 @@
                       "typeString": "string storage ref"
                     }
                   },
-                  "id": 1934,
+                  "id": 2712,
                   "nodeType": "ExpressionStatement",
                   "src": "943:26:8"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1937,
+                    "id": 2715,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1935,
+                      "id": 2713,
                       "name": "refreshSeconds",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1891,
+                      "referencedDeclaration": 2669,
                       "src": "980:14:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -758,11 +758,11 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 1936,
+                      "id": 2714,
                       "name": "_refreshSeconds",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1919,
+                      "referencedDeclaration": 2697,
                       "src": "997:15:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -775,14 +775,14 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1938,
+                  "id": 2716,
                   "nodeType": "ExpressionStatement",
                   "src": "980:32:8"
                 }
               ]
             },
             "documentation": null,
-            "id": 1940,
+            "id": 2718,
             "implemented": true,
             "isConstructor": true,
             "isDeclaredConst": false,
@@ -790,15 +790,15 @@
             "name": "",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1920,
+              "id": 2698,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1917,
+                  "id": 2695,
                   "name": "_oracleQuery",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1940,
+                  "scope": 2718,
                   "src": "788:19:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -807,7 +807,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1916,
+                    "id": 2694,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "788:6:8",
@@ -821,10 +821,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1919,
+                  "id": 2697,
                   "name": "_refreshSeconds",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1940,
+                  "scope": 2718,
                   "src": "809:20:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -833,7 +833,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1918,
+                    "id": 2696,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "809:4:8",
@@ -850,12 +850,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1921,
+              "id": 2699,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "838:0:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "775:245:8",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -863,7 +863,7 @@
           },
           {
             "body": {
-              "id": 1965,
+              "id": 2743,
               "nodeType": "Block",
               "src": "1084:156:8",
               "statements": [
@@ -877,7 +877,7 @@
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         },
-                        "id": 1952,
+                        "id": 2730,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -886,18 +886,18 @@
                           "argumentTypes": null,
                           "expression": {
                             "argumentTypes": null,
-                            "id": 1948,
+                            "id": 2726,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 8601,
+                            "referencedDeclaration": 9379,
                             "src": "1103:3:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
                               "typeString": "msg"
                             }
                           },
-                          "id": 1949,
+                          "id": 2727,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -918,18 +918,18 @@
                           "arguments": [],
                           "expression": {
                             "argumentTypes": [],
-                            "id": 1950,
+                            "id": 2728,
                             "name": "oraclize_cbAddress",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 5907,
+                            "referencedDeclaration": 6685,
                             "src": "1117:18:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_internal_nonpayable$__$returns$_t_address_$",
                               "typeString": "function () returns (address)"
                             }
                           },
-                          "id": 1951,
+                          "id": 2729,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -957,21 +957,21 @@
                           "typeString": "bool"
                         }
                       ],
-                      "id": 1947,
+                      "id": 2725,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        8604,
-                        8605
+                        9382,
+                        9383
                       ],
-                      "referencedDeclaration": 8604,
+                      "referencedDeclaration": 9382,
                       "src": "1095:7:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
                       }
                     },
-                    "id": 1953,
+                    "id": 2731,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -985,25 +985,25 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1954,
+                  "id": 2732,
                   "nodeType": "ExpressionStatement",
                   "src": "1095:43:8"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1959,
+                    "id": 2737,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1955,
+                      "id": 2733,
                       "name": "registrationPriceEth",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1887,
+                      "referencedDeclaration": 2665,
                       "src": "1149:20:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -1017,11 +1017,11 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 1957,
+                          "id": 2735,
                           "name": "result",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1944,
+                          "referencedDeclaration": 2722,
                           "src": "1181:6:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_string_memory_ptr",
@@ -1036,21 +1036,21 @@
                             "typeString": "string memory"
                           }
                         ],
-                        "id": 1956,
+                        "id": 2734,
                         "name": "parseInt",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [
-                          6585,
-                          6684
+                          7363,
+                          7462
                         ],
-                        "referencedDeclaration": 6585,
+                        "referencedDeclaration": 7363,
                         "src": "1172:8:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_uint256_$",
                           "typeString": "function (string memory) pure returns (uint256)"
                         }
                       },
-                      "id": 1958,
+                      "id": 2736,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1070,7 +1070,7 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1960,
+                  "id": 2738,
                   "nodeType": "ExpressionStatement",
                   "src": "1149:39:8"
                 },
@@ -1080,11 +1080,11 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 1962,
+                        "id": 2740,
                         "name": "result",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1944,
+                        "referencedDeclaration": 2722,
                         "src": "1225:6:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -1099,18 +1099,18 @@
                           "typeString": "string memory"
                         }
                       ],
-                      "id": 1961,
+                      "id": 2739,
                       "name": "NewRegistrationPrice",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1915,
+                      "referencedDeclaration": 2693,
                       "src": "1204:20:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (string memory)"
                       }
                     },
-                    "id": 1963,
+                    "id": 2741,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1124,14 +1124,14 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1964,
+                  "id": 2742,
                   "nodeType": "EmitStatement",
                   "src": "1199:33:8"
                 }
               ]
             },
             "documentation": null,
-            "id": 1966,
+            "id": 2744,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1139,15 +1139,15 @@
             "name": "__callback",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1945,
+              "id": 2723,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1942,
+                  "id": 2720,
                   "name": "myid",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1966,
+                  "scope": 2744,
                   "src": "1048:12:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1156,7 +1156,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 1941,
+                    "id": 2719,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1048:7:8",
@@ -1170,10 +1170,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1944,
+                  "id": 2722,
                   "name": "result",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1966,
+                  "scope": 2744,
                   "src": "1062:13:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1182,7 +1182,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1943,
+                    "id": 2721,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1062:6:8",
@@ -1199,20 +1199,20 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1946,
+              "id": 2724,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1084:0:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "1028:212:8",
             "stateMutability": "nonpayable",
-            "superFunction": 2849,
+            "superFunction": 3627,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 1994,
+              "id": 2772,
               "nodeType": "Block",
               "src": "1287:465:8",
               "statements": [
@@ -1223,7 +1223,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 1976,
+                    "id": 2754,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1234,7 +1234,7 @@
                         {
                           "argumentTypes": null,
                           "hexValue": "55524c",
-                          "id": 1970,
+                          "id": 2748,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -1257,21 +1257,21 @@
                             "typeString": "literal_string \"URL\""
                           }
                         ],
-                        "id": 1969,
+                        "id": 2747,
                         "name": "oraclize_getPrice",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [
-                          2881,
-                          2899
+                          3659,
+                          3677
                         ],
-                        "referencedDeclaration": 2881,
+                        "referencedDeclaration": 3659,
                         "src": "1397:17:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_nonpayable$_t_string_memory_ptr_$returns$_t_uint256_$",
                           "typeString": "function (string memory) returns (uint256)"
                         }
                       },
-                      "id": 1971,
+                      "id": 2749,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1294,14 +1294,14 @@
                         "arguments": [
                           {
                             "argumentTypes": null,
-                            "id": 1973,
+                            "id": 2751,
                             "name": "this",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 8640,
+                            "referencedDeclaration": 9424,
                             "src": "1432:4:8",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_VehicleRegistryFeeChecker_$1996",
+                              "typeIdentifier": "t_contract$_VehicleRegistryFeeChecker_$2774",
                               "typeString": "contract VehicleRegistryFeeChecker"
                             }
                           }
@@ -1309,11 +1309,11 @@
                         "expression": {
                           "argumentTypes": [
                             {
-                              "typeIdentifier": "t_contract$_VehicleRegistryFeeChecker_$1996",
+                              "typeIdentifier": "t_contract$_VehicleRegistryFeeChecker_$2774",
                               "typeString": "contract VehicleRegistryFeeChecker"
                             }
                           ],
-                          "id": 1972,
+                          "id": 2750,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -1326,7 +1326,7 @@
                           },
                           "typeName": "address"
                         },
-                        "id": 1974,
+                        "id": 2752,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1340,7 +1340,7 @@
                           "typeString": "address"
                         }
                       },
-                      "id": 1975,
+                      "id": 2753,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1361,7 +1361,7 @@
                     }
                   },
                   "falseBody": {
-                    "id": 1992,
+                    "id": 2770,
                     "nodeType": "Block",
                     "src": "1580:165:8",
                     "statements": [
@@ -1372,7 +1372,7 @@
                             {
                               "argumentTypes": null,
                               "hexValue": "4f7261636c697a65207175657279207761732073656e74202d2077616974696e6720666f722074686520616e73776572",
-                              "id": 1983,
+                              "id": 2761,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -1395,18 +1395,18 @@
                                 "typeString": "literal_string \"Oraclize query was sent - waiting for the answer\""
                               }
                             ],
-                            "id": 1982,
+                            "id": 2760,
                             "name": "NewOraclizeQuery",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1911,
+                            "referencedDeclaration": 2689,
                             "src": "1600:16:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
                               "typeString": "function (string memory)"
                             }
                           },
-                          "id": 1984,
+                          "id": 2762,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1420,7 +1420,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 1985,
+                        "id": 2763,
                         "nodeType": "EmitStatement",
                         "src": "1595:73:8"
                       },
@@ -1430,11 +1430,11 @@
                           "arguments": [
                             {
                               "argumentTypes": null,
-                              "id": 1987,
+                              "id": 2765,
                               "name": "refreshSeconds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1891,
+                              "referencedDeclaration": 2669,
                               "src": "1698:14:8",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -1444,7 +1444,7 @@
                             {
                               "argumentTypes": null,
                               "hexValue": "55524c",
-                              "id": 1988,
+                              "id": 2766,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -1461,11 +1461,11 @@
                             },
                             {
                               "argumentTypes": null,
-                              "id": 1989,
+                              "id": 2767,
                               "name": "oracleQuery",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1889,
+                              "referencedDeclaration": 2667,
                               "src": "1721:11:8",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_storage",
@@ -1488,75 +1488,75 @@
                                 "typeString": "string storage ref"
                               }
                             ],
-                            "id": 1986,
+                            "id": 2764,
                             "name": "oraclize_query",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [
-                              2939,
-                              2981,
-                              3027,
-                              3071,
-                              3114,
-                              3159,
-                              3208,
-                              3255,
-                              3302,
-                              3351,
-                              3404,
-                              3455,
-                              3492,
-                              3532,
-                              3575,
-                              3615,
-                              3660,
-                              3708,
+                              3717,
                               3759,
-                              3807,
-                              3860,
-                              3916,
-                              3975,
-                              4031,
-                              4092,
-                              4156,
-                              4223,
-                              4287,
-                              4356,
-                              4428,
-                              4503,
-                              4575,
-                              4622,
-                              4671,
-                              4724,
-                              4775,
-                              4812,
-                              4852,
-                              4895,
-                              4935,
-                              4980,
-                              5028,
-                              5079,
-                              5127,
-                              5180,
-                              5236,
-                              5295,
-                              5351,
-                              5412,
-                              5476,
-                              5543,
-                              5607,
-                              5676,
-                              5748,
-                              5823,
-                              5895
+                              3805,
+                              3849,
+                              3892,
+                              3937,
+                              3986,
+                              4033,
+                              4080,
+                              4129,
+                              4182,
+                              4233,
+                              4270,
+                              4310,
+                              4353,
+                              4393,
+                              4438,
+                              4486,
+                              4537,
+                              4585,
+                              4638,
+                              4694,
+                              4753,
+                              4809,
+                              4870,
+                              4934,
+                              5001,
+                              5065,
+                              5134,
+                              5206,
+                              5281,
+                              5353,
+                              5400,
+                              5449,
+                              5502,
+                              5553,
+                              5590,
+                              5630,
+                              5673,
+                              5713,
+                              5758,
+                              5806,
+                              5857,
+                              5905,
+                              5958,
+                              6014,
+                              6073,
+                              6129,
+                              6190,
+                              6254,
+                              6321,
+                              6385,
+                              6454,
+                              6526,
+                              6601,
+                              6673
                             ],
-                            "referencedDeclaration": 2981,
+                            "referencedDeclaration": 3759,
                             "src": "1683:14:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_internal_nonpayable$_t_uint256_$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_bytes32_$",
                               "typeString": "function (uint256,string memory,string memory) returns (bytes32)"
                             }
                           },
-                          "id": 1990,
+                          "id": 2768,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1570,17 +1570,17 @@
                             "typeString": "bytes32"
                           }
                         },
-                        "id": 1991,
+                        "id": 2769,
                         "nodeType": "ExpressionStatement",
                         "src": "1683:50:8"
                       }
                     ]
                   },
-                  "id": 1993,
+                  "id": 2771,
                   "nodeType": "IfStatement",
                   "src": "1393:352:8",
                   "trueBody": {
-                    "id": 1981,
+                    "id": 2759,
                     "nodeType": "Block",
                     "src": "1447:127:8",
                     "statements": [
@@ -1591,7 +1591,7 @@
                             {
                               "argumentTypes": null,
                               "hexValue": "4f7261636c697a6520717565727920776173204e4f542073656e742c20706c656173652061646420736f6d652045544820746f20636f76657220666f722074686520717565727920666565",
-                              "id": 1978,
+                              "id": 2756,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -1614,18 +1614,18 @@
                                 "typeString": "literal_string \"Oraclize query was NOT sent, please add some ETH to cover for the query fee\""
                               }
                             ],
-                            "id": 1977,
+                            "id": 2755,
                             "name": "NewOraclizeQuery",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1911,
+                            "referencedDeclaration": 2689,
                             "src": "1467:16:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
                               "typeString": "function (string memory)"
                             }
                           },
-                          "id": 1979,
+                          "id": 2757,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1639,7 +1639,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 1980,
+                        "id": 2758,
                         "nodeType": "EmitStatement",
                         "src": "1462:100:8"
                       }
@@ -1649,7 +1649,7 @@
               ]
             },
             "documentation": null,
-            "id": 1995,
+            "id": 2773,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1657,26 +1657,26 @@
             "name": "updatePrices",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1967,
+              "id": 2745,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1269:2:8"
             },
             "payable": true,
             "returnParameters": {
-              "id": 1968,
+              "id": 2746,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1287:0:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "1248:504:8",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 1997,
+        "scope": 2775,
         "src": "149:1606:8"
       }
     ],
@@ -1686,14 +1686,14 @@
     "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/VehicleRegistryFeeChecker.sol",
     "exportedSymbols": {
       "VehicleRegistryFeeChecker": [
-        1996
+        2774
       ]
     },
-    "id": 1997,
+    "id": 2775,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1879,
+        "id": 2657,
         "literals": [
           "solidity",
           "^",
@@ -1706,10 +1706,10 @@
       {
         "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistryFeeChecker.sol",
         "file": "./IVehicleRegistryFeeChecker.sol",
-        "id": 1880,
+        "id": 2658,
         "nodeType": "ImportDirective",
-        "scope": 1997,
-        "sourceUnit": 559,
+        "scope": 2775,
+        "sourceUnit": 621,
         "src": "28:42:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1717,10 +1717,10 @@
       {
         "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/installed_contracts/oraclize-api/contracts/usingOraclize.sol",
         "file": "../installed_contracts/oraclize-api/contracts/usingOraclize.sol",
-        "id": 1881,
+        "id": 2659,
         "nodeType": "ImportDirective",
-        "scope": 1997,
-        "sourceUnit": 8279,
+        "scope": 2775,
+        "sourceUnit": 9057,
         "src": "72:73:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1731,17 +1731,17 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1882,
+              "id": 2660,
               "name": "usingOraclize",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 8278,
+              "referencedDeclaration": 9056,
               "src": "187:13:8",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_usingOraclize_$8278",
+                "typeIdentifier": "t_contract$_usingOraclize_$9056",
                 "typeString": "contract usingOraclize"
               }
             },
-            "id": 1883,
+            "id": 2661,
             "nodeType": "InheritanceSpecifier",
             "src": "187:13:8"
           },
@@ -1749,43 +1749,43 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1884,
+              "id": 2662,
               "name": "IVehicleRegistryFeeChecker",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 558,
+              "referencedDeclaration": 620,
               "src": "202:26:8",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IVehicleRegistryFeeChecker_$558",
+                "typeIdentifier": "t_contract$_IVehicleRegistryFeeChecker_$620",
                 "typeString": "contract IVehicleRegistryFeeChecker"
               }
             },
-            "id": 1885,
+            "id": 2663,
             "nodeType": "InheritanceSpecifier",
             "src": "202:26:8"
           }
         ],
         "contractDependencies": [
-          558,
-          8278
+          620,
+          9056
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1996,
+        "id": 2774,
         "linearizedBaseContracts": [
-          1996,
-          558,
-          8278
+          2774,
+          620,
+          9056
         ],
         "name": "VehicleRegistryFeeChecker",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 1887,
+            "id": 2665,
             "name": "registrationPriceEth",
             "nodeType": "VariableDeclaration",
-            "scope": 1996,
+            "scope": 2774,
             "src": "238:35:8",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1794,7 +1794,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1886,
+              "id": 2664,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "238:7:8",
@@ -1808,10 +1808,10 @@
           },
           {
             "constant": false,
-            "id": 1889,
+            "id": 2667,
             "name": "oracleQuery",
             "nodeType": "VariableDeclaration",
-            "scope": 1996,
+            "scope": 2774,
             "src": "280:26:8",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1820,7 +1820,7 @@
               "typeString": "string"
             },
             "typeName": {
-              "id": 1888,
+              "id": 2666,
               "name": "string",
               "nodeType": "ElementaryTypeName",
               "src": "280:6:8",
@@ -1834,10 +1834,10 @@
           },
           {
             "constant": false,
-            "id": 1891,
+            "id": 2669,
             "name": "refreshSeconds",
             "nodeType": "VariableDeclaration",
-            "scope": 1996,
+            "scope": 2774,
             "src": "313:27:8",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1846,7 +1846,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1890,
+              "id": 2668,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "313:4:8",
@@ -1860,33 +1860,33 @@
           },
           {
             "body": {
-              "id": 1898,
+              "id": 2676,
               "nodeType": "Block",
               "src": "414:46:8",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1896,
+                    "id": 2674,
                     "name": "registrationPriceEth",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 1887,
+                    "referencedDeclaration": 2665,
                     "src": "432:20:8",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 1895,
-                  "id": 1897,
+                  "functionReturnParameters": 2673,
+                  "id": 2675,
                   "nodeType": "Return",
                   "src": "425:27:8"
                 }
               ]
             },
             "documentation": null,
-            "id": 1899,
+            "id": 2677,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1894,22 +1894,22 @@
             "name": "getRegistrationFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1892,
+              "id": 2670,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "379:2:8"
             },
             "payable": false,
             "returnParameters": {
-              "id": 1895,
+              "id": 2673,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1894,
+                  "id": 2672,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1899,
+                  "scope": 2677,
                   "src": "405:7:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1918,7 +1918,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1893,
+                    "id": 2671,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "405:7:8",
@@ -1933,41 +1933,41 @@
               ],
               "src": "404:9:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "349:111:8",
             "stateMutability": "view",
-            "superFunction": 552,
+            "superFunction": 614,
             "visibility": "external"
           },
           {
             "body": {
-              "id": 1906,
+              "id": 2684,
               "nodeType": "Block",
               "src": "529:135:8",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1904,
+                    "id": 2682,
                     "name": "registrationPriceEth",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 1887,
+                    "referencedDeclaration": 2665,
                     "src": "636:20:8",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 1903,
-                  "id": 1905,
+                  "functionReturnParameters": 2681,
+                  "id": 2683,
                   "nodeType": "Return",
                   "src": "629:27:8"
                 }
               ]
             },
             "documentation": null,
-            "id": 1907,
+            "id": 2685,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1975,22 +1975,22 @@
             "name": "getTransferFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1900,
+              "id": 2678,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "494:2:8"
             },
             "payable": false,
             "returnParameters": {
-              "id": 1903,
+              "id": 2681,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1902,
+                  "id": 2680,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1907,
+                  "scope": 2685,
                   "src": "520:7:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1999,7 +1999,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1901,
+                    "id": 2679,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "520:7:8",
@@ -2014,29 +2014,29 @@
               ],
               "src": "519:9:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "468:196:8",
             "stateMutability": "view",
-            "superFunction": 557,
+            "superFunction": 619,
             "visibility": "external"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1911,
+            "id": 2689,
             "name": "NewOraclizeQuery",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1910,
+              "id": 2688,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1909,
+                  "id": 2687,
                   "indexed": false,
                   "name": "_description",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1911,
+                  "scope": 2689,
                   "src": "699:19:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2045,7 +2045,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1908,
+                    "id": 2686,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "699:6:8",
@@ -2065,20 +2065,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1915,
+            "id": 2693,
             "name": "NewRegistrationPrice",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1914,
+              "id": 2692,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1913,
+                  "id": 2691,
                   "indexed": false,
                   "name": "price",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1915,
+                  "scope": 2693,
                   "src": "753:12:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2087,7 +2087,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1912,
+                    "id": 2690,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "753:6:8",
@@ -2106,7 +2106,7 @@
           },
           {
             "body": {
-              "id": 1939,
+              "id": 2717,
               "nodeType": "Block",
               "src": "838:182:8",
               "statements": [
@@ -2120,18 +2120,18 @@
                           "typeIdentifier": "t_bytes1",
                           "typeString": "bytes1"
                         },
-                        "id": 1925,
+                        "id": 2703,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "lValueRequested": false,
                         "leftExpression": {
                           "argumentTypes": null,
-                          "id": 1923,
+                          "id": 2701,
                           "name": "proofType_TLSNotary",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2605,
+                          "referencedDeclaration": 3383,
                           "src": "867:19:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes1",
@@ -2142,11 +2142,11 @@
                         "operator": "|",
                         "rightExpression": {
                           "argumentTypes": null,
-                          "id": 1924,
+                          "id": 2702,
                           "name": "proofStorage_IPFS",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2617,
+                          "referencedDeclaration": 3395,
                           "src": "889:17:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes1",
@@ -2167,18 +2167,18 @@
                           "typeString": "bytes1"
                         }
                       ],
-                      "id": 1922,
+                      "id": 2700,
                       "name": "oraclize_setProof",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 5920,
+                      "referencedDeclaration": 6698,
                       "src": "849:17:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_bytes1_$returns$__$",
                         "typeString": "function (bytes1)"
                       }
                     },
-                    "id": 1926,
+                    "id": 2704,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2192,7 +2192,7 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1927,
+                  "id": 2705,
                   "nodeType": "ExpressionStatement",
                   "src": "849:58:8"
                 },
@@ -2202,18 +2202,18 @@
                     "arguments": [],
                     "expression": {
                       "argumentTypes": [],
-                      "id": 1928,
+                      "id": 2706,
                       "name": "updatePrices",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1995,
+                      "referencedDeclaration": 2773,
                       "src": "918:12:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$__$returns$__$",
                         "typeString": "function ()"
                       }
                     },
-                    "id": 1929,
+                    "id": 2707,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2227,25 +2227,25 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1930,
+                  "id": 2708,
                   "nodeType": "ExpressionStatement",
                   "src": "918:14:8"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1933,
+                    "id": 2711,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1931,
+                      "id": 2709,
                       "name": "oracleQuery",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1889,
+                      "referencedDeclaration": 2667,
                       "src": "943:11:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_storage",
@@ -2256,11 +2256,11 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 1932,
+                      "id": 2710,
                       "name": "_oracleQuery",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1917,
+                      "referencedDeclaration": 2695,
                       "src": "957:12:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_memory_ptr",
@@ -2273,25 +2273,25 @@
                       "typeString": "string storage ref"
                     }
                   },
-                  "id": 1934,
+                  "id": 2712,
                   "nodeType": "ExpressionStatement",
                   "src": "943:26:8"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1937,
+                    "id": 2715,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1935,
+                      "id": 2713,
                       "name": "refreshSeconds",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1891,
+                      "referencedDeclaration": 2669,
                       "src": "980:14:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -2302,11 +2302,11 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 1936,
+                      "id": 2714,
                       "name": "_refreshSeconds",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1919,
+                      "referencedDeclaration": 2697,
                       "src": "997:15:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -2319,14 +2319,14 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1938,
+                  "id": 2716,
                   "nodeType": "ExpressionStatement",
                   "src": "980:32:8"
                 }
               ]
             },
             "documentation": null,
-            "id": 1940,
+            "id": 2718,
             "implemented": true,
             "isConstructor": true,
             "isDeclaredConst": false,
@@ -2334,15 +2334,15 @@
             "name": "",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1920,
+              "id": 2698,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1917,
+                  "id": 2695,
                   "name": "_oracleQuery",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1940,
+                  "scope": 2718,
                   "src": "788:19:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2351,7 +2351,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1916,
+                    "id": 2694,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "788:6:8",
@@ -2365,10 +2365,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1919,
+                  "id": 2697,
                   "name": "_refreshSeconds",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1940,
+                  "scope": 2718,
                   "src": "809:20:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2377,7 +2377,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1918,
+                    "id": 2696,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "809:4:8",
@@ -2394,12 +2394,12 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1921,
+              "id": 2699,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "838:0:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "775:245:8",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -2407,7 +2407,7 @@
           },
           {
             "body": {
-              "id": 1965,
+              "id": 2743,
               "nodeType": "Block",
               "src": "1084:156:8",
               "statements": [
@@ -2421,7 +2421,7 @@
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         },
-                        "id": 1952,
+                        "id": 2730,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2430,18 +2430,18 @@
                           "argumentTypes": null,
                           "expression": {
                             "argumentTypes": null,
-                            "id": 1948,
+                            "id": 2726,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 8601,
+                            "referencedDeclaration": 9379,
                             "src": "1103:3:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
                               "typeString": "msg"
                             }
                           },
-                          "id": 1949,
+                          "id": 2727,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2462,18 +2462,18 @@
                           "arguments": [],
                           "expression": {
                             "argumentTypes": [],
-                            "id": 1950,
+                            "id": 2728,
                             "name": "oraclize_cbAddress",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 5907,
+                            "referencedDeclaration": 6685,
                             "src": "1117:18:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_internal_nonpayable$__$returns$_t_address_$",
                               "typeString": "function () returns (address)"
                             }
                           },
-                          "id": 1951,
+                          "id": 2729,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2501,21 +2501,21 @@
                           "typeString": "bool"
                         }
                       ],
-                      "id": 1947,
+                      "id": 2725,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        8604,
-                        8605
+                        9382,
+                        9383
                       ],
-                      "referencedDeclaration": 8604,
+                      "referencedDeclaration": 9382,
                       "src": "1095:7:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
                       }
                     },
-                    "id": 1953,
+                    "id": 2731,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2529,25 +2529,25 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1954,
+                  "id": 2732,
                   "nodeType": "ExpressionStatement",
                   "src": "1095:43:8"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1959,
+                    "id": 2737,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1955,
+                      "id": 2733,
                       "name": "registrationPriceEth",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1887,
+                      "referencedDeclaration": 2665,
                       "src": "1149:20:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -2561,11 +2561,11 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 1957,
+                          "id": 2735,
                           "name": "result",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1944,
+                          "referencedDeclaration": 2722,
                           "src": "1181:6:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_string_memory_ptr",
@@ -2580,21 +2580,21 @@
                             "typeString": "string memory"
                           }
                         ],
-                        "id": 1956,
+                        "id": 2734,
                         "name": "parseInt",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [
-                          6585,
-                          6684
+                          7363,
+                          7462
                         ],
-                        "referencedDeclaration": 6585,
+                        "referencedDeclaration": 7363,
                         "src": "1172:8:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_uint256_$",
                           "typeString": "function (string memory) pure returns (uint256)"
                         }
                       },
-                      "id": 1958,
+                      "id": 2736,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -2614,7 +2614,7 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1960,
+                  "id": 2738,
                   "nodeType": "ExpressionStatement",
                   "src": "1149:39:8"
                 },
@@ -2624,11 +2624,11 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 1962,
+                        "id": 2740,
                         "name": "result",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1944,
+                        "referencedDeclaration": 2722,
                         "src": "1225:6:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -2643,18 +2643,18 @@
                           "typeString": "string memory"
                         }
                       ],
-                      "id": 1961,
+                      "id": 2739,
                       "name": "NewRegistrationPrice",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1915,
+                      "referencedDeclaration": 2693,
                       "src": "1204:20:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (string memory)"
                       }
                     },
-                    "id": 1963,
+                    "id": 2741,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2668,14 +2668,14 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1964,
+                  "id": 2742,
                   "nodeType": "EmitStatement",
                   "src": "1199:33:8"
                 }
               ]
             },
             "documentation": null,
-            "id": 1966,
+            "id": 2744,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -2683,15 +2683,15 @@
             "name": "__callback",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1945,
+              "id": 2723,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1942,
+                  "id": 2720,
                   "name": "myid",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1966,
+                  "scope": 2744,
                   "src": "1048:12:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2700,7 +2700,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 1941,
+                    "id": 2719,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1048:7:8",
@@ -2714,10 +2714,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1944,
+                  "id": 2722,
                   "name": "result",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1966,
+                  "scope": 2744,
                   "src": "1062:13:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2726,7 +2726,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1943,
+                    "id": 2721,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1062:6:8",
@@ -2743,20 +2743,20 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1946,
+              "id": 2724,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1084:0:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "1028:212:8",
             "stateMutability": "nonpayable",
-            "superFunction": 2849,
+            "superFunction": 3627,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 1994,
+              "id": 2772,
               "nodeType": "Block",
               "src": "1287:465:8",
               "statements": [
@@ -2767,7 +2767,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 1976,
+                    "id": 2754,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2778,7 +2778,7 @@
                         {
                           "argumentTypes": null,
                           "hexValue": "55524c",
-                          "id": 1970,
+                          "id": 2748,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -2801,21 +2801,21 @@
                             "typeString": "literal_string \"URL\""
                           }
                         ],
-                        "id": 1969,
+                        "id": 2747,
                         "name": "oraclize_getPrice",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [
-                          2881,
-                          2899
+                          3659,
+                          3677
                         ],
-                        "referencedDeclaration": 2881,
+                        "referencedDeclaration": 3659,
                         "src": "1397:17:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_nonpayable$_t_string_memory_ptr_$returns$_t_uint256_$",
                           "typeString": "function (string memory) returns (uint256)"
                         }
                       },
-                      "id": 1971,
+                      "id": 2749,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -2838,14 +2838,14 @@
                         "arguments": [
                           {
                             "argumentTypes": null,
-                            "id": 1973,
+                            "id": 2751,
                             "name": "this",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 8640,
+                            "referencedDeclaration": 9424,
                             "src": "1432:4:8",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_VehicleRegistryFeeChecker_$1996",
+                              "typeIdentifier": "t_contract$_VehicleRegistryFeeChecker_$2774",
                               "typeString": "contract VehicleRegistryFeeChecker"
                             }
                           }
@@ -2853,11 +2853,11 @@
                         "expression": {
                           "argumentTypes": [
                             {
-                              "typeIdentifier": "t_contract$_VehicleRegistryFeeChecker_$1996",
+                              "typeIdentifier": "t_contract$_VehicleRegistryFeeChecker_$2774",
                               "typeString": "contract VehicleRegistryFeeChecker"
                             }
                           ],
-                          "id": 1972,
+                          "id": 2750,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -2870,7 +2870,7 @@
                           },
                           "typeName": "address"
                         },
-                        "id": 1974,
+                        "id": 2752,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2884,7 +2884,7 @@
                           "typeString": "address"
                         }
                       },
-                      "id": 1975,
+                      "id": 2753,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -2905,7 +2905,7 @@
                     }
                   },
                   "falseBody": {
-                    "id": 1992,
+                    "id": 2770,
                     "nodeType": "Block",
                     "src": "1580:165:8",
                     "statements": [
@@ -2916,7 +2916,7 @@
                             {
                               "argumentTypes": null,
                               "hexValue": "4f7261636c697a65207175657279207761732073656e74202d2077616974696e6720666f722074686520616e73776572",
-                              "id": 1983,
+                              "id": 2761,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -2939,18 +2939,18 @@
                                 "typeString": "literal_string \"Oraclize query was sent - waiting for the answer\""
                               }
                             ],
-                            "id": 1982,
+                            "id": 2760,
                             "name": "NewOraclizeQuery",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1911,
+                            "referencedDeclaration": 2689,
                             "src": "1600:16:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
                               "typeString": "function (string memory)"
                             }
                           },
-                          "id": 1984,
+                          "id": 2762,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2964,7 +2964,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 1985,
+                        "id": 2763,
                         "nodeType": "EmitStatement",
                         "src": "1595:73:8"
                       },
@@ -2974,11 +2974,11 @@
                           "arguments": [
                             {
                               "argumentTypes": null,
-                              "id": 1987,
+                              "id": 2765,
                               "name": "refreshSeconds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1891,
+                              "referencedDeclaration": 2669,
                               "src": "1698:14:8",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -2988,7 +2988,7 @@
                             {
                               "argumentTypes": null,
                               "hexValue": "55524c",
-                              "id": 1988,
+                              "id": 2766,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3005,11 +3005,11 @@
                             },
                             {
                               "argumentTypes": null,
-                              "id": 1989,
+                              "id": 2767,
                               "name": "oracleQuery",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1889,
+                              "referencedDeclaration": 2667,
                               "src": "1721:11:8",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_storage",
@@ -3032,75 +3032,75 @@
                                 "typeString": "string storage ref"
                               }
                             ],
-                            "id": 1986,
+                            "id": 2764,
                             "name": "oraclize_query",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [
-                              2939,
-                              2981,
-                              3027,
-                              3071,
-                              3114,
-                              3159,
-                              3208,
-                              3255,
-                              3302,
-                              3351,
-                              3404,
-                              3455,
-                              3492,
-                              3532,
-                              3575,
-                              3615,
-                              3660,
-                              3708,
+                              3717,
                               3759,
-                              3807,
-                              3860,
-                              3916,
-                              3975,
-                              4031,
-                              4092,
-                              4156,
-                              4223,
-                              4287,
-                              4356,
-                              4428,
-                              4503,
-                              4575,
-                              4622,
-                              4671,
-                              4724,
-                              4775,
-                              4812,
-                              4852,
-                              4895,
-                              4935,
-                              4980,
-                              5028,
-                              5079,
-                              5127,
-                              5180,
-                              5236,
-                              5295,
-                              5351,
-                              5412,
-                              5476,
-                              5543,
-                              5607,
-                              5676,
-                              5748,
-                              5823,
-                              5895
+                              3805,
+                              3849,
+                              3892,
+                              3937,
+                              3986,
+                              4033,
+                              4080,
+                              4129,
+                              4182,
+                              4233,
+                              4270,
+                              4310,
+                              4353,
+                              4393,
+                              4438,
+                              4486,
+                              4537,
+                              4585,
+                              4638,
+                              4694,
+                              4753,
+                              4809,
+                              4870,
+                              4934,
+                              5001,
+                              5065,
+                              5134,
+                              5206,
+                              5281,
+                              5353,
+                              5400,
+                              5449,
+                              5502,
+                              5553,
+                              5590,
+                              5630,
+                              5673,
+                              5713,
+                              5758,
+                              5806,
+                              5857,
+                              5905,
+                              5958,
+                              6014,
+                              6073,
+                              6129,
+                              6190,
+                              6254,
+                              6321,
+                              6385,
+                              6454,
+                              6526,
+                              6601,
+                              6673
                             ],
-                            "referencedDeclaration": 2981,
+                            "referencedDeclaration": 3759,
                             "src": "1683:14:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_internal_nonpayable$_t_uint256_$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_bytes32_$",
                               "typeString": "function (uint256,string memory,string memory) returns (bytes32)"
                             }
                           },
-                          "id": 1990,
+                          "id": 2768,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3114,17 +3114,17 @@
                             "typeString": "bytes32"
                           }
                         },
-                        "id": 1991,
+                        "id": 2769,
                         "nodeType": "ExpressionStatement",
                         "src": "1683:50:8"
                       }
                     ]
                   },
-                  "id": 1993,
+                  "id": 2771,
                   "nodeType": "IfStatement",
                   "src": "1393:352:8",
                   "trueBody": {
-                    "id": 1981,
+                    "id": 2759,
                     "nodeType": "Block",
                     "src": "1447:127:8",
                     "statements": [
@@ -3135,7 +3135,7 @@
                             {
                               "argumentTypes": null,
                               "hexValue": "4f7261636c697a6520717565727920776173204e4f542073656e742c20706c656173652061646420736f6d652045544820746f20636f76657220666f722074686520717565727920666565",
-                              "id": 1978,
+                              "id": 2756,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3158,18 +3158,18 @@
                                 "typeString": "literal_string \"Oraclize query was NOT sent, please add some ETH to cover for the query fee\""
                               }
                             ],
-                            "id": 1977,
+                            "id": 2755,
                             "name": "NewOraclizeQuery",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1911,
+                            "referencedDeclaration": 2689,
                             "src": "1467:16:8",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
                               "typeString": "function (string memory)"
                             }
                           },
-                          "id": 1979,
+                          "id": 2757,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -3183,7 +3183,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 1980,
+                        "id": 2758,
                         "nodeType": "EmitStatement",
                         "src": "1462:100:8"
                       }
@@ -3193,7 +3193,7 @@
               ]
             },
             "documentation": null,
-            "id": 1995,
+            "id": 2773,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -3201,26 +3201,26 @@
             "name": "updatePrices",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1967,
+              "id": 2745,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1269:2:8"
             },
             "payable": true,
             "returnParameters": {
-              "id": 1968,
+              "id": 2746,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1287:0:8"
             },
-            "scope": 1996,
+            "scope": 2774,
             "src": "1248:504:8",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 1997,
+        "scope": 2775,
         "src": "149:1606:8"
       }
     ],
@@ -3232,5 +3232,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-10T12:03:57.486Z"
+  "updatedAt": "2018-07-10T21:01:41.999Z"
 }
