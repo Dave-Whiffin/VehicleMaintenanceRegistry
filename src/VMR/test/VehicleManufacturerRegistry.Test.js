@@ -26,6 +26,11 @@ contract('VehicleManufacturerRegistry', function (accounts) {
     assert.isTrue(owner == eternalStorageOwner);
   });
 
+  it('getCount should return 0 initially', async function () {
+    let count = await registry.getCount();
+    assert.equal(0, count);
+  }); 
+
   it('should have expected storage address', async function () {
     let storageAddress = await registry.getStorageAddress();
     assert.isTrue(storageAddress == eternalStorage.address);
@@ -91,6 +96,20 @@ contract('VehicleManufacturerRegistry', function (accounts) {
       eventWatcher = registry.ManufacturerRegistered();
       await registry.registerManufacturer(name, {from: registryOwner});
     });
+
+    it('getCount should be return 1', async function () {
+      let count = await registry.getCount();
+      assert.equal(count, 1);
+    });
+
+    it('getNumber from name should be return 1', async function () {
+      let count = await registry.getNumber(name);
+      assert.equal(count, 1);
+    }); 
+
+    it('getName from number should return name', async function () {
+      assert.equal(web3.toUtf8(name), web3.toUtf8(await registry.getName(1)));
+    });   
 
     it('isRegistered should be true', async function () {      
       assert.isTrue(await registry.isRegistered(name));

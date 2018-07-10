@@ -2,7 +2,7 @@ pragma solidity ^0.4.23;
 
 interface IVehicleManufacturerRegistry {
 
-    function registerManufacturer(bytes32 _name) external payable;
+    function registerManufacturer(bytes32 _name) external payable returns (uint256);
     function disableManufacturer(bytes32 _name) external payable;
     function enableManufacturer(bytes32 _name) external payable;
 
@@ -12,6 +12,9 @@ interface IVehicleManufacturerRegistry {
     function getManufacturerOwner(bytes32 _name) external view returns (address);
     function isRegistered(bytes32 _name) external view returns (bool);
     function isEnabled(bytes32 _name) external view returns (bool);
+    function getCount() external view returns (uint256);
+    function getName(uint256 _number) external view returns (bytes32);
+    function getNumber(bytes32 _name) external view returns (uint256);
 
     event ManufacturerRegistered(bytes32 indexed name);
     event ManufacturerEnabled(bytes32 indexed name);
