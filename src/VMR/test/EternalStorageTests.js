@@ -36,6 +36,24 @@ contract('EternalStorage', function (accounts) {
     await assertRevert(eternalStorage.transferOwnership(other, { from: other }));
   });
 
+  it('only owners can set contract address', async function () {
+    const other = accounts[2];
+    const owner = await eternalStorage.owner.call();
+
+    assert.isTrue(owner !== other);
+    await assertRevert(eternalStorage.setContractAddress(other, { from: other }));
+    await eternalStorage.setContractAddress(other, { from: owner });
+  });  
+
+  it('only owners can set storage initialised', async function () {
+    const other = accounts[2];
+    const owner = await eternalStorage.owner.call();
+
+    assert.isTrue(owner !== other);
+    await assertRevert(eternalStorage.setStorageInitialised(true, { from: other }));
+    await eternalStorage.setStorageInitialised(true, { from: owner });
+  });    
+
   describe('when storage is not initialised', function () {
     let owner;
     let key;
