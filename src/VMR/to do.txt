@@ -21,3 +21,8 @@ Vehicle Registration
 Vehicle Ownership Transfer
 
 Maintenance Work
+
+DESIGN DECISIONS
+
+VehicleManufacturerRegistry
+* haven't implemented emergency stop - rules are that only owner can add manufacturers

@@ -35,19 +35,19 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.23;\r\n\r\ninterface IVehicleRegistryFeeChecker {\r\n    function getRegistrationFeeEth() external view returns (uint256);\r\n    function getTransferFeeEth() external view returns (uint256);\r\n}",
-  "sourcePath": "C:\\dev\\repos\\VehicleMaintenanceRegistry\\src\\vmr\\contracts\\IVehicleRegistryFeeChecker.sol",
+  "sourcePath": "C:\\dev\\repos\\VehicleMaintenanceRegistry\\src\\VMR\\contracts\\IVehicleRegistryFeeChecker.sol",
   "ast": {
-    "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/vmr/contracts/IVehicleRegistryFeeChecker.sol",
+    "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistryFeeChecker.sol",
     "exportedSymbols": {
       "IVehicleRegistryFeeChecker": [
-        9336
+        558
       ]
     },
-    "id": 9337,
+    "id": 559,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 9325,
+        "id": 547,
         "literals": [
           "solidity",
           "^",
@@ -55,7 +55,7 @@
           ".23"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:22"
+        "src": "0:24:4"
       },
       {
         "baseContracts": [],
@@ -63,9 +63,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 9336,
+        "id": 558,
         "linearizedBaseContracts": [
-          9336
+          558
         ],
         "name": "IVehicleRegistryFeeChecker",
         "nodeType": "ContractDefinition",
@@ -73,7 +73,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 9330,
+            "id": 552,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -81,23 +81,23 @@
             "name": "getRegistrationFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 9326,
+              "id": 548,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "102:2:22"
+              "src": "102:2:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 9329,
+              "id": 551,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 9328,
+                  "id": 550,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 9330,
-                  "src": "128:7:22",
+                  "scope": 552,
+                  "src": "128:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -105,10 +105,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 9327,
+                    "id": 549,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "128:7:22",
+                    "src": "128:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -118,10 +118,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "127:9:22"
+              "src": "127:9:4"
             },
-            "scope": 9336,
-            "src": "72:65:22",
+            "scope": 558,
+            "src": "72:65:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -129,7 +129,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 9335,
+            "id": 557,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -137,23 +137,23 @@
             "name": "getTransferFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 9331,
+              "id": 553,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "169:2:22"
+              "src": "169:2:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 9334,
+              "id": 556,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 9333,
+                  "id": 555,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 9335,
-                  "src": "195:7:22",
+                  "scope": 557,
+                  "src": "195:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -161,10 +161,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 9332,
+                    "id": 554,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "195:7:22",
+                    "src": "195:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -174,33 +174,33 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "194:9:22"
+              "src": "194:9:4"
             },
-            "scope": 9336,
-            "src": "143:61:22",
+            "scope": 558,
+            "src": "143:61:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 9337,
-        "src": "28:179:22"
+        "scope": 559,
+        "src": "28:179:4"
       }
     ],
-    "src": "0:207:22"
+    "src": "0:207:4"
   },
   "legacyAST": {
-    "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/vmr/contracts/IVehicleRegistryFeeChecker.sol",
+    "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistryFeeChecker.sol",
     "exportedSymbols": {
       "IVehicleRegistryFeeChecker": [
-        9336
+        558
       ]
     },
-    "id": 9337,
+    "id": 559,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 9325,
+        "id": 547,
         "literals": [
           "solidity",
           "^",
@@ -208,7 +208,7 @@
           ".23"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:22"
+        "src": "0:24:4"
       },
       {
         "baseContracts": [],
@@ -216,9 +216,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 9336,
+        "id": 558,
         "linearizedBaseContracts": [
-          9336
+          558
         ],
         "name": "IVehicleRegistryFeeChecker",
         "nodeType": "ContractDefinition",
@@ -226,7 +226,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 9330,
+            "id": 552,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -234,23 +234,23 @@
             "name": "getRegistrationFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 9326,
+              "id": 548,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "102:2:22"
+              "src": "102:2:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 9329,
+              "id": 551,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 9328,
+                  "id": 550,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 9330,
-                  "src": "128:7:22",
+                  "scope": 552,
+                  "src": "128:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -258,10 +258,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 9327,
+                    "id": 549,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "128:7:22",
+                    "src": "128:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -271,10 +271,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "127:9:22"
+              "src": "127:9:4"
             },
-            "scope": 9336,
-            "src": "72:65:22",
+            "scope": 558,
+            "src": "72:65:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -282,7 +282,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 9335,
+            "id": 557,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -290,23 +290,23 @@
             "name": "getTransferFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 9331,
+              "id": 553,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "169:2:22"
+              "src": "169:2:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 9334,
+              "id": 556,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 9333,
+                  "id": 555,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 9335,
-                  "src": "195:7:22",
+                  "scope": 557,
+                  "src": "195:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -314,10 +314,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 9332,
+                    "id": 554,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "195:7:22",
+                    "src": "195:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -327,20 +327,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "194:9:22"
+              "src": "194:9:4"
             },
-            "scope": 9336,
-            "src": "143:61:22",
+            "scope": 558,
+            "src": "143:61:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 9337,
-        "src": "28:179:22"
+        "scope": 559,
+        "src": "28:179:4"
       }
     ],
-    "src": "0:207:22"
+    "src": "0:207:4"
   },
   "compiler": {
     "name": "solc",
@@ -348,5 +348,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-09T16:03:14.598Z"
+  "updatedAt": "2018-07-10T12:03:57.483Z"
 }

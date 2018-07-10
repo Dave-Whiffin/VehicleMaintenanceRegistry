@@ -68,7 +68,7 @@ contract EternalStorage is Claimable {
         return BytesStorage[record];
     }
 
-    function setBytes32Value(bytes32 record, bytes32 value)  onlyRegisteredCaller() public
+    function setBytes32Value(bytes32 record, bytes32 value) onlyRegisteredCaller() public
     {
         BytesStorage[record] = value;
     }
