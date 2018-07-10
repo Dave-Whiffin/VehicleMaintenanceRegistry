@@ -45,11 +45,35 @@ contract('VehicleManufacturerRegistry', function (accounts) {
     await assertRevert(registry.registerManufacturer(name, {from: nonOwner}));
   });
 
-  it('registerManufacturer can not be called when contract is paused', async function () {
-    let name = web3.fromAscii("Ford");
-    await registry.pause({from: registryOwner});
-    await assertRevert(registry.registerManufacturer(name, {from: registryOwner}));
-  });  
+  describe('when contract is paused', function () {
+    let name;
+
+    beforeEach(async function () {
+      name = web3.fromAscii("Ford");
+      await registry.pause({from: registryOwner});
+    });
+
+    it('registerManufacturer can not be called', async function () {
+      await assertRevert(registry.registerManufacturer(name, {from: registryOwner}));
+    });
+    
+    it('disableManufacturer can not be called', async function () {
+      await assertRevert(registry.disableManufacturer(name, {from: registryOwner}));
+    });  
+  
+    it('enableManufacturer can not be called', async function () {
+      await assertRevert(registry.enableManufacturer(name, {from: registryOwner}));
+    });  
+    
+    it('transferManufacturerOwnership can not be called', async function () {
+      await assertRevert(registry.transferManufacturerOwnership(name, accounts[2], web3.sha3('test'), {from: registryOwner}));
+    });  
+  
+    it('acceptManufacturerOwnership can not be called', async function () {
+      await assertRevert(registry.acceptManufacturerOwnership(name, web3.sha3('test'), {from: registryOwner}));
+    });      
+
+  });
 
   it('registerManufacturer can not be called more than once for same manufacturer', async function () {
     let name = web3.fromAscii("Ford");
