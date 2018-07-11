@@ -37,7 +37,7 @@ library RegistryStorageLib {
 
         setAttributeNumber(_storageAccount, _memberNumber, _attributeName, attributeNumber);
         setAttributeName(_storageAccount, _memberNumber, attributeNumber, _attributeName);
-        setAttributeValue(_storageAccount, _memberNumber, attributeNumber, _attributeType);
+        setAttributeType(_storageAccount, _memberNumber, attributeNumber, _attributeType);
         setAttributeValue(_storageAccount, _memberNumber, attributeNumber, _val);
 
         setAttributeTotalCount(_storageAccount, _memberNumber, attributeNumber);
@@ -176,7 +176,7 @@ library RegistryStorageLib {
 
     function setMemberEnabled(address _storageAccount, uint256 _memberNumber, bool _enabled) public {
         EternalStorage(_storageAccount).setBooleanValue(
-            keccak256(abi.encodePacked(_memberNumber, "memberEnabled")), _enabled);
+            keccak256(abi.encodePacked(_memberNumber, "enabled")), _enabled);
     }          
 
     function setMemberPendingOwner(address _storageAccount, uint256 _memberNumber, address _pendingOwner) public {

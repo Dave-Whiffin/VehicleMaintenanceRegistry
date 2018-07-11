@@ -22,15 +22,15 @@ contract('Registry', function (accounts) {
   let registryAddress;
   let registryOwner;
 
+  logEthStatus(accounts);
+
   beforeEach(async function () {
-    logEthStatus(accounts);
-    console.log("Deploying Eternal Storage");
+    //console.log("Deploying Eternal Storage");
     eternalStorage = await EternalStorage.new();
     eternalStorageOwner = await eternalStorage.owner.call();
-    console.log('eternalstorage deployed');
-    logEthStatus(accounts);
-    console.log('deploying new Registry instance');
-    registry = await Registry.new(eternalStorage.address, {gas: 6721975 });
+    //console.log('eternalstorage deployed');
+    //console.log('deploying new Registry instance');
+    registry = await Registry.new(eternalStorage.address);
     registryAddress = registry;
     registryOwner = await registry.owner.call();
     await eternalStorage.setContractAddress(registryAddress.address);
@@ -55,10 +55,6 @@ contract('Registry', function (accounts) {
   it('isMemberRegistered should return false', async function () {
     assert.isFalse(await registry.isMemberRegistered(1));
   }); 
-
-  it('isMemberEnabled should return false', async function () {
-    assert.isFalse(await registry.isMemberEnabled(1));
-  });   
 
   it('registerMember can not be called by non owners', async function () {
     let memberId = web3.fromAscii("Ford");
@@ -106,7 +102,7 @@ contract('Registry', function (accounts) {
     });       
 
     it('setMemberAttribute can not be called', async function () {
-      await assertRevert(registry.setMemberAttributeType(
+      await assertRevert(registry.setMemberAttribute(
         memberNumber, 0, web3.fromAscii('attrib val'), web3.fromAscii('attrib val'), {from: registryOwner}));
     });           
 
@@ -122,11 +118,13 @@ contract('Registry', function (accounts) {
 
     let eventWatcher;
     let memberId;
+    let memberNumber;
 
     beforeEach(async function () {
       memberId = web3.fromAscii("Ford");
       eventWatcher = registry.MemberRegistered();
       await registry.registerMember(memberId, {from: registryOwner});
+      memberNumber = await registry.getMemberNumber(memberId);
     });
 
     it('getMemberTotalCount should be return 1', async function () {
@@ -139,34 +137,27 @@ contract('Registry', function (accounts) {
       assert.equal(count, 1);
     }); 
 
-    it('getMemberId from number should return name', async function () {
-      assert.equal(web3.toUtf8(memberId), web3.toUtf8(await registry.getMemberId(1)));
-    });      
-
     it('isMemberRegistered should be true', async function () {      
-      assert.isTrue(await registry.isMemberRegistered(1));
+      assert.isTrue(await registry.isMemberRegistered(memberNumber));
     });
             
     it('emits MemberRegistered event', async function () {      
       let events = await eventWatcher.get();
       assert.equal(1, events.length);
-      assert.equal(1, events[0].args.memberNumber.valueOf()), 
+      assert.equal(memberNumber, events[0].args.memberNumber.valueOf()), 
       assert.equal(
         web3.toUtf8(events[0].args.memberId.valueOf()), 
-        web3.toUtf8(memberId));
-      assert.equal(
-        web3.toUtf8(events[0].args.name.valueOf()), 
-        web3.toUtf8(name));                  
+        web3.toUtf8(memberId));                
     });
 
     it('the attribute count should be 0', async function () {
-      assert.equal(0, await registry.getMemberAttributeCount(1));
+      assert.equal(0, await registry.getMemberAttributeTotalCount(memberNumber));
     });  
 
     it('non owner can not add attribute', async function () {
       await assertRevert(
         registry.addMemberAttribute(
-          1, 
+          memberNumber, 
           web3.fromAscii("Attr Name"), 
           web3.fromAscii("Attr Type"), 
           web3.fromAscii("Attr Val"), 
@@ -178,32 +169,32 @@ contract('Registry', function (accounts) {
       let attribVal;
       let attribType;
       let attribWatcher;
-      let memberId;
       let attribNumber = 1;
 
       beforeEach(async function () {
-        memberId = 1;
         attribWatcher = registry.MemberAttributeChanged();
         attribName = web3.fromAscii("Country");
         attribType = web3.fromAscii('Address');
         attribVal = web3.fromAscii("USA");
-        assert.equal(0, await registry.getMemberAttributeTotalCount(name));
-        await registry.addMemberAttribute(memberId, attribName, attribType, attribVal);
-        attribNumber = 1;
+        assert.equal(0, await registry.getMemberAttributeTotalCount(memberNumber));
+        await registry.addMemberAttribute(memberNumber, attribName, attribType, attribVal);
+        attribNumber = await registry.getMemberAttributeNumber(memberNumber, attribName);
+        assert.equal(1, attribNumber);
       });
 
       it('the attribute count should be 1', async function () {
-        assert.equal(1, await registry.getMemberAttributeTotalCount(memberId));
+        assert.equal(1, await registry.getMemberAttributeTotalCount(memberNumber));
       });  
 
       it('can not add duplicate', async function () {
-        await assertRevert(registry.addMemberAttribute(memberId, attribName, attribType, attribVal));
+        await assertRevert(registry.addMemberAttribute(memberNumber, attribName, attribType, attribVal));
       });        
 
       it('the attribute name should be correct', async function () {
+        var attribute = await registry.getMemberAttribute(memberNumber, attribNumber);
         assert.equal(
           web3.toUtf8(attribName), 
-          web3.toUtf8(await registry.getMemberAttributeName(memberId, attribNumber)));
+          web3.toUtf8(attribute[1]));
       }); 
  
       it('emits expected event', async function () {
@@ -220,7 +211,7 @@ contract('Registry', function (accounts) {
         //(uint256 indexed memberNumber, uint256 indexed _attributeNumber, bytes32 indexed _attributeName, string attributeType, string attributeValue);    
         let newVal = web3.fromAscii("UK");
         let newType = web3.fromAscii("Changed Type");
-        await registry.setMemberAttributeValue(memberId, attribNumber, newType, newVal);
+        await registry.setMemberAttribute(memberNumber, attribNumber, newType, newVal);
         
         //TODO
         //assert.equal(newVal, await registry.getMemberAttributeValue(memberId, attribNumber));        
@@ -229,9 +220,9 @@ contract('Registry', function (accounts) {
         assert.equal(1, events.length);
         assert.equal(memberNumber, events[0].args.memberNumber.valueOf());  
         assert.equal(attribNumber, events[0].args.attributeNumber.valueOf());  
-        assert.equal(web3.toUtf8attribName), web3.toUtf8(events[0].args.attributeName.valueOf());
-        assert.equal(newType, web3.toUtf8(events[0].args.attributeType.valueOf()));  
-        assert.equal(newVal, web3.toUtf8(events[0].args.attributeValue.valueOf()));  
+        assert.equal(web3.toUtf8(attribName), web3.toUtf8(events[0].args.attributeName.valueOf()));
+        assert.equal(web3.toUtf8(newType), web3.toUtf8(events[0].args.attributeType.valueOf()));  
+        assert.equal(web3.toUtf8(newVal), web3.toUtf8(events[0].args.attributeValue.valueOf()));  
       });
             
       it('non owner can not set attribute value', async function () {
@@ -255,7 +246,8 @@ contract('Registry', function (accounts) {
       });  
 
       it('isMemberEnabled returns false', async function () {
-        assert.isFalse(await registry.isMemberEnabled(memberId));
+        var member = await registry.getMember(memberNumber);
+        assert.isFalse(member[3]);
       });
 
       describe("and re-enabled", function () {
@@ -264,11 +256,12 @@ contract('Registry', function (accounts) {
 
         beforeEach(async function () {
           enabledEventWatcher = registry.MemberEnabled();          
-          await registry.enableMember(memberId, {registryOwner});
+          await registry.enableMember(memberNumber, {registryOwner});
         });
 
         it('isMemberEnabled returns true', async function () {
-          assert.isTrue(await registry.isMemberEnabled(memberId));
+          var member = await registry.getMember(memberNumber);
+          assert.isTrue(member[3]);
         });    
 
         it('emitting expected event', async function () {
@@ -289,12 +282,14 @@ contract('Registry', function (accounts) {
         transferEventWatcher = registry.MemberOwnershipTransferRequest();        
         transferKey = web3.sha3("transfer secret");
         newOwner = accounts[1];
-        initialOwner = await registry.getMemberOwner(memberId);
+        var member = await registry.getMember(1)
+        initialOwner = member[2];
         await registry.transferMemberOwnership(memberNumber, newOwner, transferKey, {from: initialOwner});
       });
 
-      it('the ownership does not change until the new owner has accepted', async function () {      
-        assert.equal(initialOwner, await registry.getMemberOwner(name));
+      it('the ownership does not change until the new owner has accepted', async function () { 
+        var member = await registry.getMember(memberNumber);     
+        assert.equal(initialOwner, member[2]);
       }); 
 
       it('a non pending owner can not accept ownership', async function () {      
@@ -324,8 +319,9 @@ contract('Registry', function (accounts) {
           await registry.acceptMemberOwnership(memberNumber, transferKey, {from: newOwner});
         });
 
-        it('getMemberOwner returns the new owner', async function () {      
-           assert.equal(newOwner, await registry.getMemberOwner(memberNumber));
+        it('getMember returns the new owner', async function () {  
+          var member = await registry.getMember(memberNumber);     
+           assert.equal(newOwner, member[2]);
         }); 
 
         it('emits MemberOwnershipTransferAccepted event', async function () {
