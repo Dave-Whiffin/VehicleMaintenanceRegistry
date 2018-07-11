@@ -111,8 +111,7 @@ library VehicleManufacturerStorage {
 
     function exists(address _storageAccount, uint256 _number) public view returns(bool) {
         return
-            _number > 0 && _number <= getTotalCount(_storageAccount) &&
-            EternalStorage(_storageAccount).getAddressValue(keccak256(abi.encodePacked(_number, "owner"))) != 0;
+            _number > 0 && _number <= getTotalCount(_storageAccount) && EternalStorage(_storageAccount).getAddressValue(keccak256(abi.encodePacked(_number, "owner"))) != 0;
     } 
 
     function getTransferKey(address _storageAccount, uint256 _number) public view returns(bytes32) {

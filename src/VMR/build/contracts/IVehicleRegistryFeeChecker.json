@@ -40,14 +40,14 @@
     "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistryFeeChecker.sol",
     "exportedSymbols": {
       "IVehicleRegistryFeeChecker": [
-        620
+        853
       ]
     },
-    "id": 621,
+    "id": 854,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 609,
+        "id": 842,
         "literals": [
           "solidity",
           "^",
@@ -55,7 +55,7 @@
           ".23"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:4"
+        "src": "0:24:5"
       },
       {
         "baseContracts": [],
@@ -63,9 +63,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 620,
+        "id": 853,
         "linearizedBaseContracts": [
-          620
+          853
         ],
         "name": "IVehicleRegistryFeeChecker",
         "nodeType": "ContractDefinition",
@@ -73,7 +73,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 614,
+            "id": 847,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -81,23 +81,23 @@
             "name": "getRegistrationFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 610,
+              "id": 843,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "102:2:4"
+              "src": "102:2:5"
             },
             "payable": false,
             "returnParameters": {
-              "id": 613,
+              "id": 846,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 612,
+                  "id": 845,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 614,
-                  "src": "128:7:4",
+                  "scope": 847,
+                  "src": "128:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -105,10 +105,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 611,
+                    "id": 844,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "128:7:4",
+                    "src": "128:7:5",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -118,10 +118,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "127:9:4"
+              "src": "127:9:5"
             },
-            "scope": 620,
-            "src": "72:65:4",
+            "scope": 853,
+            "src": "72:65:5",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -129,7 +129,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 619,
+            "id": 852,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -137,23 +137,23 @@
             "name": "getTransferFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 615,
+              "id": 848,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "169:2:4"
+              "src": "169:2:5"
             },
             "payable": false,
             "returnParameters": {
-              "id": 618,
+              "id": 851,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 617,
+                  "id": 850,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 619,
-                  "src": "195:7:4",
+                  "scope": 852,
+                  "src": "195:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -161,10 +161,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 616,
+                    "id": 849,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "195:7:4",
+                    "src": "195:7:5",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -174,33 +174,33 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "194:9:4"
+              "src": "194:9:5"
             },
-            "scope": 620,
-            "src": "143:61:4",
+            "scope": 853,
+            "src": "143:61:5",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 621,
-        "src": "28:179:4"
+        "scope": 854,
+        "src": "28:179:5"
       }
     ],
-    "src": "0:207:4"
+    "src": "0:207:5"
   },
   "legacyAST": {
     "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistryFeeChecker.sol",
     "exportedSymbols": {
       "IVehicleRegistryFeeChecker": [
-        620
+        853
       ]
     },
-    "id": 621,
+    "id": 854,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 609,
+        "id": 842,
         "literals": [
           "solidity",
           "^",
@@ -208,7 +208,7 @@
           ".23"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:4"
+        "src": "0:24:5"
       },
       {
         "baseContracts": [],
@@ -216,9 +216,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 620,
+        "id": 853,
         "linearizedBaseContracts": [
-          620
+          853
         ],
         "name": "IVehicleRegistryFeeChecker",
         "nodeType": "ContractDefinition",
@@ -226,7 +226,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 614,
+            "id": 847,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -234,23 +234,23 @@
             "name": "getRegistrationFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 610,
+              "id": 843,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "102:2:4"
+              "src": "102:2:5"
             },
             "payable": false,
             "returnParameters": {
-              "id": 613,
+              "id": 846,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 612,
+                  "id": 845,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 614,
-                  "src": "128:7:4",
+                  "scope": 847,
+                  "src": "128:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -258,10 +258,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 611,
+                    "id": 844,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "128:7:4",
+                    "src": "128:7:5",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -271,10 +271,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "127:9:4"
+              "src": "127:9:5"
             },
-            "scope": 620,
-            "src": "72:65:4",
+            "scope": 853,
+            "src": "72:65:5",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -282,7 +282,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 619,
+            "id": 852,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -290,23 +290,23 @@
             "name": "getTransferFeeEth",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 615,
+              "id": 848,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "169:2:4"
+              "src": "169:2:5"
             },
             "payable": false,
             "returnParameters": {
-              "id": 618,
+              "id": 851,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 617,
+                  "id": 850,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 619,
-                  "src": "195:7:4",
+                  "scope": 852,
+                  "src": "195:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -314,10 +314,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 616,
+                    "id": 849,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "195:7:4",
+                    "src": "195:7:5",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -327,20 +327,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "194:9:4"
+              "src": "194:9:5"
             },
-            "scope": 620,
-            "src": "143:61:4",
+            "scope": 853,
+            "src": "143:61:5",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 621,
-        "src": "28:179:4"
+        "scope": 854,
+        "src": "28:179:5"
       }
     ],
-    "src": "0:207:4"
+    "src": "0:207:5"
   },
   "compiler": {
     "name": "solc",
@@ -348,5 +348,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-10T21:01:41.985Z"
+  "updatedAt": "2018-07-11T10:40:12.540Z"
 }

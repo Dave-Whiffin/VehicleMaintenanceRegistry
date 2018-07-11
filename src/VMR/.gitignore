@@ -32,6 +32,9 @@ npm-debug.log
 # truffle build directory
 build/
 
+# nethereum solc build directory
+bin/
+
 # lol macs
 .DS_Store/
 

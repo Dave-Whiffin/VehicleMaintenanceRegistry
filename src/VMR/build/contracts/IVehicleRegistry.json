@@ -279,14 +279,14 @@
     "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistry.sol",
     "exportedSymbols": {
       "IVehicleRegistry": [
-        607
+        840
       ]
     },
-    "id": 608,
+    "id": 841,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 506,
+        "id": 739,
         "literals": [
           "solidity",
           "^",
@@ -294,7 +294,7 @@
           ".23"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:3"
+        "src": "0:24:4"
       },
       {
         "baseContracts": [],
@@ -302,9 +302,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 607,
+        "id": 840,
         "linearizedBaseContracts": [
-          607
+          840
         ],
         "name": "IVehicleRegistry",
         "nodeType": "ContractDefinition",
@@ -312,7 +312,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 515,
+            "id": 748,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -320,16 +320,16 @@
             "name": "register",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 513,
+              "id": 746,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 508,
+                  "id": 741,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 515,
-                  "src": "82:12:3",
+                  "scope": 748,
+                  "src": "82:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -337,10 +337,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 507,
+                    "id": 740,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "82:7:3",
+                    "src": "82:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -351,11 +351,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 510,
+                  "id": 743,
                   "name": "_licencePlate",
                   "nodeType": "VariableDeclaration",
-                  "scope": 515,
-                  "src": "96:21:3",
+                  "scope": 748,
+                  "src": "96:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -363,10 +363,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 509,
+                    "id": 742,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "96:7:3",
+                    "src": "96:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -377,11 +377,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 512,
+                  "id": 745,
                   "name": "_manufacturerName",
                   "nodeType": "VariableDeclaration",
-                  "scope": 515,
-                  "src": "119:25:3",
+                  "scope": 748,
+                  "src": "119:25:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -389,10 +389,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 511,
+                    "id": 744,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "119:7:3",
+                    "src": "119:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -402,17 +402,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "81:64:3"
+              "src": "81:64:4"
             },
             "payable": true,
             "returnParameters": {
-              "id": 514,
+              "id": 747,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "162:0:3"
+              "src": "162:0:4"
             },
-            "scope": 607,
-            "src": "64:99:3",
+            "scope": 840,
+            "src": "64:99:4",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "external"
@@ -420,7 +420,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 522,
+            "id": 755,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -428,16 +428,16 @@
             "name": "isRegistered",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 518,
+              "id": 751,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 517,
+                  "id": 750,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 522,
-                  "src": "191:12:3",
+                  "scope": 755,
+                  "src": "191:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -445,10 +445,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 516,
+                    "id": 749,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "191:7:3",
+                    "src": "191:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -458,20 +458,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "190:14:3"
+              "src": "190:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 521,
+              "id": 754,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 520,
+                  "id": 753,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 522,
-                  "src": "228:4:3",
+                  "scope": 755,
+                  "src": "228:4:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -479,10 +479,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 519,
+                    "id": 752,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "228:4:3",
+                    "src": "228:4:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -492,10 +492,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "227:6:3"
+              "src": "227:6:4"
             },
-            "scope": 607,
-            "src": "169:65:3",
+            "scope": 840,
+            "src": "169:65:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -503,7 +503,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 529,
+            "id": 762,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -511,16 +511,16 @@
             "name": "getVehicleManufacturerName",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 525,
+              "id": 758,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 524,
+                  "id": 757,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 529,
-                  "src": "278:12:3",
+                  "scope": 762,
+                  "src": "278:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -528,10 +528,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 523,
+                    "id": 756,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "278:7:3",
+                    "src": "278:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -541,20 +541,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "277:14:3"
+              "src": "277:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 528,
+              "id": 761,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 527,
+                  "id": 760,
                   "name": "manufacturerName",
                   "nodeType": "VariableDeclaration",
-                  "scope": 529,
-                  "src": "315:24:3",
+                  "scope": 762,
+                  "src": "315:24:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -562,10 +562,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 526,
+                    "id": 759,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "315:7:3",
+                    "src": "315:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -575,10 +575,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "314:26:3"
+              "src": "314:26:4"
             },
-            "scope": 607,
-            "src": "242:99:3",
+            "scope": 840,
+            "src": "242:99:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -586,7 +586,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 536,
+            "id": 769,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -594,16 +594,16 @@
             "name": "getVehicleLicencePlate",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 532,
+              "id": 765,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 531,
+                  "id": 764,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 536,
-                  "src": "379:12:3",
+                  "scope": 769,
+                  "src": "379:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -611,10 +611,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 530,
+                    "id": 763,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "379:7:3",
+                    "src": "379:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -624,20 +624,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "378:14:3"
+              "src": "378:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 535,
+              "id": 768,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 534,
+                  "id": 767,
                   "name": "licencePlate",
                   "nodeType": "VariableDeclaration",
-                  "scope": 536,
-                  "src": "416:20:3",
+                  "scope": 769,
+                  "src": "416:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -645,10 +645,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 533,
+                    "id": 766,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "416:7:3",
+                    "src": "416:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -658,10 +658,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "415:22:3"
+              "src": "415:22:4"
             },
-            "scope": 607,
-            "src": "347:91:3",
+            "scope": 840,
+            "src": "347:91:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -669,7 +669,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 543,
+            "id": 776,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -677,16 +677,16 @@
             "name": "getVehicleOwner",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 539,
+              "id": 772,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 538,
+                  "id": 771,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 543,
-                  "src": "469:12:3",
+                  "scope": 776,
+                  "src": "469:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -694,10 +694,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 537,
+                    "id": 770,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "469:7:3",
+                    "src": "469:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -707,20 +707,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "468:14:3"
+              "src": "468:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 542,
+              "id": 775,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 541,
+                  "id": 774,
                   "name": "owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 543,
-                  "src": "506:13:3",
+                  "scope": 776,
+                  "src": "506:13:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -728,10 +728,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 540,
+                    "id": 773,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "506:7:3",
+                    "src": "506:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -741,10 +741,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "505:15:3"
+              "src": "505:15:4"
             },
-            "scope": 607,
-            "src": "444:77:3",
+            "scope": 840,
+            "src": "444:77:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -752,7 +752,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 550,
+            "id": 783,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -760,16 +760,16 @@
             "name": "getVehicleMaintenanceLogAddress",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 546,
+              "id": 779,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 545,
+                  "id": 778,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 550,
-                  "src": "568:12:3",
+                  "scope": 783,
+                  "src": "568:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -777,10 +777,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 544,
+                    "id": 777,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "568:7:3",
+                    "src": "568:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -790,20 +790,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "567:14:3"
+              "src": "567:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 549,
+              "id": 782,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 548,
+                  "id": 781,
                   "name": "maintenanceLogAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 550,
-                  "src": "605:29:3",
+                  "scope": 783,
+                  "src": "605:29:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -811,10 +811,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 547,
+                    "id": 780,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "605:7:3",
+                    "src": "605:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -824,10 +824,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "604:31:3"
+              "src": "604:31:4"
             },
-            "scope": 607,
-            "src": "527:109:3",
+            "scope": 840,
+            "src": "527:109:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -835,7 +835,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 557,
+            "id": 790,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -843,16 +843,16 @@
             "name": "getVehicleRegisteredDate",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 553,
+              "id": 786,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 552,
+                  "id": 785,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 557,
-                  "src": "676:12:3",
+                  "scope": 790,
+                  "src": "676:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -860,10 +860,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 551,
+                    "id": 784,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "676:7:3",
+                    "src": "676:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -873,20 +873,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "675:14:3"
+              "src": "675:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 556,
+              "id": 789,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 555,
+                  "id": 788,
                   "name": "registeredDate",
                   "nodeType": "VariableDeclaration",
-                  "scope": 557,
-                  "src": "713:22:3",
+                  "scope": 790,
+                  "src": "713:22:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -894,10 +894,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 554,
+                    "id": 787,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "713:7:3",
+                    "src": "713:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -907,10 +907,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "712:24:3"
+              "src": "712:24:4"
             },
-            "scope": 607,
-            "src": "642:95:3",
+            "scope": 840,
+            "src": "642:95:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -918,7 +918,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 566,
+            "id": 799,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -926,16 +926,16 @@
             "name": "transferVehicleOwnership",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 564,
+              "id": 797,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 559,
+                  "id": 792,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 566,
-                  "src": "779:12:3",
+                  "scope": 799,
+                  "src": "779:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -943,10 +943,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 558,
+                    "id": 791,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "779:7:3",
+                    "src": "779:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -957,11 +957,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 561,
+                  "id": 794,
                   "name": "_newOwner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 566,
-                  "src": "793:17:3",
+                  "scope": 799,
+                  "src": "793:17:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -969,10 +969,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 560,
+                    "id": 793,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "793:7:3",
+                    "src": "793:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -983,11 +983,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 563,
+                  "id": 796,
                   "name": "_keyHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 566,
-                  "src": "812:16:3",
+                  "scope": 799,
+                  "src": "812:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -995,10 +995,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 562,
+                    "id": 795,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "812:7:3",
+                    "src": "812:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1008,17 +1008,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "778:51:3"
+              "src": "778:51:4"
             },
             "payable": true,
             "returnParameters": {
-              "id": 565,
+              "id": 798,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "846:0:3"
+              "src": "846:0:4"
             },
-            "scope": 607,
-            "src": "745:102:3",
+            "scope": 840,
+            "src": "745:102:4",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "external"
@@ -1026,7 +1026,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 573,
+            "id": 806,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1034,16 +1034,16 @@
             "name": "acceptVehicleOwnership",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 571,
+              "id": 804,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 568,
+                  "id": 801,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 573,
-                  "src": "885:12:3",
+                  "scope": 806,
+                  "src": "885:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1051,10 +1051,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 567,
+                    "id": 800,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "885:7:3",
+                    "src": "885:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1065,11 +1065,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 570,
+                  "id": 803,
                   "name": "_keyHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 573,
-                  "src": "899:16:3",
+                  "scope": 806,
+                  "src": "899:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1077,10 +1077,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 569,
+                    "id": 802,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "899:7:3",
+                    "src": "899:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1090,17 +1090,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "884:32:3"
+              "src": "884:32:4"
             },
             "payable": true,
             "returnParameters": {
-              "id": 572,
+              "id": 805,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "933:0:3"
+              "src": "933:0:4"
             },
-            "scope": 607,
-            "src": "853:81:3",
+            "scope": 840,
+            "src": "853:81:4",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "external"
@@ -1108,7 +1108,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 580,
+            "id": 813,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1116,16 +1116,16 @@
             "name": "setVehicleMaintenanceLogAddress",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 578,
+              "id": 811,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 575,
+                  "id": 808,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 580,
-                  "src": "981:12:3",
+                  "scope": 813,
+                  "src": "981:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1133,10 +1133,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 574,
+                    "id": 807,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "981:7:3",
+                    "src": "981:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1147,11 +1147,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 577,
+                  "id": 810,
                   "name": "_serviceHistoryAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 580,
-                  "src": "995:30:3",
+                  "scope": 813,
+                  "src": "995:30:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1159,10 +1159,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 576,
+                    "id": 809,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "995:7:3",
+                    "src": "995:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -1172,17 +1172,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "980:46:3"
+              "src": "980:46:4"
             },
             "payable": true,
             "returnParameters": {
-              "id": 579,
+              "id": 812,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1043:0:3"
+              "src": "1043:0:4"
             },
-            "scope": 607,
-            "src": "940:104:3",
+            "scope": 840,
+            "src": "940:104:4",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "external"
@@ -1190,21 +1190,21 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 584,
+            "id": 817,
             "name": "Registered",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 583,
+              "id": 816,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 582,
+                  "id": 815,
                   "indexed": true,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 584,
-                  "src": "1069:20:3",
+                  "scope": 817,
+                  "src": "1069:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1212,10 +1212,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 581,
+                    "id": 814,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1069:7:3",
+                    "src": "1069:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1225,28 +1225,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1068:22:3"
+              "src": "1068:22:4"
             },
-            "src": "1052:39:3"
+            "src": "1052:39:4"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 592,
+            "id": 825,
             "name": "VehicleOwnershipTransferRequest",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 591,
+              "id": 824,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 586,
+                  "id": 819,
                   "indexed": true,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 592,
-                  "src": "1135:20:3",
+                  "scope": 825,
+                  "src": "1135:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1254,10 +1254,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 585,
+                    "id": 818,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1135:7:3",
+                    "src": "1135:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1268,12 +1268,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 588,
+                  "id": 821,
                   "indexed": true,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 592,
-                  "src": "1157:21:3",
+                  "scope": 825,
+                  "src": "1157:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1281,10 +1281,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 587,
+                    "id": 820,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1157:7:3",
+                    "src": "1157:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -1295,12 +1295,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 590,
+                  "id": 823,
                   "indexed": true,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 592,
-                  "src": "1180:19:3",
+                  "scope": 825,
+                  "src": "1180:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1308,10 +1308,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 589,
+                    "id": 822,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1180:7:3",
+                    "src": "1180:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -1321,28 +1321,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1134:66:3"
+              "src": "1134:66:4"
             },
-            "src": "1097:104:3"
+            "src": "1097:104:4"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 598,
+            "id": 831,
             "name": "VehicleOwnershipTransferAccepted",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 597,
+              "id": 830,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 594,
+                  "id": 827,
                   "indexed": true,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 598,
-                  "src": "1246:20:3",
+                  "scope": 831,
+                  "src": "1246:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1350,10 +1350,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 593,
+                    "id": 826,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1246:7:3",
+                    "src": "1246:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1364,12 +1364,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 596,
+                  "id": 829,
                   "indexed": true,
                   "name": "_newOwner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 598,
-                  "src": "1268:25:3",
+                  "scope": 831,
+                  "src": "1268:25:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1377,10 +1377,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 595,
+                    "id": 828,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1268:7:3",
+                    "src": "1268:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -1390,28 +1390,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1245:49:3"
+              "src": "1245:49:4"
             },
-            "src": "1207:88:3"
+            "src": "1207:88:4"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 606,
+            "id": 839,
             "name": "VehicleMaintenanceLogAddressChanged",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 605,
+              "id": 838,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 600,
+                  "id": 833,
                   "indexed": true,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 606,
-                  "src": "1343:20:3",
+                  "scope": 839,
+                  "src": "1343:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1419,10 +1419,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 599,
+                    "id": 832,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1343:7:3",
+                    "src": "1343:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1433,12 +1433,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 602,
+                  "id": 835,
                   "indexed": true,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 606,
-                  "src": "1365:21:3",
+                  "scope": 839,
+                  "src": "1365:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1446,10 +1446,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 601,
+                    "id": 834,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1365:7:3",
+                    "src": "1365:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -1460,12 +1460,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 604,
+                  "id": 837,
                   "indexed": true,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 606,
-                  "src": "1388:19:3",
+                  "scope": 839,
+                  "src": "1388:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1473,10 +1473,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 603,
+                    "id": 836,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1388:7:3",
+                    "src": "1388:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -1486,29 +1486,29 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1342:66:3"
+              "src": "1342:66:4"
             },
-            "src": "1301:108:3"
+            "src": "1301:108:4"
           }
         ],
-        "scope": 608,
-        "src": "28:1384:3"
+        "scope": 841,
+        "src": "28:1384:4"
       }
     ],
-    "src": "0:1412:3"
+    "src": "0:1412:4"
   },
   "legacyAST": {
     "absolutePath": "/C/dev/repos/VehicleMaintenanceRegistry/src/VMR/contracts/IVehicleRegistry.sol",
     "exportedSymbols": {
       "IVehicleRegistry": [
-        607
+        840
       ]
     },
-    "id": 608,
+    "id": 841,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 506,
+        "id": 739,
         "literals": [
           "solidity",
           "^",
@@ -1516,7 +1516,7 @@
           ".23"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:3"
+        "src": "0:24:4"
       },
       {
         "baseContracts": [],
@@ -1524,9 +1524,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 607,
+        "id": 840,
         "linearizedBaseContracts": [
-          607
+          840
         ],
         "name": "IVehicleRegistry",
         "nodeType": "ContractDefinition",
@@ -1534,7 +1534,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 515,
+            "id": 748,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1542,16 +1542,16 @@
             "name": "register",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 513,
+              "id": 746,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 508,
+                  "id": 741,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 515,
-                  "src": "82:12:3",
+                  "scope": 748,
+                  "src": "82:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1559,10 +1559,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 507,
+                    "id": 740,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "82:7:3",
+                    "src": "82:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1573,11 +1573,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 510,
+                  "id": 743,
                   "name": "_licencePlate",
                   "nodeType": "VariableDeclaration",
-                  "scope": 515,
-                  "src": "96:21:3",
+                  "scope": 748,
+                  "src": "96:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1585,10 +1585,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 509,
+                    "id": 742,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "96:7:3",
+                    "src": "96:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1599,11 +1599,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 512,
+                  "id": 745,
                   "name": "_manufacturerName",
                   "nodeType": "VariableDeclaration",
-                  "scope": 515,
-                  "src": "119:25:3",
+                  "scope": 748,
+                  "src": "119:25:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1611,10 +1611,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 511,
+                    "id": 744,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "119:7:3",
+                    "src": "119:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1624,17 +1624,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "81:64:3"
+              "src": "81:64:4"
             },
             "payable": true,
             "returnParameters": {
-              "id": 514,
+              "id": 747,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "162:0:3"
+              "src": "162:0:4"
             },
-            "scope": 607,
-            "src": "64:99:3",
+            "scope": 840,
+            "src": "64:99:4",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "external"
@@ -1642,7 +1642,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 522,
+            "id": 755,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1650,16 +1650,16 @@
             "name": "isRegistered",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 518,
+              "id": 751,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 517,
+                  "id": 750,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 522,
-                  "src": "191:12:3",
+                  "scope": 755,
+                  "src": "191:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1667,10 +1667,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 516,
+                    "id": 749,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "191:7:3",
+                    "src": "191:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1680,20 +1680,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "190:14:3"
+              "src": "190:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 521,
+              "id": 754,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 520,
+                  "id": 753,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 522,
-                  "src": "228:4:3",
+                  "scope": 755,
+                  "src": "228:4:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1701,10 +1701,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 519,
+                    "id": 752,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "228:4:3",
+                    "src": "228:4:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -1714,10 +1714,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "227:6:3"
+              "src": "227:6:4"
             },
-            "scope": 607,
-            "src": "169:65:3",
+            "scope": 840,
+            "src": "169:65:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1725,7 +1725,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 529,
+            "id": 762,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1733,16 +1733,16 @@
             "name": "getVehicleManufacturerName",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 525,
+              "id": 758,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 524,
+                  "id": 757,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 529,
-                  "src": "278:12:3",
+                  "scope": 762,
+                  "src": "278:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1750,10 +1750,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 523,
+                    "id": 756,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "278:7:3",
+                    "src": "278:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1763,20 +1763,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "277:14:3"
+              "src": "277:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 528,
+              "id": 761,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 527,
+                  "id": 760,
                   "name": "manufacturerName",
                   "nodeType": "VariableDeclaration",
-                  "scope": 529,
-                  "src": "315:24:3",
+                  "scope": 762,
+                  "src": "315:24:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1784,10 +1784,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 526,
+                    "id": 759,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "315:7:3",
+                    "src": "315:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1797,10 +1797,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "314:26:3"
+              "src": "314:26:4"
             },
-            "scope": 607,
-            "src": "242:99:3",
+            "scope": 840,
+            "src": "242:99:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1808,7 +1808,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 536,
+            "id": 769,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1816,16 +1816,16 @@
             "name": "getVehicleLicencePlate",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 532,
+              "id": 765,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 531,
+                  "id": 764,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 536,
-                  "src": "379:12:3",
+                  "scope": 769,
+                  "src": "379:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1833,10 +1833,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 530,
+                    "id": 763,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "379:7:3",
+                    "src": "379:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1846,20 +1846,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "378:14:3"
+              "src": "378:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 535,
+              "id": 768,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 534,
+                  "id": 767,
                   "name": "licencePlate",
                   "nodeType": "VariableDeclaration",
-                  "scope": 536,
-                  "src": "416:20:3",
+                  "scope": 769,
+                  "src": "416:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1867,10 +1867,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 533,
+                    "id": 766,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "416:7:3",
+                    "src": "416:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1880,10 +1880,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "415:22:3"
+              "src": "415:22:4"
             },
-            "scope": 607,
-            "src": "347:91:3",
+            "scope": 840,
+            "src": "347:91:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1891,7 +1891,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 543,
+            "id": 776,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1899,16 +1899,16 @@
             "name": "getVehicleOwner",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 539,
+              "id": 772,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 538,
+                  "id": 771,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 543,
-                  "src": "469:12:3",
+                  "scope": 776,
+                  "src": "469:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1916,10 +1916,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 537,
+                    "id": 770,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "469:7:3",
+                    "src": "469:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1929,20 +1929,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "468:14:3"
+              "src": "468:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 542,
+              "id": 775,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 541,
+                  "id": 774,
                   "name": "owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 543,
-                  "src": "506:13:3",
+                  "scope": 776,
+                  "src": "506:13:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1950,10 +1950,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 540,
+                    "id": 773,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "506:7:3",
+                    "src": "506:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -1963,10 +1963,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "505:15:3"
+              "src": "505:15:4"
             },
-            "scope": 607,
-            "src": "444:77:3",
+            "scope": 840,
+            "src": "444:77:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1974,7 +1974,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 550,
+            "id": 783,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1982,16 +1982,16 @@
             "name": "getVehicleMaintenanceLogAddress",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 546,
+              "id": 779,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 545,
+                  "id": 778,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 550,
-                  "src": "568:12:3",
+                  "scope": 783,
+                  "src": "568:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1999,10 +1999,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 544,
+                    "id": 777,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "568:7:3",
+                    "src": "568:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2012,20 +2012,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "567:14:3"
+              "src": "567:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 549,
+              "id": 782,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 548,
+                  "id": 781,
                   "name": "maintenanceLogAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 550,
-                  "src": "605:29:3",
+                  "scope": 783,
+                  "src": "605:29:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2033,10 +2033,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 547,
+                    "id": 780,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "605:7:3",
+                    "src": "605:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2046,10 +2046,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "604:31:3"
+              "src": "604:31:4"
             },
-            "scope": 607,
-            "src": "527:109:3",
+            "scope": 840,
+            "src": "527:109:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -2057,7 +2057,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 557,
+            "id": 790,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -2065,16 +2065,16 @@
             "name": "getVehicleRegisteredDate",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 553,
+              "id": 786,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 552,
+                  "id": 785,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 557,
-                  "src": "676:12:3",
+                  "scope": 790,
+                  "src": "676:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2082,10 +2082,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 551,
+                    "id": 784,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "676:7:3",
+                    "src": "676:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2095,20 +2095,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "675:14:3"
+              "src": "675:14:4"
             },
             "payable": false,
             "returnParameters": {
-              "id": 556,
+              "id": 789,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 555,
+                  "id": 788,
                   "name": "registeredDate",
                   "nodeType": "VariableDeclaration",
-                  "scope": 557,
-                  "src": "713:22:3",
+                  "scope": 790,
+                  "src": "713:22:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2116,10 +2116,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 554,
+                    "id": 787,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "713:7:3",
+                    "src": "713:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2129,10 +2129,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "712:24:3"
+              "src": "712:24:4"
             },
-            "scope": 607,
-            "src": "642:95:3",
+            "scope": 840,
+            "src": "642:95:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -2140,7 +2140,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 566,
+            "id": 799,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -2148,16 +2148,16 @@
             "name": "transferVehicleOwnership",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 564,
+              "id": 797,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 559,
+                  "id": 792,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 566,
-                  "src": "779:12:3",
+                  "scope": 799,
+                  "src": "779:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2165,10 +2165,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 558,
+                    "id": 791,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "779:7:3",
+                    "src": "779:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2179,11 +2179,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 561,
+                  "id": 794,
                   "name": "_newOwner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 566,
-                  "src": "793:17:3",
+                  "scope": 799,
+                  "src": "793:17:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2191,10 +2191,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 560,
+                    "id": 793,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "793:7:3",
+                    "src": "793:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2205,11 +2205,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 563,
+                  "id": 796,
                   "name": "_keyHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 566,
-                  "src": "812:16:3",
+                  "scope": 799,
+                  "src": "812:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2217,10 +2217,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 562,
+                    "id": 795,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "812:7:3",
+                    "src": "812:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2230,17 +2230,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "778:51:3"
+              "src": "778:51:4"
             },
             "payable": true,
             "returnParameters": {
-              "id": 565,
+              "id": 798,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "846:0:3"
+              "src": "846:0:4"
             },
-            "scope": 607,
-            "src": "745:102:3",
+            "scope": 840,
+            "src": "745:102:4",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "external"
@@ -2248,7 +2248,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 573,
+            "id": 806,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -2256,16 +2256,16 @@
             "name": "acceptVehicleOwnership",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 571,
+              "id": 804,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 568,
+                  "id": 801,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 573,
-                  "src": "885:12:3",
+                  "scope": 806,
+                  "src": "885:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2273,10 +2273,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 567,
+                    "id": 800,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "885:7:3",
+                    "src": "885:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2287,11 +2287,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 570,
+                  "id": 803,
                   "name": "_keyHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 573,
-                  "src": "899:16:3",
+                  "scope": 806,
+                  "src": "899:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2299,10 +2299,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 569,
+                    "id": 802,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "899:7:3",
+                    "src": "899:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2312,17 +2312,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "884:32:3"
+              "src": "884:32:4"
             },
             "payable": true,
             "returnParameters": {
-              "id": 572,
+              "id": 805,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "933:0:3"
+              "src": "933:0:4"
             },
-            "scope": 607,
-            "src": "853:81:3",
+            "scope": 840,
+            "src": "853:81:4",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "external"
@@ -2330,7 +2330,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 580,
+            "id": 813,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -2338,16 +2338,16 @@
             "name": "setVehicleMaintenanceLogAddress",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 578,
+              "id": 811,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 575,
+                  "id": 808,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 580,
-                  "src": "981:12:3",
+                  "scope": 813,
+                  "src": "981:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2355,10 +2355,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 574,
+                    "id": 807,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "981:7:3",
+                    "src": "981:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2369,11 +2369,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 577,
+                  "id": 810,
                   "name": "_serviceHistoryAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 580,
-                  "src": "995:30:3",
+                  "scope": 813,
+                  "src": "995:30:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2381,10 +2381,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 576,
+                    "id": 809,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "995:7:3",
+                    "src": "995:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2394,17 +2394,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "980:46:3"
+              "src": "980:46:4"
             },
             "payable": true,
             "returnParameters": {
-              "id": 579,
+              "id": 812,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1043:0:3"
+              "src": "1043:0:4"
             },
-            "scope": 607,
-            "src": "940:104:3",
+            "scope": 840,
+            "src": "940:104:4",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "external"
@@ -2412,21 +2412,21 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 584,
+            "id": 817,
             "name": "Registered",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 583,
+              "id": 816,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 582,
+                  "id": 815,
                   "indexed": true,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 584,
-                  "src": "1069:20:3",
+                  "scope": 817,
+                  "src": "1069:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2434,10 +2434,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 581,
+                    "id": 814,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1069:7:3",
+                    "src": "1069:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2447,28 +2447,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1068:22:3"
+              "src": "1068:22:4"
             },
-            "src": "1052:39:3"
+            "src": "1052:39:4"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 592,
+            "id": 825,
             "name": "VehicleOwnershipTransferRequest",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 591,
+              "id": 824,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 586,
+                  "id": 819,
                   "indexed": true,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 592,
-                  "src": "1135:20:3",
+                  "scope": 825,
+                  "src": "1135:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2476,10 +2476,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 585,
+                    "id": 818,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1135:7:3",
+                    "src": "1135:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2490,12 +2490,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 588,
+                  "id": 821,
                   "indexed": true,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 592,
-                  "src": "1157:21:3",
+                  "scope": 825,
+                  "src": "1157:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2503,10 +2503,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 587,
+                    "id": 820,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1157:7:3",
+                    "src": "1157:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2517,12 +2517,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 590,
+                  "id": 823,
                   "indexed": true,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 592,
-                  "src": "1180:19:3",
+                  "scope": 825,
+                  "src": "1180:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2530,10 +2530,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 589,
+                    "id": 822,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1180:7:3",
+                    "src": "1180:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2543,28 +2543,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1134:66:3"
+              "src": "1134:66:4"
             },
-            "src": "1097:104:3"
+            "src": "1097:104:4"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 598,
+            "id": 831,
             "name": "VehicleOwnershipTransferAccepted",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 597,
+              "id": 830,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 594,
+                  "id": 827,
                   "indexed": true,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 598,
-                  "src": "1246:20:3",
+                  "scope": 831,
+                  "src": "1246:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2572,10 +2572,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 593,
+                    "id": 826,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1246:7:3",
+                    "src": "1246:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2586,12 +2586,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 596,
+                  "id": 829,
                   "indexed": true,
                   "name": "_newOwner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 598,
-                  "src": "1268:25:3",
+                  "scope": 831,
+                  "src": "1268:25:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2599,10 +2599,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 595,
+                    "id": 828,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1268:7:3",
+                    "src": "1268:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2612,28 +2612,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1245:49:3"
+              "src": "1245:49:4"
             },
-            "src": "1207:88:3"
+            "src": "1207:88:4"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 606,
+            "id": 839,
             "name": "VehicleMaintenanceLogAddressChanged",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 605,
+              "id": 838,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 600,
+                  "id": 833,
                   "indexed": true,
                   "name": "_VIN",
                   "nodeType": "VariableDeclaration",
-                  "scope": 606,
-                  "src": "1343:20:3",
+                  "scope": 839,
+                  "src": "1343:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2641,10 +2641,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 599,
+                    "id": 832,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1343:7:3",
+                    "src": "1343:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2655,12 +2655,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 602,
+                  "id": 835,
                   "indexed": true,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 606,
-                  "src": "1365:21:3",
+                  "scope": 839,
+                  "src": "1365:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2668,10 +2668,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 601,
+                    "id": 834,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1365:7:3",
+                    "src": "1365:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2682,12 +2682,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 604,
+                  "id": 837,
                   "indexed": true,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 606,
-                  "src": "1388:19:3",
+                  "scope": 839,
+                  "src": "1388:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2695,10 +2695,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 603,
+                    "id": 836,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1388:7:3",
+                    "src": "1388:7:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2708,16 +2708,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1342:66:3"
+              "src": "1342:66:4"
             },
-            "src": "1301:108:3"
+            "src": "1301:108:4"
           }
         ],
-        "scope": 608,
-        "src": "28:1384:3"
+        "scope": 841,
+        "src": "28:1384:4"
       }
     ],
-    "src": "0:1412:3"
+    "src": "0:1412:4"
   },
   "compiler": {
     "name": "solc",
@@ -2725,5 +2725,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-10T21:01:41.981Z"
+  "updatedAt": "2018-07-11T10:40:12.531Z"
 }
