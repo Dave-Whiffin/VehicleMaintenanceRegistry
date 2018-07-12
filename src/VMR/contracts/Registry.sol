@@ -4,11 +4,17 @@ import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol"
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructible.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "./RegistryStorageLib.sol";
-import "./IRegistry.sol";
 import "./ByteUtilsLib.sol";
 import "./IRegistryFeeLookup.sol";
 
-contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
+contract Registry is Claimable, TokenDestructible, Pausable {
+
+    struct Member {
+        uint256 memberNumber;
+        bytes32 memberId;
+        address owner;
+        bool enabled;
+    }
 
     using ByteUtilsLib for bytes32;
     
@@ -20,8 +26,8 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     event MemberAttributeChanged(uint256 indexed memberNumber, 
     uint256 indexed attributeNumber, bytes32 indexed attributeName, bytes32 attributeType, bytes32 attributeValue);
 
-    address private storageAddress;
-    address private feeLookupAddress;
+    address internal storageAddress;
+    address internal feeLookupAddress;
 
     constructor(address _storageAddress, address _feeLookupAddress) public {
         storageAddress = _storageAddress;
@@ -163,44 +169,56 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
 
 //member related getters
     function getMemberTotalCount() 
-        external view 
+        public view 
         returns (uint256) {
         return RegistryStorageLib.getMemberTotalCount(storageAddress);
     }
 
     function isMemberRegistered(uint256 _memberNumber) 
-        external view 
+        public view 
         returns (bool) {
         return RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber);
     } 
 
     function getMemberNumber(bytes32 _memberId) 
-        external view 
+        public view 
         memberIdRegistered(_memberId)
         returns (uint256) {
         return getMemberNum(_memberId);
     }
 
     function getMember(uint256 _memberNumber) 
-        external view
+        public view
         memberNumberRegistered(_memberNumber)
         returns (uint256 memberNumber, bytes32 memberId, address owner, bool enabled) {
+        
+        Member memory member = getMemberInternal(_memberNumber);
+        memberNumber = member.memberNumber;
+        memberId = member.memberId;
+        owner = member.owner;
+        enabled = member.enabled;
+    }
 
-        memberNumber = _memberNumber;
-        memberId = RegistryStorageLib.getMemberId(storageAddress, _memberNumber);
-        owner = RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber);
-        enabled = RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber);
+    function getMemberInternal(uint256 _memberNumber)
+        internal view returns (Member) {
+        Member memory m = Member(
+            _memberNumber,
+            RegistryStorageLib.getMemberId(storageAddress, _memberNumber),
+            RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber),
+            RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber)
+        );            
+        return m;
     }
  
     function getMemberAttributeTotalCount(uint256 _memberNumber) 
-        external view
+        public view
         memberNumberRegistered(_memberNumber)
         returns (uint256) {
         return RegistryStorageLib.getAttributeTotalCount(storageAddress, _memberNumber);
     }
 
     function getMemberAttributeNumber(uint256 _memberNumber, bytes32 _attributeName) 
-        external view
+        public view
         memberNumberRegistered(_memberNumber)
         attributeNameExists(_memberNumber, _attributeName)
         returns (uint256) {
@@ -210,7 +228,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     function getMemberAttribute(uint256 _memberNumber, uint256 _attributeNumber) 
         memberNumberRegistered(_memberNumber)
         attributeNumberExists(_memberNumber, _attributeNumber)    
-        external view returns 
+        public view returns 
         (uint256 attributeNumber, bytes32 attributeName, bytes32 attributeType, bytes32 attributeValue) 
         {
         attributeNumber = _attributeNumber;
@@ -223,7 +241,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
 
 //payable
     function registerMember(bytes32 _memberId) 
-        external payable
+        public payable
         whenNotPaused()
         memberIdNotRegistered(_memberId)
         senderAllowedToRegisterMember()
@@ -236,7 +254,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     }
 
     function enableMember(uint256 _memberNumber) 
-        external payable 
+        public payable 
         whenNotPaused()
         onlyOwner()
         memberNumberRegistered(_memberNumber)
@@ -247,7 +265,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     }        
 
     function disableMember(uint256 _memberNumber) 
-        external payable
+        public payable
         whenNotPaused()
         onlyOwner()
         memberNumberRegistered(_memberNumber)
@@ -258,7 +276,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     }
 
     function transferMemberOwnership(uint256 _memberNumber, address _newOwner, bytes32 _keyHash) 
-        external payable 
+        public payable 
         whenNotPaused()
         memberNumberRegistered(_memberNumber)
         memberNumberOwner(_memberNumber)
@@ -271,7 +289,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     }
 
     function acceptMemberOwnership(uint256 _memberNumber, bytes32 _keyHash) 
-        external payable
+        public payable
         whenNotPaused()
         memberNumberRegistered(_memberNumber)
         pendingMemberNumberOwner(_memberNumber)
@@ -282,7 +300,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     }     
 
     function addMemberAttribute(uint256 _memberNumber, bytes32 _attributeName, bytes32 _attributeType, bytes32 _attributeValue) 
-        external payable 
+        public payable 
         whenNotPaused()
         onlyOwner()
         memberNumberRegistered(_memberNumber)
@@ -295,7 +313,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     } 
 
     function setMemberAttribute(uint256 _memberNumber, uint256 _attributeNumber, bytes32 _attributeType, bytes32 _attributeValue) 
-        external payable 
+        public payable 
         whenNotPaused()
         onlyOwner()
         memberNumberRegistered(_memberNumber)
@@ -310,7 +328,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     }      
 
     function setMemberAttributeValue(uint256 _memberNumber, uint256 _attributeNumber, bytes32 _attributeValue) 
-        external payable 
+        public payable 
         whenNotPaused()
         onlyOwner()
         memberNumberRegistered(_memberNumber)
