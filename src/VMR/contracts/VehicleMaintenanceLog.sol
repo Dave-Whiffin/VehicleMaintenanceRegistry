@@ -28,7 +28,7 @@ contract VehicleMaintenanceLog is IVehicleMaintenanceLog, TokenDestructible, Cla
         vehicleRegistryAddress = _vehicleRegistryAddress;
 
         require(
-            IVehicleRegistry(vehicleRegistryAddress).isRegistered(_VIN), 
+            IVehicleRegistry(vehicleRegistryAddress).isVehicleRegistered(_VIN), 
             "The vehicle must be registered before a maintenance log can be created");
 
         require(

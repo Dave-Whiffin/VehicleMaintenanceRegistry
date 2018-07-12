@@ -3,6 +3,7 @@ import assertRevert from '../node_modules/openzeppelin-solidity/test/helpers/ass
 
 var Registry = artifacts.require('Registry');
 var EternalStorage = artifacts.require('EternalStorage');
+var MockRegistryFeeChecker = artifacts.require('MockRegistryFeeChecker');
 
 function logEthStatus(accounts) {
   var block = web3.eth.getBlock("latest");
@@ -17,6 +18,7 @@ function logEthStatus(accounts) {
 
 contract('Registry', function (accounts) {
   let registry;
+  let registryFeeChecker;
   let eternalStorage;
   let eternalStorageOwner;
   let registryAddress;
@@ -25,12 +27,13 @@ contract('Registry', function (accounts) {
   logEthStatus(accounts);
 
   beforeEach(async function () {
+    registryFeeChecker = await MockRegistryFeeChecker.new(0, 0);
     //console.log("Deploying Eternal Storage");
     eternalStorage = await EternalStorage.new();
     eternalStorageOwner = await eternalStorage.owner.call();
     //console.log('eternalstorage deployed');
     //console.log('deploying new Registry instance');
-    registry = await Registry.new(eternalStorage.address);
+    registry = await Registry.new(eternalStorage.address, registryFeeChecker.address);
     registryAddress = registry;
     registryOwner = await registry.owner.call();
     await eternalStorage.setContractAddress(registryAddress.address);
@@ -61,6 +64,12 @@ contract('Registry', function (accounts) {
     let nonOwner = accounts[1];
     await assertRevert(registry.registerMember(memberId, {from: nonOwner}));
   });
+
+  it('registerMember fails when sender sends insufficient value', async function () {
+    await registryFeeChecker.setRegistrationFeeWei(10);
+    let memberId = web3.fromAscii("Ford");
+    await assertRevert(registry.registerMember(memberId, {from: registryOwner}));
+  });  
 
   describe('when contract is paused', function () {
     let memberId;
@@ -270,6 +279,16 @@ contract('Registry', function (accounts) {
           assert.equal(memberNumber, events[0].args.memberNumber.valueOf());
         });            
       });
+    });
+
+    it('transferMemberOwnership fails when value is below transfer fee', async function () {
+      var member = await registry.getMember(1);
+      var initialOwner = member[2];      
+      var transferKey = web3.sha3("transfer secret");
+      let newOwner = accounts[1];
+
+      await registryFeeChecker.setTransferFeeWei(10);
+      await assertRevert(registry.transferMemberOwnership(memberNumber, newOwner, transferKey, {from: initialOwner}));
     });
 
     describe('the owner can transfer the ownership of the member', function () {

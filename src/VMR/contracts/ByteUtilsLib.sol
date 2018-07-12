@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-library ByteUtils {
+library ByteUtilsLib {
 
     function bytes32ToString(bytes32 x) public pure returns (string) {
         bytes memory bytesString = new bytes(32);

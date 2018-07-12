@@ -5,11 +5,12 @@ import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructi
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "./RegistryStorageLib.sol";
 import "./IRegistry.sol";
-import "./ByteUtils.sol";
+import "./ByteUtilsLib.sol";
+import "./IRegistryFeeLookup.sol";
 
 contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
 
-    using ByteUtils for bytes32;
+    using ByteUtilsLib for bytes32;
     
     event MemberRegistered(uint256 indexed memberNumber, bytes32 indexed memberId);
     event MemberEnabled(uint256 indexed memberNumber);
@@ -20,9 +21,11 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     uint256 indexed attributeNumber, bytes32 indexed attributeName, bytes32 attributeType, bytes32 attributeValue);
 
     address private storageAddress;
+    address private feeLookupAddress;
 
-    constructor(address _storageAddress) public {
+    constructor(address _storageAddress, address _feeLookupAddress) public {
         storageAddress = _storageAddress;
+        feeLookupAddress = _feeLookupAddress;
     }
 
     modifier memberIdRegistered(bytes32 _memberId) {
@@ -105,13 +108,58 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
     modifier attributeNumberExists(uint256 _memberNumber, uint256 _attributeNumber) {
         require(RegistryStorageLib.attributeNumberExists(storageAddress, _memberNumber, _attributeNumber), "Attribute number must exist");
         _;
-    }        
+    }
+
+    modifier paidMemberRegistrationFee() {
+        require(getMemberRegistrationFee() <= msg.value, "Value is below registration fee");
+        _;
+    }
+
+    modifier paidMemberTransferFee() {
+        require(getMemberTransferFee() <= msg.value, "Value is below registration transfer fee");
+        _;
+    }
+
+    modifier senderAllowedToRegisterMember() {
+        require(isAllowedToRegisterMember(msg.sender), "The sender is not allowed to register");
+        _;
+    }
+
+    //interception point for contracts inheriting from this
+    function isAllowedToRegisterMember(address _address) public view returns (bool) {
+        return _address == owner;
+    }
 
     function getStorageAddress() 
         public view 
         returns(address) {
         return storageAddress;
-    }      
+    }
+
+    function setStorageAddress(address _storageAddress) 
+        public
+        onlyOwner() 
+        whenPaused() {
+        require(_storageAddress != storageAddress, "Storage address must be a different address");
+        storageAddress = _storageAddress;
+    }
+
+    function setFeeLookupAddress(address _feeLookupAddress) 
+        public
+        onlyOwner() 
+        whenPaused()
+         {
+        require(_feeLookupAddress != feeLookupAddress, "Fee Lookup address must be a different address");
+        feeLookupAddress = _feeLookupAddress;
+    }
+
+    function getMemberRegistrationFee() public view returns (uint256) {
+        return IRegistryFeeLookup(feeLookupAddress).getRegistrationFeeWei();
+    }
+
+    function getMemberTransferFee() public view returns (uint256) {
+        return IRegistryFeeLookup(feeLookupAddress).getTransferFeeWei();
+    }       
 
 //member related getters
     function getMemberTotalCount() 
@@ -171,14 +219,18 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
         attributeValue = RegistryStorageLib.getAttributeValue(storageAddress, _memberNumber, _attributeNumber);
     }
 
+    
+
 //payable
     function registerMember(bytes32 _memberId) 
         external payable
         whenNotPaused()
-        onlyOwner()
         memberIdNotRegistered(_memberId)
+        senderAllowedToRegisterMember()
+        paidMemberRegistrationFee()
         returns (uint256) {
-        uint256 memberNumber = RegistryStorageLib.storeMember(storageAddress, _memberId, owner);
+        uint256 memberNumber = RegistryStorageLib.storeMember(storageAddress, _memberId, msg.sender);
+        
         emit MemberRegistered(memberNumber, _memberId);
         return memberNumber;
     }
@@ -210,6 +262,7 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
         whenNotPaused()
         memberNumberRegistered(_memberNumber)
         memberNumberOwner(_memberNumber)
+        paidMemberTransferFee()
         { 
         address currentOwner = RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber);  
         RegistryStorageLib.setMemberPendingOwner(storageAddress, _memberNumber, _newOwner);  
@@ -275,5 +328,5 @@ contract Registry is IRegistry, Claimable, TokenDestructible, Pausable {
         private view 
         returns (uint256) {
         return RegistryStorageLib.getMemberNumber(storageAddress, _memberId);  
-    }   
+    }    
 }

@@ -1,11 +1,11 @@
 pragma solidity ^0.4.23;
 
 import "truffle/Assert.sol";
-import "../contracts/ByteUtils.sol";
+import "../contracts/ByteUtilsLib.sol";
 
-contract TestByteUtils {
+contract TestByteUtilsLib {
 
-    using ByteUtils for bytes32;
+    using ByteUtilsLib for bytes32;
 
     function testGetStringLength() public {
         bytes32 s = "123456789";

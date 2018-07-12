@@ -1,27 +1,28 @@
 pragma solidity ^0.4.23;
 
-import "./IVehicleRegistryFeeChecker.sol";
+import "./IRegistryFeeLookup.sol";
 import "../installed_contracts/oraclize-api/contracts/usingOraclize.sol";
 
-contract VehicleRegistryFeeChecker is usingOraclize, IVehicleRegistryFeeChecker {
+contract RegistryFeeChecker is usingOraclize, IRegistryFeeLookup {
 
-    uint256 public registrationPriceEth;
+    uint256 public registrationPriceWei;
     string private oracleQuery;
     uint private refreshSeconds;
 
-    function getRegistrationFeeEth() external view returns (uint256) {
-        return registrationPriceEth;
+    function getRegistrationFeeWei() external view returns (uint256) {
+        return registrationPriceWei;
     }
 
-    function getTransferFeeEth() external view returns (uint256) {
+    function getTransferFeeWei() external view returns (uint256) {
         //for now tfr fee = reg fee (interface allows it to be different in the future)
-        return registrationPriceEth;
+        return registrationPriceWei;
     }    
 
     event NewOraclizeQuery(string _description);
     event NewRegistrationPrice(string price);
 
-    constructor (string _oracleQuery, uint _refreshSeconds) public {
+    constructor (string _oracleQuery, uint _refreshSeconds, uint256 _initialRegistrationPriceWei) public {
+        registrationPriceWei = _initialRegistrationPriceWei;
         oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
         updatePrices();
         oracleQuery = _oracleQuery;
@@ -30,7 +31,7 @@ contract VehicleRegistryFeeChecker is usingOraclize, IVehicleRegistryFeeChecker 
 
     function __callback(bytes32 myid, string result) public {
         require(msg.sender == oraclize_cbAddress());
-        registrationPriceEth = parseInt(result);
+        registrationPriceWei = parseInt(result);
         emit NewRegistrationPrice(result);
     }
 
