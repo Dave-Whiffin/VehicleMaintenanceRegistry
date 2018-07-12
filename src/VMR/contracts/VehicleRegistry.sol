@@ -3,8 +3,11 @@ pragma solidity ^0.4.23;
 import "./Registry.sol";
 import "./IVehicleRegistry.sol";
 import "./IManufacturerRegistry.sol";
+import "../node_modules/openzeppelin-solidity/contracts/AddressUtils.sol";
 
 contract VehicleRegistry is Registry, IVehicleRegistry {
+
+    using AddressUtils for address;
 
     address private manufacturerRegistryStorageAddress;
 
@@ -27,7 +30,12 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
             IManufacturerRegistry(manufacturerRegistryStorageAddress).getManufacturerOwner(_manufacturerId) == msg.sender, 
             "Only the owner of the manufacturer can call this function");
         _;
-    }    
+    }
+
+    modifier isContractAddress(address _address) {
+        require(_address.isContract(), "Address must be a contract");
+        _;
+    }
 
 //IVehicleRegistry
     function getVehicleOwner(bytes32 _vin) 
@@ -71,4 +79,29 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
         emit MemberRegistered(memberNumber, _vin);
         return memberNumber;
     }
+
+    function setMaintenanceLogAddress(bytes32 _vin, address _address) 
+    external payable 
+        whenNotPaused()    
+        memberIdRegistered(_vin)
+        memberIdOwner(_vin)
+        isContractAddress(_address)
+    {
+        uint256 memberNumber = RegistryStorageLib.getMemberNumber(storageAddress, _vin);
+        bytes32 attributeName = "maintenanceLogAddress";
+        bytes32 attributeType = "address";
+        RegistryStorageLib.storeMemberAttribute(storageAddress, memberNumber, attributeName, attributeType, bytes32(_address));
+    }
+
+    function getMaintenanceLogAddress(bytes32 _vin) 
+    external payable 
+        whenNotPaused()    
+        memberIdRegistered(_vin)
+        returns (address)
+    {
+        uint256 memberNumber = RegistryStorageLib.getMemberNumber(storageAddress, _vin);
+        bytes32 attributeName = "maintenanceLogAddress";
+        uint256 attributeNumber = RegistryStorageLib.getAttributeNumber(storageAddress, memberNumber, attributeName);
+        return address(RegistryStorageLib.getAttributeValue(storageAddress, memberNumber, attributeNumber));
+    }    
 }
