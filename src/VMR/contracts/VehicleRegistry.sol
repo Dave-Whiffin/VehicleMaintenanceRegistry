@@ -4,6 +4,7 @@ import "./Registry.sol";
 import "./IVehicleRegistry.sol";
 import "./IManufacturerRegistry.sol";
 import "../node_modules/openzeppelin-solidity/contracts/AddressUtils.sol";
+import "./RegistryStorageLib.sol";
 
 contract VehicleRegistry is Registry, IVehicleRegistry {
 
@@ -55,10 +56,11 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
     function registerMember(bytes32) 
         public payable
         returns (uint256) {
-        require(false, "This function is disabled on this contract");
+        require(false, "This function is disabled on this contract, use registerVehicle instead");
         return 0;
     }    
 
+/*
 //external VehicleRegistry specific
     function registerVehicle(bytes32 _vin, bytes32 _manufacturerId) 
         external payable
@@ -75,7 +77,9 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
         emit MemberRegistered(memberNumber, _vin);
         return memberNumber;
     }
+*/
 
+/*
     function setMaintenanceLogAddress(bytes32 _vin, address _address) 
         external payable 
         whenNotPaused()    
@@ -100,4 +104,5 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
         uint256 attributeNumber = RegistryStorageLib.getAttributeNumber(storageAddress, memberNumber, attributeName);
         return address(RegistryStorageLib.getAttributeValue(storageAddress, memberNumber, attributeNumber));
     }    
+*/
 }

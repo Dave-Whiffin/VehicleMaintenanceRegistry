@@ -1,10 +1,16 @@
+//libs
 var ByteUtilsLib = artifacts.require("ByteUtilsLib.sol");
-var EternalStorage = artifacts.require("EternalStorage.sol");
-var ManufacturerRegistry = artifacts.require("ManufacturerRegistry.sol");
-var Registry = artifacts.require("Registry.sol");
 var RegistryStorageLib = artifacts.require("RegistryStorageLib.sol");
-var MockRegistryFeeChecker = artifacts.require("MockRegistryFeeChecker.sol");
+
+//contracts
+var EternalStorage = artifacts.require("EternalStorage.sol");
+var Registry = artifacts.require("Registry.sol");
+var ManufacturerRegistry = artifacts.require("ManufacturerRegistry.sol");
+var VehicleRegistry = artifacts.require("VehicleRegistry.sol");
+
+//mocks
 var MockManufacturerRegistry = artifacts.require("MockManufacturerRegistry");
+var MockRegistryFeeChecker = artifacts.require("MockRegistryFeeChecker.sol");
 
 module.exports = function(deployer) {
 
@@ -14,6 +20,7 @@ module.exports = function(deployer) {
   deployer.deploy(RegistryStorageLib);
   deployer.link(RegistryStorageLib, Registry);
   deployer.link(RegistryStorageLib, ManufacturerRegistry);
+  deployer.link(RegistryStorageLib, VehicleRegistry);
   /*
   deployer.deploy(VehicleManufacturerStorage).then(() => {
     deployer.link(VehicleManufacturerStorage, VehicleManufacturerRegistry);
