@@ -51,7 +51,7 @@ contract('Registry', function (accounts) {
   }); 
 
   it('getStorageAddress should return expected storage address', async function () {
-    let storageAddress = await registry.getStorageAddress();
+    let storageAddress = await registry.storageAddress.call();
     assert.isTrue(storageAddress == eternalStorage.address);
   });  
 

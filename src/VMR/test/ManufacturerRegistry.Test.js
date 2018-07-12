@@ -24,13 +24,13 @@ contract('ManufacturerRegistry', function (accounts) {
 
       describe("when no manufacturers are registered", function() {
 
-        it("isManufacturerRegisteredAndEnabled returns false when not registered", async function() {
-            var result = await registry.isManufacturerRegisteredAndEnabled(manufacturerId);
+        it("isMemberRegisteredAndEnabled returns false when not registered", async function() {
+            var result = await registry.isMemberRegisteredAndEnabled(manufacturerId);
             assert.isFalse(result);
         });
 
-        it("getManufacturerOwner throws", async function() {
-            await assertRevert(registry.getManufacturerOwner(manufacturerId));
+        it("getMemberOwner throws", async function() {
+            await assertRevert(registry.getMemberOwner(manufacturerId));
         });        
 
       });
@@ -46,13 +46,13 @@ contract('ManufacturerRegistry', function (accounts) {
             memberNumber = await registry.getMemberNumber(manufacturerId);
           });
 
-        it("getManufacturerOwner returns correct owner", async function() {
-            var result = await registry.getManufacturerOwner(manufacturerId);
+        it("getMemberOwner returns correct owner", async function() {
+            var result = await registry.getMemberOwner(manufacturerId);
             assert.equal(manufacturerOwner, result);
         });            
 
-        it("isManufacturerRegisteredAndEnabled returns true", async function() {
-            var result = await registry.isManufacturerRegisteredAndEnabled(manufacturerId);
+        it("isMemberRegisteredAndEnabled returns true", async function() {
+            var result = await registry.isMemberRegisteredAndEnabled(manufacturerId);
             assert.isTrue(result);
         });          
 
@@ -62,8 +62,8 @@ contract('ManufacturerRegistry', function (accounts) {
                 await registry.disableMember(memberNumber);
               });
     
-            it("isManufacturerRegisteredAndEnabled returns false", async function() {
-                var result = await registry.isManufacturerRegisteredAndEnabled(manufacturerId);
+            it("isMemberRegisteredAndEnabled returns false", async function() {
+                var result = await registry.isMemberRegisteredAndEnabled(manufacturerId);
                 assert.isFalse(result);
             });          
     

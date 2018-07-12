@@ -9,7 +9,7 @@ var ManufacturerRegistry = artifacts.require("ManufacturerRegistry.sol");
 var VehicleRegistry = artifacts.require("VehicleRegistry.sol");
 
 //mocks
-var MockManufacturerRegistry = artifacts.require("MockManufacturerRegistry");
+var MockRegistryLookup = artifacts.require("MockRegistryLookup");
 var MockRegistryFeeChecker = artifacts.require("MockRegistryFeeChecker.sol");
 
 module.exports = function(deployer) {

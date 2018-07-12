@@ -2,7 +2,7 @@ pragma solidity ^0.4.23;
 
 import "./IVehicleMaintenanceLog.sol";
 import "./VehicleMaintenanceLogStorage.sol";
-import "./IVehicleRegistry.sol";
+import "./IRegistryLookup.sol";
 import "../node_modules/openzeppelin-solidity/contracts/AddressUtils.sol";
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructible.sol";
@@ -28,11 +28,11 @@ contract VehicleMaintenanceLog is IVehicleMaintenanceLog, TokenDestructible, Cla
         vehicleRegistryAddress = _vehicleRegistryAddress;
 
         require(
-            IVehicleRegistry(vehicleRegistryAddress).isVehicleRegisteredAndEnabled(_VIN), 
+            IRegistryLookup(vehicleRegistryAddress).isMemberRegisteredAndEnabled(_VIN), 
             "The vehicle must be registered before a maintenance log can be created");
 
         require(
-            IVehicleRegistry(vehicleRegistryAddress).getVehicleOwner(_VIN) == msg.sender, 
+            IRegistryLookup(vehicleRegistryAddress).getMemberOwner(_VIN) == msg.sender, 
             "The vehicle owner is the only one allowed to create a maintenance log");
 
         VehicleMaintenanceLogStorage.setVin(storageAddress, _VIN);
@@ -44,7 +44,7 @@ contract VehicleMaintenanceLog is IVehicleMaintenanceLog, TokenDestructible, Cla
 
     modifier onlyVehicleOwner() {
         require(
-            IVehicleRegistry(vehicleRegistryAddress).getVehicleOwner(getVin()) == msg.sender, 
+            IRegistryLookup(vehicleRegistryAddress).getMemberOwner(getVin()) == msg.sender, 
             "You must be the vehicle owner to perform this function");
         _;
     }

@@ -1,13 +1,14 @@
 pragma solidity ^0.4.23;
 
+import "./ByteUtilsLib.sol";
 import "./Registry.sol";
-import "./IVehicleRegistry.sol";
-import "./IManufacturerRegistry.sol";
+import "./IRegistryLookup.sol";
 import "../node_modules/openzeppelin-solidity/contracts/AddressUtils.sol";
 import "./RegistryStorageLib.sol";
 
-contract VehicleRegistry is Registry, IVehicleRegistry {
+contract VehicleRegistry is Registry {
 
+    using ByteUtilsLib for bytes32;
     using AddressUtils for address;
 
     address private manufacturerRegistryStorageAddress;
@@ -21,14 +22,14 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
 //modifiers
     modifier registeredAndEnabledManufacturer (bytes32 _manufacturerId) {
         require(
-            IManufacturerRegistry(manufacturerRegistryStorageAddress).isManufacturerRegisteredAndEnabled(_manufacturerId), 
+            IRegistryLookup(manufacturerRegistryStorageAddress).isMemberRegisteredAndEnabled(_manufacturerId), 
             "Manufacturer must be registered and enabled");
         _;
     }
 
     modifier senderIsManufacturerOwner (bytes32 _manufacturerId) {
         require(
-            IManufacturerRegistry(manufacturerRegistryStorageAddress).getManufacturerOwner(_manufacturerId) == msg.sender, 
+            IRegistryLookup(manufacturerRegistryStorageAddress).getMemberOwner(_manufacturerId) == msg.sender, 
             "Only the owner of the manufacturer can call this function");
         _;
     }
@@ -36,19 +37,6 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
     modifier isContractAddress(address _address) {
         require(_address.isContract(), "Address must be a contract");
         _;
-    }
-
-//IVehicleRegistry
-    function getVehicleOwner(bytes32 _vin) 
-        external view
-        returns (address) {
-        return getMemberOwner(_vin);
-    }
-
-    function isVehicleRegisteredAndEnabled(bytes32 _vin) 
-        external view
-        returns (bool) {
-        return isMemberRegisteredAndEnabled(_vin);
     }
 
 //base overrides
@@ -60,49 +48,24 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
         return 0;
     }    
 
-/*
+
 //external VehicleRegistry specific
-    function registerVehicle(bytes32 _vin, bytes32 _manufacturerId) 
-        external payable
+    function registerVehicle(bytes32 _memberId, bytes32 _manufacturerId) 
+        public payable
         whenNotPaused()
+        memberIdNotRegistered(_memberId)
         paidMemberRegistrationFee()
-        memberIdNotRegistered(_vin)
         registeredAndEnabledManufacturer(_manufacturerId)
-        senderIsManufacturerOwner(_manufacturerId)
+        senderIsManufacturerOwner(_manufacturerId)        
         returns (uint256) {
-        uint256 memberNumber = RegistryStorageLib.storeMember(storageAddress, _vin, msg.sender);
+
+        emit LogInfo("Begin registerVehicle");
+        uint256 memberNumber = RegistryStorageLib.storeMember(storageAddress, _memberId, msg.sender);
         bytes32 attributeName = "manufacturer";
         bytes32 attributeType = "id";
         RegistryStorageLib.storeMemberAttribute(storageAddress, memberNumber, attributeName, attributeType, _manufacturerId);
-        emit MemberRegistered(memberNumber, _vin);
+        emit MemberRegistered(memberNumber, _memberId);
+        emit LogInfo("End registerVehicle");
         return memberNumber;
-    }
-*/
-
-/*
-    function setMaintenanceLogAddress(bytes32 _vin, address _address) 
-        external payable 
-        whenNotPaused()    
-        memberIdRegistered(_vin)
-        memberIdOwner(_vin)
-        isContractAddress(_address)
-    {
-        uint256 memberNumber = RegistryStorageLib.getMemberNumber(storageAddress, _vin);
-        bytes32 attributeName = "maintenanceLogAddress";
-        bytes32 attributeType = "address";
-        RegistryStorageLib.storeMemberAttribute(storageAddress, memberNumber, attributeName, attributeType, bytes32(_address));
-    }
-
-    function getMaintenanceLogAddress(bytes32 _vin) 
-        external view 
-        whenNotPaused()    
-        memberIdRegistered(_vin)
-        returns (address)
-    {
-        uint256 memberNumber = RegistryStorageLib.getMemberNumber(storageAddress, _vin);
-        bytes32 attributeName = "maintenanceLogAddress";
-        uint256 attributeNumber = RegistryStorageLib.getAttributeNumber(storageAddress, memberNumber, attributeName);
-        return address(RegistryStorageLib.getAttributeValue(storageAddress, memberNumber, attributeNumber));
     }    
-*/
 }
