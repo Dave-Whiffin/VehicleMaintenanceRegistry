@@ -209,6 +209,26 @@ contract Registry is Claimable, TokenDestructible, Pausable {
         );            
         return m;
     }
+
+    function getMemberOwner(bytes32 _memberId)
+        internal view
+        memberIdRegistered(_memberId)
+        returns (address) {
+        uint256 memberNumber = getMemberNumber(_memberId);
+        Member memory member = getMemberInternal(memberNumber);
+        return member.owner;
+    }
+
+    function isMemberRegisteredAndEnabled(bytes32 _memberId)
+        internal view
+        returns (bool) {
+        uint256 memberNumber = getMemberNum(_memberId);
+        if(memberNumber == 0) {
+            return false;
+        }
+        Member memory member = getMemberInternal(memberNumber);
+        return member.enabled;
+    }    
  
     function getMemberAttributeTotalCount(uint256 _memberNumber) 
         public view
@@ -343,7 +363,7 @@ contract Registry is Claimable, TokenDestructible, Pausable {
     } 
 
     function getMemberNum(bytes32 _memberId) 
-        private view 
+        internal view 
         returns (uint256) {
         return RegistryStorageLib.getMemberNumber(storageAddress, _memberId);  
     }    

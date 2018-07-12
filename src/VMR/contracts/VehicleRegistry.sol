@@ -39,19 +39,15 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
 
 //IVehicleRegistry
     function getVehicleOwner(bytes32 _vin) 
-        external 
-        memberIdRegistered(_vin)
+        external view
         returns (address) {
-        uint256 memberNumber = getMemberNumber(_vin);
-        Member memory member = getMemberInternal(memberNumber);
-        return member.owner;
+        return getMemberOwner(_vin);
     }
 
-    function isVehicleRegistered(bytes32 _vin) 
-        external 
+    function isVehicleRegisteredAndEnabled(bytes32 _vin) 
+        external view
         returns (bool) {
-        uint256 memberNumber = getMemberNumber(_vin);
-        return isMemberRegistered(memberNumber);
+        return isMemberRegisteredAndEnabled(_vin);
     }
 
 //base overrides
@@ -81,7 +77,7 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
     }
 
     function setMaintenanceLogAddress(bytes32 _vin, address _address) 
-    external payable 
+        external payable 
         whenNotPaused()    
         memberIdRegistered(_vin)
         memberIdOwner(_vin)
@@ -94,7 +90,7 @@ contract VehicleRegistry is Registry, IVehicleRegistry {
     }
 
     function getMaintenanceLogAddress(bytes32 _vin) 
-    external payable 
+        external view 
         whenNotPaused()    
         memberIdRegistered(_vin)
         returns (address)
