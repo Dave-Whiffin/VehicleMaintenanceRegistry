@@ -26,3 +26,21 @@ DESIGN DECISIONS
 
 VehicleManufacturerRegistry
 * haven't implemented emergency stop - rules are that only owner can add manufacturers
+
+Ethereum Bridge - For oraclize
+powershell - run as admin!
+
+npm install --global --production windows-build-tools
+
+git clone https://github.com/oraclize/ethereum-bridge.git
+cd ethereum-bridge
+npm install
+
+--run in windows command prompt - doesn't work in powershell
+ethereum-bridge -H localhost:8545 -a 1
+(deploy contracts using the account 1 found on the localhost:8545 node)
+
+Broadcast mode
+Generate a new local address:
+
+ethereum-bridge -H localhost:8545 --broadcast --new

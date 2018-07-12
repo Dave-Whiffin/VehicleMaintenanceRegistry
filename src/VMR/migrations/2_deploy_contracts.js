@@ -7,6 +7,7 @@ var EternalStorage = artifacts.require("EternalStorage.sol");
 var Registry = artifacts.require("Registry.sol");
 var ManufacturerRegistry = artifacts.require("ManufacturerRegistry.sol");
 var VehicleRegistry = artifacts.require("VehicleRegistry.sol");
+var RegistryFeeChecker = artifacts.require("RegistryFeeChecker.sol");
 
 //mocks
 var MockRegistryLookup = artifacts.require("MockRegistryLookup");
