@@ -5002,8 +5002,14 @@
       "links": {
         "RegistryStorageLib": "0xdd70c68f280b9bbca21dddb2980a06fd72d2166f"
       }
+    },
+    "1531485588842": {
+      "events": {},
+      "links": {
+        "RegistryStorageLib": "0xdd70c68f280b9bbca21dddb2980a06fd72d2166f"
+      }
     }
   },
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-13T12:07:16.451Z"
+  "updatedAt": "2018-07-13T12:40:52.458Z"
 }

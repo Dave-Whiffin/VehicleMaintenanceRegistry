@@ -167,6 +167,16 @@ contract('Registry', function (accounts) {
       assert.equal(1, memberNumber);
     }); 
 
+    it('getMember should be return correct values', async function () {
+      let memberArray = await registry.getMember(memberNumber);
+      console.log(memberArray);
+      assert.equal(parseInt(memberNumber), parseInt(memberArray[0]), "incorrect member number");
+      assert.equal(web3.toUtf8(memberId), web3.toUtf8(memberArray[1]), "incorrect member id");
+      assert.equal(registryOwner, memberArray[2], "incorrect value for owner");
+      assert.isTrue(memberArray[3].valueOf(), "incorrect value for enabled"); //enabled
+      assert.isTrue(memberArray[4].valueOf() > 0, "expected created value to be greater than 0"); //created date
+    });     
+
     it('isMemberRegistered should be true', async function () {      
       assert.isTrue(await registry.isMemberRegistered(memberNumber));
     });
