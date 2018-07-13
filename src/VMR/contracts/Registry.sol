@@ -15,6 +15,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         bytes32 memberId;
         address owner;
         bool enabled;
+        uint256 created;
     }
 
     using ByteUtilsLib for bytes32;
@@ -170,13 +171,14 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     function getMember(uint256 _memberNumber) 
         public view
         memberNumberRegistered(_memberNumber)
-        returns (uint256 memberNumber, bytes32 memberId, address owner, bool enabled) {
+        returns (uint256 memberNumber, bytes32 memberId, address owner, bool enabled, uint256 created) {
         
         Member memory member = getMemberInternal(_memberNumber);
         memberNumber = member.memberNumber;
         memberId = member.memberId;
         owner = member.owner;
         enabled = member.enabled;
+        created = member.created;
     }
 
     function getMemberInternal(uint256 _memberNumber)
@@ -185,7 +187,8 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
             _memberNumber,
             RegistryStorageLib.getMemberId(storageAddress, _memberNumber),
             RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber),
-            RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber)
+            RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber),
+            RegistryStorageLib.getMemberCreated(storageAddress, _memberNumber)
         );            
         return m;
     }

@@ -26,7 +26,7 @@ contract('Registry', function (accounts) {
 
   logEthStatus(accounts);
 
-  beforeEach(async function () {
+  before(async function () {
     registryFeeChecker = await MockFeeChecker.new(0);
     //console.log("Deploying Eternal Storage");
     eternalStorage = await EternalStorage.new();
@@ -65,21 +65,41 @@ contract('Registry', function (accounts) {
     await assertRevert(registry.registerMember(memberId, {from: nonOwner}));
   });
 
-  it('registerMember fails when sender sends insufficient value', async function () {
-    await registryFeeChecker.setFeeInWei(10);
-    let memberId = web3.fromAscii("Ford");
-    await assertRevert(registry.registerMember(memberId, {from: registryOwner}));
-  });  
+  describe("when registry fee exceeds value", function() {
+    before(async function(){
+      await registryFeeChecker.setFeeInWei(10);
+    });
+
+    after(async function(){
+      await registryFeeChecker.setFeeInWei(0);
+    });
+
+    it('registerMember fails', async function () {
+      let memberId = web3.fromAscii("Ford");
+      await assertRevert(registry.registerMember(memberId, {from: registryOwner}));
+    });  
+
+    it('transferMemberOwnership fails', async function () {
+      var initialOwner = accounts[0];      
+      var transferKey = web3.sha3("transfer secret");
+      let newOwner = accounts[1];
+      await assertRevert(registry.transferMemberOwnership(0, newOwner, transferKey, {from: initialOwner}));
+    });    
+  });
 
   describe('when contract is paused', function () {
     let memberId;
     let memberNumber;
 
-    beforeEach(async function () {
+    before(async function () {
       memberNumber = 10;
       memberId = web3.fromAscii("Ford");
       await registry.pause({from: registryOwner});
     });
+
+    after(async function () {
+      await registry.unpause({from: registryOwner});
+    });    
 
     it('registerMember can not be called', async function () {
       await assertRevert(registry.registerMember(memberId, {from: registryOwner}));
@@ -117,33 +137,34 @@ contract('Registry', function (accounts) {
 
   });
 
-  it('registerMember can not be called more than once for same member id', async function () {
-    let memberId = web3.fromAscii("Ford");
-    await registry.registerMember(memberId, {from: registryOwner})
-    await assertRevert(registry.registerMember(memberId, {from: registryOwner}));
-  });    
   
   describe('when a member has been registered', function () {
 
     let eventWatcher;
     let memberId;
     let memberNumber;
+    let events;
 
-    beforeEach(async function () {
+    before(async function () {
       memberId = web3.fromAscii("Ford");
       eventWatcher = registry.MemberRegistered();
       await registry.registerMember(memberId, {from: registryOwner});
+      events = await eventWatcher.get();
       memberNumber = await registry.getMemberNumber(memberId);
+      //console.log("memberNumber: " + memberNumber);
     });
+
+    it('registerMember can not be called more than once for same member id', async function () {
+      await assertRevert(registry.registerMember(memberId, {from: registryOwner}));
+    });      
 
     it('getMemberTotalCount should be return 1', async function () {
       let count = await registry.getMemberTotalCount();
       assert.equal(count, 1);
     });
 
-    it('getMemberNumber from name should be return 1', async function () {
-      let count = await registry.getMemberNumber(memberId);
-      assert.equal(count, 1);
+    it('getMemberNumber should be return correct number', async function () {
+      assert.equal(1, memberNumber);
     }); 
 
     it('isMemberRegistered should be true', async function () {      
@@ -151,12 +172,12 @@ contract('Registry', function (accounts) {
     });
             
     it('emits MemberRegistered event', async function () {      
-      let events = await eventWatcher.get();
-      assert.equal(1, events.length);
+      assert.equal(1, events.length, "expected number of events to be 1");
       assert.equal(memberNumber, events[0].args.memberNumber.valueOf()), 
       assert.equal(
-        web3.toUtf8(events[0].args.memberId.valueOf()), 
-        web3.toUtf8(memberId));                
+        web3.toUtf8(memberId),
+        web3.toUtf8(events[0].args.memberId.valueOf())
+        );                
     });
 
     it('the attribute count should be 0', async function () {
@@ -179,14 +200,16 @@ contract('Registry', function (accounts) {
       let attribType;
       let attribWatcher;
       let attribNumber = 1;
+      let attribEvents;
 
-      beforeEach(async function () {
+      before(async function () {
         attribWatcher = registry.MemberAttributeChanged();
         attribName = web3.fromAscii("Country");
         attribType = web3.fromAscii('Address');
         attribVal = web3.fromAscii("USA");
         assert.equal(0, await registry.getMemberAttributeTotalCount(memberNumber));
         await registry.addMemberAttribute(memberNumber, attribName, attribType, attribVal);
+        attribEvents = await attribWatcher.get();
         attribNumber = await registry.getMemberAttributeNumber(memberNumber, attribName);
         assert.equal(1, attribNumber);
       });
@@ -207,7 +230,7 @@ contract('Registry', function (accounts) {
       }); 
  
       it('emits expected event', async function () {
-        let events = await attribWatcher.get();
+        let events = attribEvents;
         assert.equal(1, events.length);
         assert.equal(memberNumber, events[0].args.memberNumber.valueOf());  
         assert.equal(attribNumber, events[0].args.attributeNumber.valueOf());  
@@ -215,25 +238,34 @@ contract('Registry', function (accounts) {
         assert.equal(web3.toUtf8(attribType), web3.toUtf8(events[0].args.attributeType.valueOf()));  
         assert.equal(web3.toUtf8(attribVal), web3.toUtf8(events[0].args.attributeValue.valueOf()));      
       });        
-      
-      it('the attribute value can be changed and emits event', async function () {
-        //(uint256 indexed memberNumber, uint256 indexed _attributeNumber, bytes32 indexed _attributeName, string attributeType, string attributeValue);    
+
+      describe("the attribute can be changed (set)", function() {
         let newVal = web3.fromAscii("UK");
         let newType = web3.fromAscii("Changed Type");
-        await registry.setMemberAttribute(memberNumber, attribNumber, newType, newVal);
+        let attribChangedEvents;
+
+        before(async function() {
+          await registry.setMemberAttribute(memberNumber, attribNumber, newType, newVal);
+          attribChangedEvents = await attribWatcher.get();
+        });
+
+        it('which emits event', async function () {          
+          let events = attribChangedEvents;
+          assert.equal(1, events.length);
+          assert.equal(memberNumber, events[0].args.memberNumber.valueOf());  
+          assert.equal(attribNumber, events[0].args.attributeNumber.valueOf());  
+          assert.equal(web3.toUtf8(attribName), web3.toUtf8(events[0].args.attributeName.valueOf()));
+          assert.equal(web3.toUtf8(newType), web3.toUtf8(events[0].args.attributeType.valueOf()));  
+          assert.equal(web3.toUtf8(newVal), web3.toUtf8(events[0].args.attributeValue.valueOf()));  
+        }); 
         
-        //TODO
-        //assert.equal(newVal, await registry.getMemberAttributeValue(memberId, attribNumber));        
-        
-        let events = await attribWatcher.get();
-        assert.equal(1, events.length);
-        assert.equal(memberNumber, events[0].args.memberNumber.valueOf());  
-        assert.equal(attribNumber, events[0].args.attributeNumber.valueOf());  
-        assert.equal(web3.toUtf8(attribName), web3.toUtf8(events[0].args.attributeName.valueOf()));
-        assert.equal(web3.toUtf8(newType), web3.toUtf8(events[0].args.attributeType.valueOf()));  
-        assert.equal(web3.toUtf8(newVal), web3.toUtf8(events[0].args.attributeValue.valueOf()));  
+        it("getMemberAttribute returns new values", async function() {
+          var attr = await registry.getMemberAttribute(memberNumber, attribNumber);
+          assert.equal(web3.toUtf8(newType), web3.toUtf8(attr[2]));  
+          assert.equal(web3.toUtf8(newVal), web3.toUtf8(attr[3]));            
+        });
       });
-            
+      
       it('non owner can not set attribute value', async function () {
         await assertRevert(registry.setMemberAttribute(memberNumber, attribNumber, attribType, attribVal, {from: accounts[1]}));
       });      
@@ -243,7 +275,7 @@ contract('Registry', function (accounts) {
     describe('The member can be disabled', function () {
       let disabledEventWatcher;
 
-      beforeEach(async function () {
+      before(async function () {
         disabledEventWatcher = registry.MemberDisabled();
         await registry.disableMember(memberNumber, {registryOwner});
       });
@@ -263,7 +295,7 @@ contract('Registry', function (accounts) {
 
         let enabledEventWatcher;
 
-        beforeEach(async function () {
+        before(async function () {
           enabledEventWatcher = registry.MemberEnabled();          
           await registry.enableMember(memberNumber, {registryOwner});
         });
@@ -278,79 +310,74 @@ contract('Registry', function (accounts) {
           assert.equal(1, events.length);
           assert.equal(memberNumber, events[0].args.memberNumber.valueOf());
         });            
+
+        describe('the owner can transfer the ownership of the member', function () {
+          let transferKey;
+          let newOwner;
+          let initialOwner;
+          let transferEventWatcher;
+          let transferEvents;
+    
+          before(async function () {
+            transferEventWatcher = registry.MemberOwnershipTransferRequest();        
+            transferKey = web3.sha3("transfer secret");
+            newOwner = accounts[1];
+            var member = await registry.getMember(1)
+            initialOwner = member[2];
+            await registry.transferMemberOwnership(memberNumber, newOwner, transferKey, {from: initialOwner});
+            transferEvents = await transferEventWatcher.get();
+          });
+    
+          it('the ownership does not change until the new owner has accepted', async function () { 
+            var member = await registry.getMember(memberNumber);     
+            assert.equal(initialOwner, member[2]);
+          }); 
+    
+          it('a non pending owner can not accept ownership', async function () {      
+            let rogue = accounts[2];
+            await assertRevert(registry.acceptMemberOwnership(memberNumber, transferKey, {from: rogue}));
+          });       
+    
+          it('the transfer key must match', async function () {      
+            let incorrectTransferKey = web3.sha3("wrong secret");
+            await assertRevert(registry.acceptMemberOwnership(memberNumber, incorrectTransferKey, {from: newOwner}));
+          });        
+          
+          it('emits the MemberOwnershipTransferRequest event', async function () {
+            let events = transferEvents;
+            assert.equal(1, events.length);
+            assert.equal(memberNumber, events[0].args.memberNumber.valueOf());
+            assert.equal(events[0].args.from.valueOf(), initialOwner);
+            assert.equal(events[0].args.to.valueOf(), newOwner);
+          });
+    
+          describe('when acceptMemberOwnership is called by the pending owner', function () {
+    
+            let transferAcceptedEventWatcher;
+            let transferAcceptedEvents;
+    
+            before(async function () {
+              transferAcceptedEventWatcher = registry.MemberOwnershipTransferAccepted();        
+              await registry.acceptMemberOwnership(memberNumber, transferKey, {from: newOwner});
+              transferAcceptedEvents = await transferAcceptedEventWatcher.get();
+            });
+    
+            it('getMember returns the new owner', async function () {  
+              var member = await registry.getMember(memberNumber);     
+               assert.equal(newOwner, member[2]);
+            }); 
+    
+            it('emits MemberOwnershipTransferAccepted event', async function () {
+              let events = transferAcceptedEvents;
+              assert.equal(1, events.length);
+              assert.equal(memberNumber, events[0].args.memberNumber.valueOf());
+              assert.equal(events[0].args.newOwner.valueOf(), newOwner);
+            });        
+    
+          });
+
       });
     });
-
-    it('transferMemberOwnership fails when value is below transfer fee', async function () {
-      var member = await registry.getMember(1);
-      var initialOwner = member[2];      
-      var transferKey = web3.sha3("transfer secret");
-      let newOwner = accounts[1];
-
-      await registryFeeChecker.setFeeInWei(10);
-      await assertRevert(registry.transferMemberOwnership(memberNumber, newOwner, transferKey, {from: initialOwner}));
-    });
-
-    describe('the owner can transfer the ownership of the member', function () {
-      let transferKey;
-      let newOwner;
-      let initialOwner;
-      let transferEventWatcher;
-
-      beforeEach(async function () {
-        transferEventWatcher = registry.MemberOwnershipTransferRequest();        
-        transferKey = web3.sha3("transfer secret");
-        newOwner = accounts[1];
-        var member = await registry.getMember(1)
-        initialOwner = member[2];
-        await registry.transferMemberOwnership(memberNumber, newOwner, transferKey, {from: initialOwner});
-      });
-
-      it('the ownership does not change until the new owner has accepted', async function () { 
-        var member = await registry.getMember(memberNumber);     
-        assert.equal(initialOwner, member[2]);
-      }); 
-
-      it('a non pending owner can not accept ownership', async function () {      
-        let rogue = accounts[2];
-        await assertRevert(registry.acceptMemberOwnership(memberNumber, transferKey, {from: rogue}));
-      });       
-
-      it('the transfer key must match', async function () {      
-        let incorrectTransferKey = web3.sha3("wrong secret");
-        await assertRevert(registry.acceptMemberOwnership(memberNumber, incorrectTransferKey, {from: newOwner}));
-      });        
-      
-      it('emits the MemberOwnershipTransferRequest event', async function () {
-        let events = await transferEventWatcher.get();
-        assert.equal(1, events.length);
-        assert.equal(memberNumber, events[0].args.memberNumber.valueOf());
-        assert.equal(events[0].args.from.valueOf(), initialOwner);
-        assert.equal(events[0].args.to.valueOf(), newOwner);
-      });
-
-      describe('when acceptMemberOwnership is called by the pending owner', function () {
-
-        let transferAcceptedEventWatcher;
-
-        beforeEach(async function () {
-          transferAcceptedEventWatcher = registry.MemberOwnershipTransferAccepted();        
-          await registry.acceptMemberOwnership(memberNumber, transferKey, {from: newOwner});
-        });
-
-        it('getMember returns the new owner', async function () {  
-          var member = await registry.getMember(memberNumber);     
-           assert.equal(newOwner, member[2]);
-        }); 
-
-        it('emits MemberOwnershipTransferAccepted event', async function () {
-          let events = await transferAcceptedEventWatcher.get();
-          assert.equal(1, events.length);
-          assert.equal(memberNumber, events[0].args.memberNumber.valueOf());
-          assert.equal(events[0].args.newOwner.valueOf(), newOwner);
-        });        
-
-      });
     })
 
   });

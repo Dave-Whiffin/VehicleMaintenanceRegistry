@@ -18,6 +18,7 @@ library RegistryStorageLib {
         setMemberId(_storageAccount, memberNumber, _memberId);
         setMemberOwner(_storageAccount, memberNumber, _owner);
         setMemberEnabled(_storageAccount, memberNumber, true);
+        setMemberCreated(_storageAccount, memberNumber, now);
 
         setMemberTotalCount(_storageAccount, memberNumber);
         return memberNumber;
@@ -140,7 +141,12 @@ library RegistryStorageLib {
     function getMemberEnabled(address _storageAccount, uint256 _memberNumber) public view returns(bool) {
         return EternalStorage(_storageAccount).getBooleanValue(
             keccak256(abi.encodePacked(_memberNumber, "enabled")));
-    }           
+    }   
+
+    function getMemberCreated(address _storageAccount, uint256 _memberNumber) public view returns(uint256) {
+        return EternalStorage(_storageAccount).getUint256Value(
+            keccak256(abi.encodePacked(_memberNumber, "created")));
+    }               
 
     function getMemberTransferKey(address _storageAccount, uint256 _memberNumber) public view returns(bytes32) {
         return EternalStorage(_storageAccount).getBytes32Value(
@@ -177,7 +183,12 @@ library RegistryStorageLib {
     function setMemberEnabled(address _storageAccount, uint256 _memberNumber, bool _enabled) public {
         EternalStorage(_storageAccount).setBooleanValue(
             keccak256(abi.encodePacked(_memberNumber, "enabled")), _enabled);
-    }          
+    } 
+
+    function setMemberCreated(address _storageAccount, uint256 _memberNumber, uint256 _created) public {
+        EternalStorage(_storageAccount).setUint256Value(
+            keccak256(abi.encodePacked(_memberNumber, "created")), _created);
+    }              
 
     function setMemberPendingOwner(address _storageAccount, uint256 _memberNumber, address _pendingOwner) public {
         EternalStorage(_storageAccount).setAddressValue(
