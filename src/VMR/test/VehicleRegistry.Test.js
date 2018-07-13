@@ -2,7 +2,7 @@ import assertRevert from '../node_modules/openzeppelin-solidity/test/helpers/ass
 
 var VehicleRegistry = artifacts.require('VehicleRegistry');
 var EternalStorage = artifacts.require('EternalStorage');
-var MockRegistryFeeChecker = artifacts.require('MockRegistryFeeChecker');
+var MockFeeChecker = artifacts.require('MockFeeChecker');
 var MockRegistryLookup = artifacts.require("MockRegistryLookup");
 
 contract('VehicleRegistry', function (accounts) {
@@ -19,7 +19,7 @@ contract('VehicleRegistry', function (accounts) {
     beforeEach(async function () {
         vin = web3.fromAscii("01234567890123456");
         manufacturerId = web3.fromAscii("Ford");
-        registryFeeChecker = await MockRegistryFeeChecker.new(0, 0);
+        registryFeeChecker = await MockFeeChecker.new(0);
         manufacturerRegistry = await MockRegistryLookup.new();
         eternalStorage = await EternalStorage.new();
         registry = await VehicleRegistry.new(eternalStorage.address, registryFeeChecker.address, manufacturerRegistry.address);
@@ -57,7 +57,7 @@ contract('VehicleRegistry', function (accounts) {
     });   
     
     it("registerVehicle can't be called when value is below fee", async function() {
-        await registryFeeChecker.setRegistrationFeeWei(10);
+        await registryFeeChecker.setFeeInWei(10);
         await assertRevert(registry.registerVehicle(vin, manufacturerId));
     });    
     

@@ -2,7 +2,7 @@ import assertRevert from '../node_modules/openzeppelin-solidity/test/helpers/ass
 
 var ManufacturerRegistry = artifacts.require('ManufacturerRegistry');
 var EternalStorage = artifacts.require('EternalStorage');
-var MockRegistryFeeChecker = artifacts.require('MockRegistryFeeChecker');
+var MockFeeChecker = artifacts.require('MockFeeChecker');
 
 contract('ManufacturerRegistry', function (accounts) {
 
@@ -14,7 +14,7 @@ contract('ManufacturerRegistry', function (accounts) {
 
     beforeEach(async function () {
         manufacturerId = web3.toAscii("Ford");
-        registryFeeChecker = await MockRegistryFeeChecker.new(0, 0);
+        registryFeeChecker = await MockFeeChecker.new(0);
         eternalStorage = await EternalStorage.new();
         registry = await ManufacturerRegistry.new(eternalStorage.address, registryFeeChecker.address);
         registryOwner = await registry.owner.call();

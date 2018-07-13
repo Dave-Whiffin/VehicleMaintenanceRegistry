@@ -5,7 +5,7 @@ import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructi
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "./RegistryStorageLib.sol";
 import "./ByteUtilsLib.sol";
-import "./IRegistryFeeLookup.sol";
+import "./IFeeLookup.sol";
 import "./IRegistryLookup.sol";
 
 contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
@@ -119,12 +119,12 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     }
 
     modifier paidMemberRegistrationFee() {
-        require(IRegistryFeeLookup(feeLookupAddress).getRegistrationFeeWei() <= msg.value, "Value is below registration fee");
+        require(IFeeLookup(feeLookupAddress).getFeeInWei() <= msg.value, "Value is below registration fee");
         _;
     }
 
     modifier paidMemberTransferFee() {
-        require(IRegistryFeeLookup(feeLookupAddress).getTransferFeeWei() <= msg.value, "Value is below registration transfer fee");
+        require(IFeeLookup(feeLookupAddress).getFeeInWei() <= msg.value, "Value is below registration transfer fee");
         _;
     }
 

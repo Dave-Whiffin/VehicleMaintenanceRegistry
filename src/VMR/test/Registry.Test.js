@@ -3,7 +3,7 @@ import assertRevert from '../node_modules/openzeppelin-solidity/test/helpers/ass
 
 var Registry = artifacts.require('Registry');
 var EternalStorage = artifacts.require('EternalStorage');
-var MockRegistryFeeChecker = artifacts.require('MockRegistryFeeChecker');
+var MockFeeChecker = artifacts.require('MockFeeChecker');
 
 function logEthStatus(accounts) {
   var block = web3.eth.getBlock("latest");
@@ -27,7 +27,7 @@ contract('Registry', function (accounts) {
   logEthStatus(accounts);
 
   beforeEach(async function () {
-    registryFeeChecker = await MockRegistryFeeChecker.new(0, 0);
+    registryFeeChecker = await MockFeeChecker.new(0);
     //console.log("Deploying Eternal Storage");
     eternalStorage = await EternalStorage.new();
     eternalStorageOwner = await eternalStorage.owner.call();
@@ -66,7 +66,7 @@ contract('Registry', function (accounts) {
   });
 
   it('registerMember fails when sender sends insufficient value', async function () {
-    await registryFeeChecker.setRegistrationFeeWei(10);
+    await registryFeeChecker.setFeeInWei(10);
     let memberId = web3.fromAscii("Ford");
     await assertRevert(registry.registerMember(memberId, {from: registryOwner}));
   });  
@@ -287,7 +287,7 @@ contract('Registry', function (accounts) {
       var transferKey = web3.sha3("transfer secret");
       let newOwner = accounts[1];
 
-      await registryFeeChecker.setTransferFeeWei(10);
+      await registryFeeChecker.setFeeInWei(10);
       await assertRevert(registry.transferMemberOwnership(memberNumber, newOwner, transferKey, {from: initialOwner}));
     });
 

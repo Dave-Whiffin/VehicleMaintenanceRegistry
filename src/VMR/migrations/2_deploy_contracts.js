@@ -7,11 +7,11 @@ var EternalStorage = artifacts.require("EternalStorage.sol");
 var Registry = artifacts.require("Registry.sol");
 var ManufacturerRegistry = artifacts.require("ManufacturerRegistry.sol");
 var VehicleRegistry = artifacts.require("VehicleRegistry.sol");
-var RegistryFeeChecker = artifacts.require("RegistryFeeChecker.sol");
+var FeeChecker = artifacts.require("FeeChecker.sol");
 
 //mocks
 var MockRegistryLookup = artifacts.require("MockRegistryLookup");
-var MockRegistryFeeChecker = artifacts.require("MockRegistryFeeChecker.sol");
+var MockFeeChecker = artifacts.require("MockFeeChecker.sol");
 
 module.exports = function(deployer) {
 
