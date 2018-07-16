@@ -4,6 +4,22 @@ import "./EternalStorage.sol";
 
 library RegistryStorageLib {
 
+    struct Member {
+        uint256 memberNumber;
+        bytes32 memberId;
+        address owner;
+        bool enabled;
+        uint256 created;
+    }
+
+    struct Attribute {
+        uint256 memberNumber;
+        uint256 attributeNumber;
+        bytes32 attributeType;
+        bytes32 name;
+        bytes32 value;
+    }
+
     function storeMember (
         address _storageAccount, 
         bytes32 _memberId,
@@ -58,7 +74,11 @@ library RegistryStorageLib {
     }      
 
 //public setters    
-    
+    function setAttribute(address _storageAccount, uint256 _memberNumber, uint256 _attribNumber, bytes32 _type, bytes32 _val) public {
+        setAttributeType(_storageAccount, _memberNumber, _attribNumber, _type);
+        setAttributeValue(_storageAccount, _memberNumber, _attribNumber, _val);    
+    }
+
     function setAttributeTotalCount(address _storageAccount, uint256 _memberNumber, uint256 _count) public {
         EternalStorage(_storageAccount).setUint256Value(
             keccak256(abi.encodePacked(_memberNumber, "attributeCount")), _count);   
@@ -86,6 +106,19 @@ library RegistryStorageLib {
         return EternalStorage(_storageAccount).getUint256Value(
             keccak256(abi.encodePacked(_memberNumber, "attributeCount")));   
     }   
+
+    function getAttribute(address _storageAccount, uint256 _memberNumber, uint256 _attributeNumber) 
+        internal view returns (Attribute memory) 
+        {
+        Attribute memory attribute = Attribute({
+            memberNumber: _memberNumber,
+            attributeNumber: _attributeNumber,
+            attributeType: getAttributeType(_storageAccount, _memberNumber, _attributeNumber),
+            name: getAttributeName(_storageAccount, _memberNumber, _attributeNumber),
+            value: getAttributeValue(_storageAccount, _memberNumber, _attributeNumber)
+        });
+        return attribute;
+    }    
 
     function getAttributeNumber(address _storageAccount, uint256 _memberNumber, bytes32 _attributeName) 
         public view returns(uint256) {
@@ -122,6 +155,18 @@ library RegistryStorageLib {
         return
             _memberNumber > 0 && _memberNumber <= getMemberTotalCount(_storageAccount) && getMemberOwner(_storageAccount, _memberNumber) != 0;
     }     
+
+    function getMember(address _storageAccount, uint256 _memberNumber)
+        internal view returns (Member) {
+        Member memory m = Member(
+            {memberNumber: _memberNumber,
+            memberId: getMemberId(_storageAccount, _memberNumber),
+            owner: getMemberOwner(_storageAccount, _memberNumber),
+            enabled: getMemberEnabled(_storageAccount, _memberNumber),
+            created: getMemberCreated(_storageAccount, _memberNumber)}
+        );            
+        return m;
+    }    
 
     function getMemberNumber(address _storageAccount, bytes32 _memberId) public view returns(uint256) {
         return EternalStorage(_storageAccount).getUint256Value(

@@ -22,20 +22,18 @@ contract VehicleRegistry is Registry {
 //modifiers
     modifier registeredAndEnabledManufacturer (bytes32 _manufacturerId) {
         require(
-            IRegistryLookup(manufacturerRegistryStorageAddress).isMemberRegisteredAndEnabled(_manufacturerId), 
-            "Manufacturer must be registered and enabled");
+            IRegistryLookup(manufacturerRegistryStorageAddress).isMemberRegisteredAndEnabled(_manufacturerId));
         _;
     }
 
     modifier senderIsManufacturerOwner (bytes32 _manufacturerId) {
         require(
-            IRegistryLookup(manufacturerRegistryStorageAddress).getMemberOwner(_manufacturerId) == msg.sender, 
-            "Only the owner of the manufacturer can call this function");
+            IRegistryLookup(manufacturerRegistryStorageAddress).getMemberOwner(_manufacturerId) == msg.sender);
         _;
     }
 
     modifier isContractAddress(address _address) {
-        require(_address.isContract(), "Address must be a contract");
+        require(_address.isContract());
         _;
     }
 
@@ -44,7 +42,7 @@ contract VehicleRegistry is Registry {
     function registerMember(bytes32) 
         public payable
         returns (uint256) {
-        require(false, "This function is disabled on this contract, use registerVehicle instead");
+        require(false, "Function disabled. use registerVehicle instead");
         return 0;
     }    
 

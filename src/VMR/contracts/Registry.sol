@@ -10,14 +10,6 @@ import "./IRegistryLookup.sol";
 
 contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
 
-    struct Member {
-        uint256 memberNumber;
-        bytes32 memberId;
-        address owner;
-        bool enabled;
-        uint256 created;
-    }
-
     using ByteUtilsLib for bytes32;
     
     event LogInfo(string message);
@@ -38,99 +30,96 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     }
 
     modifier memberIdRegistered(bytes32 _memberId) {
-        require(RegistryStorageLib.memberNumberExists(storageAddress, getMemberNum(_memberId)), "Member must be registered");
+        require(RegistryStorageLib.memberNumberExists(storageAddress, getMemberNum(_memberId)));
         _;
     }
 
     modifier memberNumberRegistered(uint256 _memberNumber) {
-        require(RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber), "Member must be registered");
+        require(RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber));
         _;
     }
 
     modifier memberIdEnabled(bytes32 _memberId) {
-        require(RegistryStorageLib.getMemberEnabled(storageAddress, getMemberNum(_memberId)), "Member must be enabled");
+        require(RegistryStorageLib.getMemberEnabled(storageAddress, getMemberNum(_memberId)));
         _;
     }
 
     modifier memberNumberEnabled(uint256 _memberNumber) {
-        require(RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber), "Member must be enabled");
+        require(RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber));
         _;
     }    
 
     modifier memberIdDisabled(bytes32 _memberId) {
-        require(!RegistryStorageLib.getMemberEnabled(storageAddress, getMemberNum(_memberId)), "Member must be disabled");
+        require(!RegistryStorageLib.getMemberEnabled(storageAddress, getMemberNum(_memberId)));
         _;
     }    
 
     modifier memberNumberDisabled(uint256 _memberNumber) {
-        require(!RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber), "Member must be disabled");
+        require(!RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber));
         _;
     }          
 
     modifier memberIdNotRegistered(bytes32 _memberId) {
-        require(!RegistryStorageLib.memberNumberExists(storageAddress, getMemberNum(_memberId)), "Member must not already be registered");
+        require(!RegistryStorageLib.memberNumberExists(storageAddress, getMemberNum(_memberId)));
         _;
     }
 
     modifier memberNumberNotRegistered(uint256 _memberNumber) {
-        require(!RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber), "Member must not already be registered");
+        require(!RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber));
         _;
     }    
 
     modifier memberIdOwner(bytes32 _memberId) {
         require(
-            RegistryStorageLib.getMemberOwner(storageAddress, getMemberNum(_memberId)) == msg.sender, 
-            "Only the owner of the member can perform this task");
+            RegistryStorageLib.getMemberOwner(storageAddress, getMemberNum(_memberId)) == msg.sender);
         _;
     }
 
     modifier memberNumberOwner(uint256 _memberNumber) {
         require(
-            RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber) == msg.sender, 
-            "Only the owner of the member can perform this task");
+            RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber) == msg.sender);
         _;
     }    
 
     modifier pendingMemberNumberOwner(uint256 _memberNumber) {
         require(
-            RegistryStorageLib.getMemberPendingOwner(storageAddress, _memberNumber) == msg.sender, 
-            "Only the pending owner of the member can perform this task");
+            RegistryStorageLib.getMemberPendingOwner(storageAddress, _memberNumber) == msg.sender);
         _;
     }        
 
     modifier memberMumberTransferKeyMatches(uint256 _memberNumber, bytes32 _keyHash) {
         bytes32 transferKey = RegistryStorageLib.getMemberTransferKey(storageAddress, _memberNumber);
-        require(transferKey == _keyHash, "The key provided must match the existing transfer key");
+        require(transferKey == _keyHash);
         _;        
     }
 
     modifier attributeNameDoesNotExist(uint256 _memberNumber, bytes32 _attribName) {
-        require(RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attribName) == 0, "Attribute name must not already exist");
+        require(RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attribName) == 0);
         _;
     }
 
     modifier attributeNameExists(uint256 _memberNumber, bytes32 _attribName) {
-        require(RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attribName) > 0, "Attribute name must exist");
+        require(RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attribName) > 0);
         _;
     }   
 
     modifier attributeNumberExists(uint256 _memberNumber, uint256 _attributeNumber) {
-        require(RegistryStorageLib.attributeNumberExists(storageAddress, _memberNumber, _attributeNumber), "Attribute number must exist");
+        require(RegistryStorageLib.attributeNumberExists(storageAddress, _memberNumber, _attributeNumber));
         _;
     }
 
     modifier paidMemberRegistrationFee() {
-        require(IFeeLookup(feeLookupAddress).getFeeInWei() <= msg.value, "Value is below registration fee");
+        require(IFeeLookup(feeLookupAddress).getFeeInWei() <= msg.value);
         _;
     }
 
     modifier paidMemberTransferFee() {
-        require(IFeeLookup(feeLookupAddress).getFeeInWei() <= msg.value, "Value is below registration transfer fee");
+        require(IFeeLookup(feeLookupAddress).getFeeInWei() <= msg.value);
         _;
     }
 
     modifier senderAllowedToRegisterMember() {
-        require(isAllowedToRegisterMember(msg.sender), "The sender is not allowed to register");
+        require(isAllowedToRegisterMember(msg.sender));
         _;
     }
 
@@ -144,7 +133,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         onlyOwner() 
         whenPaused()
          {
-        require(_feeLookupAddress != feeLookupAddress, "Fee Lookup address must be a different address");
+        require(_feeLookupAddress != feeLookupAddress);
         feeLookupAddress = _feeLookupAddress;
     }
 
@@ -173,7 +162,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         memberNumberRegistered(_memberNumber)
         returns (uint256 memberNumber, bytes32 memberId, address owner, bool enabled, uint256 created) {
         
-        Member memory member = getMemberInternal(_memberNumber);
+        RegistryStorageLib.Member memory member = getMemberInternal(_memberNumber);
         memberNumber = member.memberNumber;
         memberId = member.memberId;
         owner = member.owner;
@@ -182,14 +171,8 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     }
 
     function getMemberInternal(uint256 _memberNumber)
-        internal view returns (Member) {
-        Member memory m = Member(
-            _memberNumber,
-            RegistryStorageLib.getMemberId(storageAddress, _memberNumber),
-            RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber),
-            RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber),
-            RegistryStorageLib.getMemberCreated(storageAddress, _memberNumber)
-        );            
+        internal view returns (RegistryStorageLib.Member memory) {
+        RegistryStorageLib.Member memory m = RegistryStorageLib.getMember(storageAddress, _memberNumber);
         return m;
     }
 
@@ -199,7 +182,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         memberIdRegistered(_memberId)
         returns (address) {
         uint256 memberNumber = getMemberNumber(_memberId);
-        Member memory member = getMemberInternal(memberNumber);
+        RegistryStorageLib.Member memory member = getMemberInternal(memberNumber);
         return member.owner;
     }
 
@@ -211,7 +194,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         if(memberNumber == 0) {
             return false;
         }
-        Member memory member = getMemberInternal(memberNumber);
+        RegistryStorageLib.Member memory member = getMemberInternal(memberNumber);
         return member.enabled;
     }    
  
@@ -236,10 +219,8 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         public view returns 
         (uint256 attributeNumber, bytes32 attributeName, bytes32 attributeType, bytes32 attributeValue) 
         {
-        attributeNumber = _attributeNumber;
-        attributeName = RegistryStorageLib.getAttributeName(storageAddress, _memberNumber, _attributeNumber);
-        attributeType = RegistryStorageLib.getAttributeType(storageAddress, _memberNumber, _attributeNumber);
-        attributeValue = RegistryStorageLib.getAttributeValue(storageAddress, _memberNumber, _attributeNumber);
+        RegistryStorageLib.Attribute memory attribute = RegistryStorageLib.getAttribute(storageAddress, _memberNumber, _attributeNumber);
+        return (attribute.attributeNumber, attribute.name, attribute.attributeType, attribute.value);
     }
 
 //payable
@@ -322,11 +303,8 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         memberNumberRegistered(_memberNumber)
         attributeNumberExists(_memberNumber, _attributeNumber) {
 
-        RegistryStorageLib.setAttributeType(storageAddress, _memberNumber, _attributeNumber, _attributeType);
-        RegistryStorageLib.setAttributeValue(storageAddress, _memberNumber, _attributeNumber, _attributeValue);
-
+        RegistryStorageLib.setAttribute(storageAddress, _memberNumber, _attributeNumber, _attributeType, _attributeValue);
         bytes32 attributeName = RegistryStorageLib.getAttributeName(storageAddress, _memberNumber, _attributeNumber);        
-
         emit MemberAttributeChanged(_memberNumber, _attributeNumber, attributeName, _attributeType, _attributeValue);
     }      
 
