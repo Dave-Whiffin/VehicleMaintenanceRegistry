@@ -77,6 +77,20 @@ contract('MaintenanceLog', function (accounts) {
                 assert.isFalse(await maintenanceLog.isAuthorised(mechanic2));
             });
 
+            describe("the maintainer can be unauthorised", function() {
+                before(async function() {
+                    await maintenanceLog.removeWorkAuthorisation(mechanic1);
+                });
+
+                after(async function() {
+                    await maintenanceLog.addWorkAuthorisation(mechanic1);
+                });                
+
+                it("shows as unauthorised", async function() {
+                    assert.isFalse(await maintenanceLog.isAuthorised(mechanic1));
+                });                            
+            });            
+
             describe("When work is logged against vehicle by maintainer", async function() {
                 let logNumber;
                 let jobId;
@@ -193,51 +207,38 @@ contract('MaintenanceLog', function (accounts) {
                             });                            
                         });
                     });
-                });
-            });
 
-            describe("then unauthorised", function() {
-                before(async function() {
-                    await maintenanceLog.removeWorkAuthorisation(mechanic1);
-                });
-
-                after(async function() {
-                    await maintenanceLog.addWorkAuthorisation(mechanic1);
-                });                
-
-                it("shows as unauthorised", async function() {
-                    assert.isFalse(await maintenanceLog.isAuthorised(mechanic1));
-                });                            
-            });
-
-        });
+                    describe("When contract is paused", function() {
     
-        describe("When contract is paused", function() {
-    
-            before(async function() {
-                await maintenanceLog.pause();
-            });
-    
-            after(async function() {
-                await maintenanceLog.unpause();
-            });
-
-            it("can not add to log", async function() {
-                await assert.isTrue(false, "to do");
-            });            
-
-            it("can not authorise maintainer", async function() {
-                await assert.isTrue(false, "to do");
-            });                        
-
-            it("can not remove maintainer", async function() {
-                await assert.isTrue(false, "to do");
-            });    
+                        before(async function() {
+                            await maintenanceLog.pause();
+                        });
+                
+                        after(async function() {
+                            await maintenanceLog.unpause();
+                        });
             
-            it("can not verify log", async function() {
-                await assert.isTrue(false, "to do");
-            });                
+                        it("can not add to log", async function() {
+                            await assertRevert(maintenanceLog.add(jobId, date, title, description, {from: mechanic1}));
+                        });            
+            
+                        it("can not authorise maintainer", async function() {
+                            await assertRevert(maintenanceLog.addWorkAuthorisation(mechanic2));
+                        });                        
+            
+                        it("can not remove maintainer", async function() {
+                            await assertRevert(maintenanceLog.addWorkAuthorisation(mechanic1));
+                        });    
+                        
+                        it("can not verify log", async function() {
+                            await assertRevert(maintenanceLog.verify(logNumber));
+                        });                
+                    });                     
+                });
+            });
         });
+    
+
     });
 
     
