@@ -49,13 +49,8 @@ contract PGC1 {
         return PGL1.saveMember(members, _memberId);
     }
 
-    function getMember(uint _memberNumber) public view returns (uint256 memberNumber, bytes32 memberId) {
-        PGL1.Member storage m = members.members[_memberNumber];
-        return (m.memberNumber, m.memberId);
-    }
-
-    function test() public view returns (uint256 memberNumber, bytes32 memberId) {
-        PGL1.Member storage m = PGL1.getMember(members, memberNumber);
+    function getMember() public view returns (uint256 memberNumber, bytes32 memberId) {
+        PGL1.Member memory m = PGL1.getMemberTest(memberNumber);
         return (m.memberNumber, m.memberId);
     }
 }

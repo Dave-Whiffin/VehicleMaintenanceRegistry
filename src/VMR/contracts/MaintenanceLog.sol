@@ -1,16 +1,17 @@
 pragma solidity ^0.4.23;
 
-import "./VehicleMaintenanceLogStorage.sol";
+import "./MaintenanceLogStorageLib.sol";
 import "./IRegistryLookup.sol";
 import "../node_modules/openzeppelin-solidity/contracts/AddressUtils.sol";
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructible.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
-contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
+contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     using AddressUtils for address;
 
+    bytes32 public vin;
     address private storageAddress;
     address private vehicleRegistryAddress;
     
@@ -22,58 +23,63 @@ contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     constructor(address _storageAddress, address _vehicleRegistryAddress, bytes32 _VIN) public {
         
+        require(_storageAddress.isContract());
         require(_vehicleRegistryAddress.isContract());
-
         require(
             IRegistryLookup(_vehicleRegistryAddress).isMemberRegisteredAndEnabled(_VIN));
-
         require(
             IRegistryLookup(_vehicleRegistryAddress).getMemberOwner(_VIN) == msg.sender);
 
         storageAddress = _storageAddress;
         vehicleRegistryAddress = _vehicleRegistryAddress;            
-        VehicleMaintenanceLogStorage.setVin(storageAddress, _VIN);
-    }
-
-    function getVin() public view returns (bytes32) {
-        return VehicleMaintenanceLogStorage.getVin(storageAddress);
+        vin = _VIN;
     }
 
     modifier onlyVehicleOwner() {
         require(
-            IRegistryLookup(vehicleRegistryAddress).getMemberOwner(getVin()) == msg.sender);
+            IRegistryLookup(vehicleRegistryAddress).getMemberOwner(vin) == msg.sender);
         _;
     }
 
-    modifier isAuthorised(address _maintainer) {
-        require(
-            VehicleMaintenanceLogStorage.isAuthorised(storageAddress, _maintainer));
+    modifier isMaintainerAuthorised(address _maintainer) {
+        require(isAuthorised(_maintainer));
         _;
     }
 
     modifier logExists(bytes32 _logId) {
         require(
-            VehicleMaintenanceLogStorage.getLogNumber(storageAddress, _logId) > 0);
+            MaintenanceLogStorageLib.getLogNumber(storageAddress, _logId) > 0);
         _;
     }
 
     modifier logNumberExists(uint256 _logNumber) {
         require(
-            _logNumber > 0 && _logNumber <= VehicleMaintenanceLogStorage.getCount(storageAddress)
+            _logNumber > 0 && _logNumber <= MaintenanceLogStorageLib.getCount(storageAddress)
         );
         _;
     }
 
     modifier docNumberExists(uint256 _logNumber, uint _docNumber) {
         require(
-            _docNumber > 0 && _docNumber <= VehicleMaintenanceLogStorage.getDocCount(storageAddress, _logNumber)
+            _docNumber > 0 && _docNumber <= MaintenanceLogStorageLib.getDocCount(storageAddress, _logNumber)
         );
         _;
     }    
 
+    modifier logIsNotVerified(uint256 _logNumber) {
+        require(MaintenanceLogStorageLib.getVerified(storageAddress, _logNumber) == false);
+        _;
+    }
+
     modifier isNotEmpty(string s) {
         require(bytes(s).length > 0);
         _;
+    }
+
+    function isAuthorised(address _maintainer) 
+        public view 
+        returns (bool) {
+        return MaintenanceLogStorageLib.isAuthorised(storageAddress, _maintainer);
     }
 
     function addWorkAuthorisation(address _maintainer) 
@@ -81,7 +87,7 @@ contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
         onlyVehicleOwner()        
         external payable
          {
-        VehicleMaintenanceLogStorage.addAuthorisation(storageAddress, _maintainer);
+        MaintenanceLogStorageLib.addAuthorisation(storageAddress, _maintainer);
         emit WorkAuthorisationAdded(_maintainer);
     }
 
@@ -90,47 +96,47 @@ contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
         onlyVehicleOwner()        
         external payable
          {
-        VehicleMaintenanceLogStorage.removeAuthorisation(storageAddress, _maintainer);
+        MaintenanceLogStorageLib.removeAuthorisation(storageAddress, _maintainer);
         emit WorkAuthorisationRemoved(_maintainer);
     }    
    
     function add(bytes32 _logId, uint256 _date, string _title, string _description) 
         whenNotPaused() 
-        isAuthorised(msg.sender) 
+        isMaintainerAuthorised(msg.sender) 
         external payable {
-        uint256 logNumber = VehicleMaintenanceLogStorage.storeLog(storageAddress, msg.sender, _logId, _date, _title, _description);
+        uint256 logNumber = MaintenanceLogStorageLib.storeLog(storageAddress, msg.sender, _logId, _date, _title, _description);
         emit LogAdded(logNumber, msg.sender);
     }
 
     function addDoc(uint256 _logNumber, string _title, bytes32 _ipfsAddressForDoc) 
         whenNotPaused() 
-        isAuthorised(msg.sender)
+        isMaintainerAuthorised(msg.sender)
         isNotEmpty(_title)
         logNumberExists(_logNumber)
+        logIsNotVerified(_logNumber)
         external payable {
-        uint256 docNumber = VehicleMaintenanceLogStorage.storeLogDoc(storageAddress, _logNumber, _title, _ipfsAddressForDoc);
+        uint256 docNumber = MaintenanceLogStorageLib.storeLogDoc(storageAddress, _logNumber, _title, _ipfsAddressForDoc);
         emit DocAdded(_logNumber, docNumber);
     }
 
-    function verify(bytes32 _logId) 
+    function verify(uint256 _logNumber) 
         whenNotPaused() 
         onlyVehicleOwner() 
-        logExists(_logId) 
+        logNumberExists(_logNumber) 
         external payable {
-        uint256 logNumber = VehicleMaintenanceLogStorage.getLogNumber(storageAddress, _logId);
-        VehicleMaintenanceLogStorage.setVerified(storageAddress, logNumber, true);
-        emit LogVerified(logNumber);
+        MaintenanceLogStorageLib.setVerified(storageAddress, _logNumber, true);
+        emit LogVerified(_logNumber);
     }
 
     function getLogCount() external view returns (uint256) {
-        return VehicleMaintenanceLogStorage.getCount(storageAddress);
+        return MaintenanceLogStorageLib.getCount(storageAddress);
     }
 
     function getLogNumber(bytes32 _logId)
         logExists(_logId)
         external view 
         returns (uint256) {
-        return VehicleMaintenanceLogStorage.getLogNumber(storageAddress, _logId);
+        return MaintenanceLogStorageLib.getLogNumber(storageAddress, _logId);
     }
 
     function getLog(uint256 _logNumber) 
@@ -139,7 +145,7 @@ contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
         returns 
     (uint256 logNumber, bytes32 id, address maintainer, uint256 date, string  title, string description, bool verified) {
 
-        VehicleMaintenanceLogStorage.Log memory log = VehicleMaintenanceLogStorage.getLog(storageAddress, _logNumber);
+        MaintenanceLogStorageLib.Log memory log = MaintenanceLogStorageLib.getLog(storageAddress, _logNumber);
 
         logNumber = log.logNumber;
         id = log.id;
@@ -153,14 +159,14 @@ contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
     function getDocCount(uint256 _logNumber) 
         logNumberExists(_logNumber)
         external view returns (uint256) {
-        return VehicleMaintenanceLogStorage.getDocCount(storageAddress, _logNumber);
+        return MaintenanceLogStorageLib.getDocCount(storageAddress, _logNumber);
     }
 
     function getDoc(uint256 _logNumber, uint256 _docNumber) 
         logNumberExists(_logNumber)
         docNumberExists(_logNumber, _docNumber)
         external view returns (uint256 docNumber, string title, bytes32 ipfsAddress) {
-        VehicleMaintenanceLogStorage.Doc memory doc = VehicleMaintenanceLogStorage.getDoc(storageAddress, _logNumber, _docNumber);
+        MaintenanceLogStorageLib.Doc memory doc = MaintenanceLogStorageLib.getDoc(storageAddress, _logNumber, _docNumber);
         docNumber = doc.docNumber;
         title = doc.title;
         ipfsAddress = doc.ipfsAddress;

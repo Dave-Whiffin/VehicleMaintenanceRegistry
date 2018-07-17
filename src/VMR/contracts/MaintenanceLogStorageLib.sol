@@ -2,7 +2,7 @@ pragma solidity ^0.4.23;
 
 import "./EternalStorage.sol";
 
-library VehicleMaintenanceLogStorage {
+library MaintenanceLogStorageLib {
 
     struct Log {
         uint256 logNumber;
@@ -19,19 +19,6 @@ library VehicleMaintenanceLogStorage {
         string title;
         bytes32 ipfsAddress;
     }
-
-    function setVin(address _storageAccount, bytes32 _VIN)
-        public {
-        return EternalStorage(_storageAccount).setBytes32Value(
-            keccak256(abi.encodePacked("vin")), _VIN);
-    }
-
-    function getVin(address _storageAccount)
-        public view 
-        returns (bytes32) {
-        return EternalStorage(_storageAccount).getBytes32Value(
-            keccak256(abi.encodePacked("vin")));
-    }    
 
     function storeLog (
         address _storageAccount, 
