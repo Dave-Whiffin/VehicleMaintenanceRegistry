@@ -180,5 +180,6 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         onlyVehicleOwner()
         public {
         Claimable.claimOwnership();
+        MaintenanceLogStorageLib.removeAllAuthorisations(storageAddress);
     }    
 }

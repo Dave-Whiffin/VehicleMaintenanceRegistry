@@ -46,19 +46,63 @@ library MaintenanceLogStorageLib {
         return logNumber;
     }
 
+    function getAuthorisationCount(address _storageAccount) public view returns (uint256) {
+        return EternalStorage(_storageAccount).getUint256Value
+            (keccak256(abi.encodePacked("maintainerCount")));        
+    }
+
+    function setAuthorisationCount(address _storageAccount, uint256 _count) public {
+        EternalStorage(_storageAccount).setUint256Value
+            (keccak256(abi.encodePacked("maintainerCount")), _count);        
+    }    
+
+    function getMaintainerNumber(address _storageAccount, address _maintainer) public view returns (uint256) {
+        return EternalStorage(_storageAccount).getUint256Value
+            (keccak256(abi.encodePacked("maintainerNumber", _maintainer)));          
+    }
+
+    function setMaintainerNumber(address _storageAccount, address _maintainer, uint256 _maintainerNumber) public {
+        EternalStorage(_storageAccount).setUint256Value
+            (keccak256(abi.encodePacked("maintainerNumber", _maintainer)), _maintainerNumber);          
+    }   
+
     function addAuthorisation(address _storageAccount, address _maintainer) public {
-        return EternalStorage(_storageAccount).setBooleanValue
-            (keccak256(abi.encodePacked("maintainer", _maintainer)), true);
+
+        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainer);
+
+        if(maintainerNumber == 0) {
+            uint256 currentCount = getAuthorisationCount(_storageAccount);
+            maintainerNumber = currentCount + 1;
+            setMaintainerNumber(_storageAccount, _maintainer, maintainerNumber);
+            setAuthorisationCount(_storageAccount, maintainerNumber);
+        }
+
+        setAuthorisation(_storageAccount, maintainerNumber, true);
     }
 
     function removeAuthorisation(address _storageAccount, address _maintainer) public {
-        return EternalStorage(_storageAccount).setBooleanValue
-            (keccak256(abi.encodePacked("maintainer", _maintainer)), false);
-    }    
+        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainer);
+        setAuthorisation(_storageAccount, maintainerNumber, false);
+    }
+
+    function setAuthorisation(address _storageAccount, uint256 _maintainerNumber, bool _authorised) public {
+        EternalStorage(_storageAccount).setBooleanValue
+            (keccak256(abi.encodePacked("maintainerAuthorisation", _maintainerNumber)), _authorised);
+    }
+
+    function removeAllAuthorisations(address _storageAccount) public {
+        for(uint256 maintainerNumber = 1; 
+            maintainerNumber < getAuthorisationCount(_storageAccount) + 1; 
+            maintainerNumber ++ ) {
+            setAuthorisation(_storageAccount, maintainerNumber, false);
+        }
+    }
 
     function isAuthorised(address _storageAccount, address _maintainer) public view returns (bool) {
+        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainer);
+        
         return EternalStorage(_storageAccount).getBooleanValue
-            (keccak256(abi.encodePacked("maintainer", _maintainer)));
+            (keccak256(abi.encodePacked("maintainerAuthorisation", maintainerNumber)));
     }
 
     function storeLogDoc(address _storageAccount, uint256 _logNumber, string _title, bytes32 _ipfsAddress) 

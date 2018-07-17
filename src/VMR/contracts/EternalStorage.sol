@@ -41,8 +41,7 @@ contract EternalStorage is Claimable {
         return UIntStorage[record];
     }
 
-    function setUint256Value(bytes32 record, uint256 value256) onlyRegisteredCaller() public
-    {
+    function setUint256Value(bytes32 record, uint256 value256) onlyRegisteredCaller() public {
         UIntStorage[record] = value256;
     }
 
@@ -50,8 +49,7 @@ contract EternalStorage is Claimable {
         return StringStorage[record];
     }
 
-    function setStringValue(bytes32 record, string value) onlyRegisteredCaller() public
-    {
+    function setStringValue(bytes32 record, string value) onlyRegisteredCaller() public {
         StringStorage[record] = value;
     }
 
@@ -59,8 +57,7 @@ contract EternalStorage is Claimable {
         return AddressStorage[record];
     }
 
-    function setAddressValue(bytes32 record, address value) onlyRegisteredCaller() public
-    {
+    function setAddressValue(bytes32 record, address value) onlyRegisteredCaller() public {
         AddressStorage[record] = value;
     }
 
@@ -68,8 +65,7 @@ contract EternalStorage is Claimable {
         return BytesStorage[record];
     }
 
-    function setBytes32Value(bytes32 record, bytes32 value) onlyRegisteredCaller() public
-    {
+    function setBytes32Value(bytes32 record, bytes32 value) onlyRegisteredCaller() public {
         BytesStorage[record] = value;
     }
 
@@ -77,8 +73,8 @@ contract EternalStorage is Claimable {
         return BooleanStorage[record];
     }
 
-    function setBooleanValue(bytes32 record, bool value) onlyRegisteredCaller() public
-    {
+    function setBooleanValue(bytes32 record, bool value) onlyRegisteredCaller() public {
         BooleanStorage[record] = value;
     }
+
 }

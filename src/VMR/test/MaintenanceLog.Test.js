@@ -60,12 +60,18 @@ contract('MaintenanceLog', function (accounts) {
 
         describe("the ownership of the maintenance log can be transferred", function () {
             let firstCustomer;
+            let authorisedMechanic;
 
             before(async function(){
                 firstCustomer = accounts[4];
+                authorisedMechanic = accounts[5];
+                //pretend there was a prior authorisation from the manufacturer
+                //so we can test that it gets removed after ownership is claimed
+                await maintenanceLog.addWorkAuthorisation(authorisedMechanic, {from: manufacturerAccount});
                 //pretend the customer has got ownership of the vin in the registry
                 await mockVehicleRegistry.setMock(vin, firstCustomer, true);
                 await maintenanceLog.transferOwnership(firstCustomer, {from: manufacturerAccount});
+                
             });
 
             after(async function(){
@@ -79,10 +85,12 @@ contract('MaintenanceLog', function (accounts) {
                 assert.equal(firstCustomer, await maintenanceLog.pendingOwner.call());
             });
 
-            it("the pending owner can claim ownership if they own the vin in the registry", async function () {
+            it("the pending owner can claim ownership and work authorisations are cleared", async function () {
+                assert.isTrue(await maintenanceLog.isAuthorised(authorisedMechanic), "Expected work authorisation to be present until it ownership is claimed");
                 assert.equal(firstCustomer, await maintenanceLog.pendingOwner.call());
                 await maintenanceLog.claimOwnership({from: firstCustomer});                
                 assert.equal(firstCustomer, await maintenanceLog.owner.call());
+                assert.isFalse(await maintenanceLog.isAuthorised(authorisedMechanic), "All work authorisations should be cleared on claiming ownership");
             });
         });
 
