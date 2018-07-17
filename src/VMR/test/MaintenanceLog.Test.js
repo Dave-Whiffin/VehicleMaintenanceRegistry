@@ -58,29 +58,52 @@ contract('MaintenanceLog', function (accounts) {
             assert.equal(web3.toUtf8(vin), web3.toUtf8(await maintenanceLog.vin.call()));
         });
 
-        describe("the ownership of the vehicle and contract can be transferred and claimed ONLY by the vin owner", function () {
+        describe("the ownership of the maintenance log can be transferred", function () {
             let firstCustomer;
 
             before(async function(){
                 firstCustomer = accounts[4];
                 //pretend the customer has got ownership of the vin in the registry
                 await mockVehicleRegistry.setMock(vin, firstCustomer, true);
+                await maintenanceLog.transferOwnership(firstCustomer, {from: manufacturerAccount});
             });
 
             after(async function(){
-                //reverse the mock
-                await mockVehicleRegistry.setMock(vin, manufacturerAccount, true);
+                //put ownership back to manufacturer
                 await maintenanceLog.transferOwnership(manufacturerAccount, {from: firstCustomer});
-                await maintenanceLog.claimOwnership({from: manufacturerAccount});                
+                await mockVehicleRegistry.setMock(vin, manufacturerAccount, true);   
+                await maintenanceLog.claimOwnership({from: manufacturerAccount}); 
             });
 
-            it("owner changes", async function () {
-                await maintenanceLog.transferOwnership(firstCustomer, {from: manufacturerAccount});
+            it("the pending owner is set correctly", async function () {
+                assert.equal(firstCustomer, await maintenanceLog.pendingOwner.call());
+            });
+
+            it("the pending owner can claim ownership if they own the vin in the registry", async function () {
                 assert.equal(firstCustomer, await maintenanceLog.pendingOwner.call());
                 await maintenanceLog.claimOwnership({from: firstCustomer});                
                 assert.equal(firstCustomer, await maintenanceLog.owner.call());
             });
         });
+
+        describe("when ownership is transferred to a non vin owner", function () {
+            let firstCustomer;
+
+            before(async function(){
+                firstCustomer = accounts[4];
+                //pretend the customer has got ownership of the vin in the registry
+                await maintenanceLog.transferOwnership(firstCustomer, {from: manufacturerAccount});
+            });
+
+            after(async function(){
+                //put ownership back to manufacturer
+                await maintenanceLog.transferOwnership(manufacturerAccount, {from: manufacturerAccount});  
+            });
+
+            it("the pending owner can not claim ownership", async function () {
+                await assertRevert(maintenanceLog.claimOwnership({from: firstCustomer}));                
+            });
+        });    
 
         describe("a maintainer can be authorised to log work on the vehicle", function() {
 
