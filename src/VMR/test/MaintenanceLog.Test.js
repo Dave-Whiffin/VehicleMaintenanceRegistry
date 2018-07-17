@@ -58,6 +58,30 @@ contract('MaintenanceLog', function (accounts) {
             assert.equal(web3.toUtf8(vin), web3.toUtf8(await maintenanceLog.vin.call()));
         });
 
+        describe("the ownership of the vehicle and contract can be transferred and claimed ONLY by the vin owner", function () {
+            let firstCustomer;
+
+            before(async function(){
+                firstCustomer = accounts[4];
+                //pretend the customer has got ownership of the vin in the registry
+                await mockVehicleRegistry.setMock(vin, firstCustomer, true);
+            });
+
+            after(async function(){
+                //reverse the mock
+                await mockVehicleRegistry.setMock(vin, manufacturerAccount, true);
+                await maintenanceLog.transferOwnership(manufacturerAccount, {from: firstCustomer});
+                await maintenanceLog.claimOwnership({from: manufacturerAccount});                
+            });
+
+            it("owner changes", async function () {
+                await maintenanceLog.transferOwnership(firstCustomer, {from: manufacturerAccount});
+                assert.equal(firstCustomer, await maintenanceLog.pendingOwner.call());
+                await maintenanceLog.claimOwnership({from: firstCustomer});                
+                assert.equal(firstCustomer, await maintenanceLog.owner.call());
+            });
+        });
+
         describe("a maintainer can be authorised to log work on the vehicle", function() {
 
             let mechanic1;

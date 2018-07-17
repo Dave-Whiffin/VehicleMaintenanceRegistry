@@ -7,8 +7,27 @@ tests!!  (5 per contract)
 
 uport integration
 vyper contract
-add vehicle untyped attributes (for extensibility)
-add vehicle maintenance log attributes (for extensibility)
+
+full lifecycle test
+//manufacturer
+    register vehicle
+    create maintenanceLog
+    assign maintenanceLog to vehicle
+    assign mechanic1 as authorised to do work
+
+//mechanic 1
+    add work (pre sales checks)
+    add doc
+
+//manufacturer
+    verify work
+    transfer ownership to customer (transfer) (supply key)
+
+//customer
+    accept vehicle ownership (with key)
+
+//manufacturer
+    transfer maintenance log to customer 
 
 add comments on contracts
 decouple maintenanceLog from vehicleRegistry

@@ -171,4 +171,14 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         title = doc.title;
         ipfsAddress = doc.ipfsAddress;
     }  
+
+  /**
+   * @dev Allows the pendingOwner address to finalize the transfer BUT only if they own the vehicle.
+   */
+    function claimOwnership() 
+        onlyPendingOwner() 
+        onlyVehicleOwner()
+        public {
+        Claimable.claimOwnership();
+    }    
 }
