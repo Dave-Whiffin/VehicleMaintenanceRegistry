@@ -61,6 +61,24 @@ library RegistryStorageLib {
         return attributeNumber;
     }
 
+    function storeOrSetAttribute (
+        address _storageAccount,
+        uint256 _memberNumber,
+        bytes32 _attributeName,
+        bytes32 _attributeType,
+        bytes32 _val
+    )
+        public 
+        returns (uint256) {
+        uint256 attributeNumber = getAttributeNumber(_storageAccount, _memberNumber, _attributeName);
+        if(attributeNumber == 0){
+            storeMemberAttribute(_storageAccount, _memberNumber, _attributeName, _attributeType, _val);
+        }
+        else{
+            setAttribute(_storageAccount, _memberNumber, attributeNumber, _attributeType, _val);
+        }
+    }
+
 //attribute setters
 //private setters
     function setAttributeNumber(address _storageAccount, uint256 _memberNumber, bytes32 _attributeName, uint256 _attribNumber) private {
@@ -119,6 +137,13 @@ library RegistryStorageLib {
         });
         return attribute;
     }    
+
+    function getAttribute(address _storageAccount, uint256 _memberNumber, bytes32 _attributeName) 
+        internal view returns (Attribute) {
+        uint256 attributeNumber = getAttributeNumber(_storageAccount, _memberNumber, _attributeName);
+        Attribute memory attribute = getAttribute(_storageAccount, _memberNumber, attributeNumber);
+        return attribute;
+    }
 
     function getAttributeNumber(address _storageAccount, uint256 _memberNumber, bytes32 _attributeName) 
         public view returns(uint256) {

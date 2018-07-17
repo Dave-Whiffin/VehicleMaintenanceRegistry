@@ -11,12 +11,21 @@ contract VehicleRegistry is Registry {
     using ByteUtilsLib for bytes32;
     using AddressUtils for address;
 
+
+    bytes32 public maintenanceLogAttributeName;
+    bytes32 public maintenanceLogAttributeType;
+    bytes32 public manufacturerAttributeName;
+    bytes32 public manufacturerAttributeType;
     address private manufacturerRegistryStorageAddress;
 
     constructor(address _storageAddress, address _feeLookupAddres, address _manufacturerRegistryStorageAddress) 
         Registry(_storageAddress, _feeLookupAddres)
         public {
         manufacturerRegistryStorageAddress = _manufacturerRegistryStorageAddress;
+        manufacturerAttributeName = "manufacturer";
+        manufacturerAttributeType = "id";
+        maintenanceLogAttributeName = "maintenanceLog";
+        maintenanceLogAttributeType = "address";
     }
 
 //modifiers
@@ -48,22 +57,38 @@ contract VehicleRegistry is Registry {
 
 
 //external VehicleRegistry specific
-    function registerVehicle(bytes32 _memberId, bytes32 _manufacturerId) 
+    function registerVehicle(bytes32 _vin, bytes32 _manufacturerId) 
         public payable
         whenNotPaused()
-        memberIdNotRegistered(_memberId)
+        memberIdNotRegistered(_vin)
         paidMemberRegistrationFee()
         registeredAndEnabledManufacturer(_manufacturerId)
         senderIsManufacturerOwner(_manufacturerId)        
         returns (uint256) {
 
         emit LogInfo("Begin registerVehicle");
-        uint256 memberNumber = RegistryStorageLib.storeMember(storageAddress, _memberId, msg.sender);
-        bytes32 attributeName = "manufacturer";
-        bytes32 attributeType = "id";
-        RegistryStorageLib.storeMemberAttribute(storageAddress, memberNumber, attributeName, attributeType, _manufacturerId);
-        emit MemberRegistered(memberNumber, _memberId);
+        uint256 memberNumber = RegistryStorageLib.storeMember(storageAddress, _vin, msg.sender);
+        RegistryStorageLib.storeMemberAttribute
+        (storageAddress, memberNumber, manufacturerAttributeName, manufacturerAttributeType, _manufacturerId);
+        emit MemberRegistered(memberNumber, _vin);
         emit LogInfo("End registerVehicle");
         return memberNumber;
     }    
+
+    function setMaintenanceLogAddress(uint256 _memberNumber, address _address) 
+        public payable 
+        whenNotPaused()
+        memberNumberEnabled(_memberNumber)
+        memberNumberOwner(_memberNumber)
+        isContractAddress(_address) {
+
+        RegistryStorageLib.storeOrSetAttribute(
+            storageAddress, _memberNumber, maintenanceLogAttributeName, maintenanceLogAttributeType, bytes32(_address));
+    }
+
+    function getMaintenanceLogAddress(uint256 _memberNumber) public view returns (address) {
+        RegistryStorageLib.Attribute memory attribute = 
+            RegistryStorageLib.getAttribute(storageAddress, _memberNumber, maintenanceLogAttributeName);
+        return address(attribute.value);
+    }
 }
