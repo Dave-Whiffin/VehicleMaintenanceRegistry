@@ -16,12 +16,13 @@ contract VehicleRegistry is Registry {
     bytes32 public maintenanceLogAttributeType;
     bytes32 public manufacturerAttributeName;
     bytes32 public manufacturerAttributeType;
-    address private manufacturerRegistryStorageAddress;
+    address public manufacturerRegistryAddress;
 
-    constructor(address _storageAddress, address _feeLookupAddres, address _manufacturerRegistryStorageAddress) 
+    constructor(address _storageAddress, address _feeLookupAddres, address _manufacturerRegistryAddress) 
         Registry(_storageAddress, _feeLookupAddres)
         public {
-        manufacturerRegistryStorageAddress = _manufacturerRegistryStorageAddress;
+        require(_manufacturerRegistryAddress.isContract());
+        manufacturerRegistryAddress = _manufacturerRegistryAddress;
         manufacturerAttributeName = "manufacturer";
         manufacturerAttributeType = "id";
         maintenanceLogAttributeName = "maintenanceLog";
@@ -31,13 +32,13 @@ contract VehicleRegistry is Registry {
 //modifiers
     modifier registeredAndEnabledManufacturer (bytes32 _manufacturerId) {
         require(
-            IRegistryLookup(manufacturerRegistryStorageAddress).isMemberRegisteredAndEnabled(_manufacturerId));
+            IRegistryLookup(manufacturerRegistryAddress).isMemberRegisteredAndEnabled(_manufacturerId));
         _;
     }
 
     modifier senderIsManufacturerOwner (bytes32 _manufacturerId) {
         require(
-            IRegistryLookup(manufacturerRegistryStorageAddress).getMemberOwner(_manufacturerId) == msg.sender);
+            IRegistryLookup(manufacturerRegistryAddress).getMemberOwner(_manufacturerId) == msg.sender);
         _;
     }
 

@@ -3,6 +3,7 @@ pragma solidity ^0.4.23;
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructible.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "../node_modules/openzeppelin-solidity/contracts/AddressUtils.sol";
 import "./RegistryStorageLib.sol";
 import "./ByteUtilsLib.sol";
 import "./IFeeLookup.sol";
@@ -11,6 +12,7 @@ import "./IRegistryLookup.sol";
 contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
 
     using ByteUtilsLib for bytes32;
+    using AddressUtils for address;
     
     event LogInfo(string message);
     event MemberRegistered(uint256 indexed memberNumber, bytes32 indexed memberId);
@@ -25,6 +27,9 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     address public feeLookupAddress;
 
     constructor(address _storageAddress, address _feeLookupAddress) public {
+
+        require(_storageAddress.isContract());
+        require(_feeLookupAddress.isContract());
         storageAddress = _storageAddress;
         feeLookupAddress = _feeLookupAddress;
     }
