@@ -4,6 +4,22 @@ import "./EternalStorage.sol";
 
 library VehicleMaintenanceLogStorage {
 
+    struct Log {
+        uint256 logNumber;
+        bytes32 id;
+        address maintainer;
+        uint256 date;
+        string  title;
+        string description;
+        bool verified;
+    }
+
+    struct Doc {
+        uint256 docNumber;
+        string title;
+        bytes32 ipfsAddress;
+    }
+
     function setVin(address _storageAccount, bytes32 _VIN)
         public {
         return EternalStorage(_storageAccount).setBytes32Value(
@@ -72,6 +88,19 @@ library VehicleMaintenanceLogStorage {
         return docNumber;
     }
 
+    function getDoc(address _storageAccount, uint256 _logNumber, uint256 _docNumber)
+        internal view
+        returns (Doc memory) {
+
+        Doc memory doc = Doc({
+            docNumber: _docNumber, 
+            title: getDocTitle(_storageAccount, _logNumber, _docNumber),
+            ipfsAddress: getDocIpfsAddress(_storageAccount, _logNumber, _docNumber)
+        });
+        return doc;
+
+    }
+
     function getDocCount(address _storageAccount, uint256 _logNumber) 
         public view returns (uint256) {
         return EternalStorage(_storageAccount).getUint256Value(
@@ -114,6 +143,23 @@ library VehicleMaintenanceLogStorage {
         return EternalStorage(_storageAccount).getUint256Value(
             keccak256(abi.encodePacked("count")));
     }
+
+    function getLog(address _storageAccount, uint256 _logNumber)
+        internal view
+        returns (Log memory) {
+
+        Log memory log = Log({
+            logNumber: _logNumber,
+            id: getId(_storageAccount, _logNumber),
+            maintainer: getMaintainer(_storageAccount, _logNumber),
+            date: getDate(_storageAccount, _logNumber),
+            title: getTitle(_storageAccount, _logNumber),
+            description: getDescription(_storageAccount, _logNumber),
+            verified: getVerified(_storageAccount, _logNumber)
+        });
+
+        return log;
+    }    
 
     function getId(address _storageAccount, uint256 _logNumber) public view returns (bytes32) {
         return EternalStorage(_storageAccount).getBytes32Value(
