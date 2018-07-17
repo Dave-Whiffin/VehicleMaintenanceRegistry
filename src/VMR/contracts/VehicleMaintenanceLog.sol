@@ -17,7 +17,7 @@ contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
     event WorkAuthorisationAdded(address indexed maintainer);
     event WorkAuthorisationRemoved(address indexed maintainer);
     event LogAdded(uint indexed logNumber, address indexed maintainer);
-    event LogDocAdded(uint indexed logNumber, uint indexed docNumber);
+    event DocAdded(uint indexed logNumber, uint indexed docNumber);
     event LogVerified(uint indexed logNumber);
 
     constructor(address _storageAddress, address _vehicleRegistryAddress, bytes32 _VIN) public {
@@ -109,7 +109,7 @@ contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
         logNumberExists(_logNumber)
         external payable {
         uint256 docNumber = VehicleMaintenanceLogStorage.storeLogDoc(storageAddress, _logNumber, _title, _ipfsAddressForDoc);
-        emit LogDocAdded(_logNumber, docNumber);
+        emit DocAdded(_logNumber, docNumber);
     }
 
     function verify(bytes32 _logId) 
@@ -164,5 +164,5 @@ contract VehicleMaintenanceLog is TokenDestructible, Claimable, Pausable {
         docNumber = doc.docNumber;
         title = doc.title;
         ipfsAddress = doc.ipfsAddress;
-    }
+    }  
 }

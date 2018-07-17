@@ -242,24 +242,5 @@ library VehicleMaintenanceLogStorage {
         return EternalStorage(_storageAccount).getBooleanValue(
             keccak256(abi.encodePacked(_logNumber, "verified")));
     }         
-
-    function getTransferKey(address _storageAccount) public view returns(bytes32) {
-        return EternalStorage(_storageAccount).getBytes32Value(
-            keccak256(abi.encodePacked("transferKey")));
-    }    
-
-    function getPendingOwner(address _storageAccount) public view returns(address) {
-        return EternalStorage(_storageAccount).getAddressValue(
-            keccak256(abi.encodePacked("pendingOwner")));
-    }     
-
-    function setPendingOwner(address _storageAccount, address _pendingOwner) public {
-        return EternalStorage(_storageAccount).setAddressValue(
-            keccak256(abi.encodePacked("pendingOwner")), _pendingOwner);
-    }   
-
-    function setTransferKey(address _storageAccount, bytes32 _keyHash) public {
-        return EternalStorage(_storageAccount).setBytes32Value(
-            keccak256(abi.encodePacked("transferKey")), _keyHash);
-    }    
+  
 }
