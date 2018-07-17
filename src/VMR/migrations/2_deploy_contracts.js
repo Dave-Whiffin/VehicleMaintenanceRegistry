@@ -16,6 +16,7 @@ var MockFeeChecker = artifacts.require("MockFeeChecker.sol");
 module.exports = function(deployer) {
   deployer.deploy(ByteUtilsLib);
   deployer.link(ByteUtilsLib, ManufacturerRegistry);
+  deployer.link(ByteUtilsLib, VehicleRegistry);
   deployer.deploy(RegistryStorageLib);
   deployer.link(RegistryStorageLib, Registry);
   deployer.link(RegistryStorageLib, ManufacturerRegistry);

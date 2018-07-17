@@ -15,8 +15,9 @@ contract('VehicleRegistry', function (accounts) {
     let manufacturerId;
     let manufacturerRegistry;
     let logInfoEventWatcher;
+    let memberRegisteredEventWatcher;
 
-    beforeEach(async function () {
+    before(async function () {
         vin = web3.fromAscii("01234567890123456");
         manufacturerId = web3.fromAscii("Ford");
         registryFeeChecker = await MockFeeChecker.new(0);
@@ -24,6 +25,7 @@ contract('VehicleRegistry', function (accounts) {
         eternalStorage = await EternalStorage.new();
         registry = await VehicleRegistry.new(eternalStorage.address, registryFeeChecker.address, manufacturerRegistry.address);
         logInfoEventWatcher = registry.LogInfo();
+        memberRegisteredEventWatcher = registry.MemberRegistered();
         registryOwner = await registry.owner.call();
         await eternalStorage.setContractAddress(registry.address);
         await eternalStorage.setStorageInitialised(true);
@@ -38,7 +40,6 @@ contract('VehicleRegistry', function (accounts) {
         await assertRevert(registry.getMemberOwner(vin));
     });    
 
-
     it("Base function 'Registry.registerMember' is disabled and will throw if called", async function() {
         await assertRevert(registry.registerMember(vin));
     });
@@ -51,38 +52,85 @@ contract('VehicleRegistry', function (accounts) {
         await assertRevert(registry.registerVehicle(vin, manufacturerId, {from : accounts[1]}));
     });    
 
-    it("registerVehicle can't be called when the contract is paused", async function() {
-        await registry.pause();
-        await assertRevert(registry.registerVehicle(vin, manufacturerId, {from : accounts[1]}));
-    });   
-    
-    it("registerVehicle can't be called when value is below fee", async function() {
-        await registryFeeChecker.setFeeInWei(10);
-        await assertRevert(registry.registerVehicle(vin, manufacturerId));
+    it("vin can't be less than 17 characters", async function() {
+        await assertRevert(registry.registerVehicle("123456", manufacturerId));
+    });
+
+    it("vin can't be more than 17 characters", async function() {
+        await assertRevert(registry.registerVehicle("12345678901234567890", manufacturerId));
     });    
     
-    it("registerVehicle can't be called with duplicate vin", async function() {
-        registry.registerVehicle(vin, manufacturerId);
-        await assertRevert(registry.registerVehicle(vin, manufacturerId));
-    });        
+    describe("When contract is paused", function() {
 
+        before(async function() {
+            await registry.pause();
+        });
+
+        after(async function() {
+            await registry.unpause();
+        });
+
+        it("registerVehicle can't be called when the contract is paused", async function() {
+            await assertRevert(registry.registerVehicle(vin, manufacturerId));
+        });       
+        
+        it("The maintenance log address can not be set", async function() {
+            await assertRevert(registry.setMaintenanceLogAddress(0, registry.address));
+        });
+    })
+
+    describe("When a registration fee is set", function () {
+        
+        before(async function() {
+            await registryFeeChecker.setFeeInWei(10);
+        });
+        after(async function() {
+            await registryFeeChecker.setFeeInWei(0);
+        });        
+
+        it("registerVehicle can't be called when value is below fee", async function() {
+            await assertRevert(registry.registerVehicle(vin, manufacturerId));
+        });    
+    })
+    
       describe("when the vehicle is registered", function() {
 
         let vehicleOwner;
         let memberNumber;
+        let logInfoEvents;
+        let memberRegisteredEvents;
 
-        beforeEach(async function () {
-            //console.log("begin registerVehicle")
+        before(async function () {
             //console.log("vin: " + web3.toUtf8(vin));
             //console.log("manufacturerId: " + web3.toUtf8(manufacturerId));
             //console.log("begin registry.registerVehicle")
             await registry.registerVehicle(vin, manufacturerId);
+            logInfoEvents = await logInfoEventWatcher.get();
+            memberRegisteredEvents = await memberRegisteredEventWatcher.get();
             //console.log("end registry.registerVehicle")
             vehicleOwner = registryOwner;
             //console.log("begin registry.GetMemberNumber");
             memberNumber = await registry.getMemberNumber(vin);
             //console.log("end registry.GetMemberNumber");
           });
+
+        it("emits LogInfo event for before and after registration", async function() {
+            let events = logInfoEvents;
+            assert.equal(2, events.length);
+            assert.equal("Begin registerVehicle", events[0].args.message);
+            assert.equal("End registerVehicle", events[1].args.message);
+        });
+
+        it("emits MemberRegistered event", async function() {
+            let events = memberRegisteredEvents;
+            assert.equal(1, events.length);
+            assert.equal(parseInt(memberNumber), parseInt(events[0].args.memberNumber), "unexpected member number");
+            assert.equal(web3.toUtf8(vin), web3.toUtf8(events[0].args.memberId), "unexpected member id");
+        });        
+
+        it("registerVehicle can't be called with duplicate vin", async function() {
+            await assertRevert(registry.registerVehicle(vin, manufacturerId));
+        });             
 
         it("getMemberOwner returns correct owner", async function() {
             var result = await registry.getMemberOwner(vin);
@@ -109,17 +157,41 @@ contract('VehicleRegistry', function (accounts) {
             assert.equal(web3.toUtf8(manufacturerId), value);
         });           
 
+        it("The maintenance log address can be set and returned", async function() {
+            //requires a contract address
+            let maintenancelogAddress = registry.address;
+            await registry.setMaintenanceLogAddress(memberNumber, maintenancelogAddress);
+            let storedAddress = await registry.getMaintenanceLogAddress(memberNumber);
+            assert.equal(maintenancelogAddress, storedAddress, "unexpected maintenance log address");
+        });
+
+        it("The maintenance log address can not be set by a non owner", async function() {
+            await assertRevert(registry.setMaintenanceLogAddress(memberNumber, registry.address, {from: accounts[2]}));
+        });         
+
+        it("The maintenance log address must be a contract address", async function() {
+            await assertRevert(registry.setMaintenanceLogAddress(memberNumber, ""));
+        });        
+
         describe("when the vehicle is disabled", function() {
 
-            beforeEach(async function () {
+            before(async function () {
                 await registry.disableMember(memberNumber);
               });
+
+            after(async function () {
+                await registry.enableMember(memberNumber);
+            });              
     
             it("isMemberRegisteredAndEnabled returns false", async function() {
                 var result = await registry.isMemberRegisteredAndEnabled(vin);
                 assert.isFalse(result);
             });          
-    
+
+            it("The maintenance log address can not be set", async function() {
+                await assertRevert(registry.setMaintenanceLogAddress(memberNumber, registry.address));
+            });            
+
           });        
 
       });

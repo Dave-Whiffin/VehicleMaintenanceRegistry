@@ -46,6 +46,11 @@ contract VehicleRegistry is Registry {
         _;
     }
 
+    modifier validVinLength(bytes32 _vin) {
+        require(_vin.getStringLength() == 17);
+        _;
+    }
+
 //base overrides
     //override base function to disable it - must use registerVehicle
     function registerMember(bytes32) 
@@ -60,6 +65,7 @@ contract VehicleRegistry is Registry {
     function registerVehicle(bytes32 _vin, bytes32 _manufacturerId) 
         public payable
         whenNotPaused()
+        validVinLength(_vin)
         memberIdNotRegistered(_vin)
         paidMemberRegistrationFee()
         registeredAndEnabledManufacturer(_manufacturerId)
