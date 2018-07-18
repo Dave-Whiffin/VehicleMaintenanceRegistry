@@ -5,6 +5,7 @@ import "../installed_contracts/oraclize-api/contracts/usingOraclize.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
 
+/** @title Fee Checker - an oraclize based contract for returning a fee. */
 contract FeeChecker is usingOraclize, IFeeLookup, Pausable, Claimable {
 
     event OraclizeCallBack(bytes32 queryId, string result);
@@ -23,6 +24,12 @@ contract FeeChecker is usingOraclize, IFeeLookup, Pausable, Claimable {
         _;
     }
 
+    /** @dev Constructor.
+      * @param _query the full oraclize URL query incorporating the url and parsing text
+      * @param _refreshSeconds how often the fee should auto refresh
+      * @param _initialFeeInWei the initial fee to return prior to oraclize updating
+      * @param _autoRefresh dicates if the contract should auto refresh on construction or wait for updateFee to be called
+      */
     constructor (string _query, uint _refreshSeconds, uint256 _initialFeeInWei, bool _autoRefresh) public {
         query = _query;
         refreshSeconds = _refreshSeconds;
@@ -47,10 +54,16 @@ contract FeeChecker is usingOraclize, IFeeLookup, Pausable, Claimable {
         }
     }
 
+    /** @dev Returns the current fee in Wei.
+      */
     function getFeeInWei() external view whenNotPaused() returns (uint256) {
         return feeInWei;
     }
 
+    /** @dev The oraclize callback - oraclize will call this when a query completes.
+      * @param _queryId the query id (should match a stored query)
+      * @param _result the query result
+      */
     function __callback(bytes32 _queryId, string _result) public whenNotPaused() {
 
         emit OraclizeCallBack(_queryId, _result);
@@ -73,6 +86,8 @@ contract FeeChecker is usingOraclize, IFeeLookup, Pausable, Claimable {
         }
     }
 
+    /** @dev Triggers a fee update (only for the owner or the oraclize_callback address).
+      */
     function updateFee() public payable whenNotPaused() isSenderAllowedToUpdateFee() {
 
         oraclizeUrlQueryPrice = oraclize_getPrice("URL");

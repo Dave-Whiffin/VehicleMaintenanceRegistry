@@ -1,6 +1,15 @@
 pragma solidity ^0.4.23;
 
+/** @title Registry Lookup interface - indicates a contract has registry read functionality. */
 interface IRegistryLookup {
-    function getMemberOwner(bytes32 _vin) external view returns (address);
-    function isMemberRegisteredAndEnabled(bytes32 _vin) external view returns (bool);
+
+    /** @dev Gets the address of the owner relating to the member
+      * @param _memberId The member id
+      */    
+    function getMemberOwner(bytes32 _memberId) external view returns (address);
+
+    /** @dev Is the member registered and marked as enabled
+      * @param _memberId The member id
+      */            
+    function isMemberRegisteredAndEnabled(bytes32 _memberId) external view returns (bool);
 }

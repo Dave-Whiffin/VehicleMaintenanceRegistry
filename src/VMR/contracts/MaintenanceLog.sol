@@ -7,6 +7,7 @@ import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol"
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructible.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
+/** @title Maintenance Log - a digital equivalent of a vehicle log book (to hold service history etc) */
 contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     using AddressUtils for address;
@@ -22,6 +23,12 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     event DocAdded(uint indexed logNumber, uint indexed docNumber);
     event LogVerified(uint indexed logNumber);
 
+    /** @dev The constructor
+      * @param _storageAddress The address of the EternalStorage contract.
+      * @param _vehicleRegistryAddress The address of the contract implementing IVehicleRegistry for vehicles
+      * @param _maintainerRegistryAddress The address of the contract implementing IRegistry for maintainers
+      * @param _VIN The vehicle identification number (must be unique and present in the VehicleRegistry)
+      */   
     constructor(address _storageAddress, address _vehicleRegistryAddress, address _maintainerRegistryAddress, bytes32 _VIN) public {
         
         require(_storageAddress.isContract());
