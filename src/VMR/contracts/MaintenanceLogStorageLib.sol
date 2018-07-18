@@ -28,7 +28,7 @@ library MaintenanceLogStorageLib {
         bytes32 ipfsAddress;
     }
 
-    /** @dev Adds an entry to the log and increments the log count and relates id to log number
+    /** @dev Adds an entry to the log and increments the log count and relates id to log number.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _maintainerId The maintainer Id logging the work.
       * @param _maintainerAddress The address of the maintainer.
@@ -36,7 +36,7 @@ library MaintenanceLogStorageLib {
       * @param _date The date the work was done.
       * @param _title A title of the work done.
       * @param _description A description of the work done.
-      * @return The log number
+      * @return The log number.
       */ 
     function storeLog (
         address _storageAccount, 
@@ -81,7 +81,7 @@ library MaintenanceLogStorageLib {
 
     /** @dev A count of maintainers (authorised or not) added to the log.
       * @param _storageAccount The address of the EternalStorage contract.
-      * @return the number of maintainers
+      * @return the number of maintainers.
       */ 
     function getMaintainerCount(address _storageAccount) public view returns (uint256) {
         return EternalStorage(_storageAccount).getUint256Value
@@ -90,14 +90,14 @@ library MaintenanceLogStorageLib {
 
     /** @dev Set the current maintainer count (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _count The count of maintainers
+      * @param _count The count of maintainers.
       */ 
     function setMaintainerCount(address _storageAccount, uint256 _count) private {
         EternalStorage(_storageAccount).setUint256Value
             (keccak256(abi.encodePacked("maintainerCount")), _count);        
     }    
 
-    /** @dev Get the maintainer number relating to a maintainer id
+    /** @dev Get the maintainer number relating to a maintainer id.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _maintainerId The maintainer id.
       * @return the maintainer number.
@@ -109,15 +109,15 @@ library MaintenanceLogStorageLib {
 
     /** @dev Set the maintainer number relating to a maintainer id (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _maintainerId The maintainer id
-      * @param _maintainerNumber The maintainer number
+      * @param _maintainerId The maintainer id.
+      * @param _maintainerNumber The maintainer number.
       */ 
     function setMaintainerNumber(address _storageAccount, bytes32 _maintainerId, uint256 _maintainerNumber) private {
         EternalStorage(_storageAccount).setUint256Value
             (keccak256(abi.encodePacked("maintainerNumber", _maintainerId)), _maintainerNumber);          
     }   
 
-    /** @dev Adds a maintainer to the list of authorised maintainers - or sets it if authorised if it already exists
+    /** @dev Adds a maintainer to the list of authorised maintainers - or sets it if authorised if it already exists.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _maintainerId The maintainer id.
       */ 
@@ -135,7 +135,7 @@ library MaintenanceLogStorageLib {
         setAuthorisation(_storageAccount, maintainerNumber, true);
     }
 
-    /** @dev Flags a maintainer as unuathorised to add logs
+    /** @dev Flags a maintainer as unuathorised to add logs.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _maintainerId The maintainer id.
       */ 
@@ -144,17 +144,17 @@ library MaintenanceLogStorageLib {
         setAuthorisation(_storageAccount, maintainerNumber, false);
     }
 
-    /** @dev Sets the boolean authorised flag against a maintainer (private)
+    /** @dev Sets the boolean authorised flag against a maintainer (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _maintainerNumber The maintainer number
-      * @param _authorised the authorised flag to set
+      * @param _maintainerNumber The maintainer number.
+      * @param _authorised the authorised flag to set.
       */ 
     function setAuthorisation(address _storageAccount, uint256 _maintainerNumber, bool _authorised) private {
         EternalStorage(_storageAccount).setBooleanValue
             (keccak256(abi.encodePacked("maintainerAuthorisation", _maintainerNumber)), _authorised);
     }
 
-    /** @dev Flags all current maintainers as unuathorised
+    /** @dev Flags all current maintainers as unuathorised.
       * @param _storageAccount The address of the EternalStorage contract.
       */ 
     function removeAllAuthorisations(address _storageAccount) public {
@@ -165,10 +165,10 @@ library MaintenanceLogStorageLib {
         }
     }
 
-    /** @dev Is a maintainer authorised
+    /** @dev Is a maintainer authorised.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _maintainerId The maintainer id.
-      * @return whether the maintainer is authorised
+      * @return whether the maintainer is authorised.
       */ 
     function isAuthorised(address _storageAccount, bytes32 _maintainerId) public view returns (bool) {
         uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainerId);
@@ -177,12 +177,12 @@ library MaintenanceLogStorageLib {
             (keccak256(abi.encodePacked("maintainerAuthorisation", maintainerNumber)));
     }
 
-    /** @dev Adds a document to a log creating a document number
+    /** @dev Adds a document to a log creating a document number.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
       * @param _title The document title.
       * @param _ipfsAddress The document IPFS address.
-      * @return the document number
+      * @return the document number.
       */ 
     function storeLogDoc(address _storageAccount, uint256 _logNumber, string _title, bytes32 _ipfsAddress) 
         public returns (uint256) {
@@ -198,11 +198,11 @@ library MaintenanceLogStorageLib {
         return docNumber;
     }
 
-    /** @dev Gets a document stored against a log entry
+    /** @dev Gets a document stored against a log entry.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
-      * @param _docNumber The document number
-      * @return the Doc struct relating to the doc (docNumber, title, ipfsAddress)
+      * @param _docNumber The document number.
+      * @return the Doc struct relating to the doc (docNumber, title, ipfsAddress).
       */ 
     function getDoc(address _storageAccount, uint256 _logNumber, uint256 _docNumber)
         internal view
@@ -217,10 +217,10 @@ library MaintenanceLogStorageLib {
 
     }
 
-    /** @dev Gets the count of documents stored against a log entry
+    /** @dev Gets the count of documents stored against a log entry.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
-      * @return the number of documents
+      * @return the number of documents.
       */ 
     function getDocCount(address _storageAccount, uint256 _logNumber) 
         public view returns (uint256) {
@@ -228,10 +228,10 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked(_logNumber, "docCount")));
     }
 
-    /** @dev Sets the count of documents stored against a log entry (private)
+    /** @dev Sets the count of documents stored against a log entry (private).
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
-      * @param _count The number of documents
+      * @param _count The number of documents.
       */ 
     function setDocCount(address _storageAccount, uint256 _logNumber, uint256 _count)
         private {
@@ -239,11 +239,11 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked(_logNumber, "docCount")), _count);
     }
 
-    /** @dev Sets the document title (private)
+    /** @dev Sets the document title (private).
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
       * @param _docNumber The document number.
-      * @param _title The document title
+      * @param _title The document title.
       */ 
     function setDocTitle(address _storageAccount, uint256 _logNumber, uint256 _docNumber, string _title)
         private {
@@ -251,11 +251,11 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked(_logNumber, _docNumber, "title")), _title);
     }  
 
-    /** @dev Sets the document IPFS address (private)
+    /** @dev Sets the document IPFS address (private).
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
       * @param _docNumber The document number.
-      * @param _ipfsAddress The document IPFS address
+      * @param _ipfsAddress The document IPFS address.
       */ 
     function setDocIpfsAddress(address _storageAccount, uint256 _logNumber, uint256 _docNumber, bytes32 _ipfsAddress)
         private {
@@ -263,7 +263,7 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked(_logNumber, _docNumber, "ipfsAddress")), _ipfsAddress);
     }   
 
-    /** @dev Gets the doc title
+    /** @dev Gets the doc title.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
       * @param _docNumber The document number.
@@ -275,7 +275,7 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked(_logNumber, _docNumber, "title")));
     }  
 
-    /** @dev Gets the doc IPFS address
+    /** @dev Gets the doc IPFS address.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
       * @param _docNumber The document number.
@@ -287,7 +287,7 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked(_logNumber, _docNumber, "ipfsAddress")));
     }           
 
-    /** @dev Gets the count of all log entries
+    /** @dev Gets the count of all log entries.
       * @param _storageAccount The address of the EternalStorage contract.
       */ 
     function getCount(address _storageAccount) public view returns (uint256) {
@@ -295,10 +295,10 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked("count")));
     }
 
-    /** @dev Gets a specific log entry
+    /** @dev Gets a specific log entry.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
-      * @return a log (see Log struct)
+      * @return a log (see Log struct).
       */ 
     function getLog(address _storageAccount, uint256 _logNumber)
         internal view
@@ -320,167 +320,217 @@ library MaintenanceLogStorageLib {
         return log;
     }    
 
-    /** @dev Gets the unique id for a log number
+    /** @dev Gets the unique id for a log number.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _logNumber The log number.
-      * @return the id
+      * @return the id.
       */ 
     function getId(address _storageAccount, uint256 _logNumber) public view returns (bytes32) {
         return EternalStorage(_storageAccount).getBytes32Value(
             keccak256(abi.encodePacked(_logNumber, "id")));
     } 
 
-    /** @dev Gets the log number relating to a unique id
+    /** @dev Gets the log number relating to a unique id.
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _id The unique id for the log entry
-      * @return the log number
+      * @param _id The unique id for the log entry.
+      * @return the log number.
       */ 
     function getLogNumber(address _storageAccount, bytes32 _id) public view returns (uint256) {
         return EternalStorage(_storageAccount).getUint256Value(
             keccak256(abi.encodePacked(_id, "logNumber")));
     }
 
-    /** @dev Links id to log number (private)
+    /** @dev Links id to log number (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _id The unique id for the log entry
-      * @param _logNumber The log number
+      * @param _id The unique id for the log entry.
+      * @param _logNumber The log number.
       */ 
     function setLogNumber(address _storageAccount, bytes32 _id, uint256 _logNumber) private {
         return EternalStorage(_storageAccount).setUint256Value(
             keccak256(abi.encodePacked(_id, "logNumber")), _logNumber);
     }
 
-    /** @dev Links log number to id (private)
+    /** @dev Links log number to id (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _logNumber The log number
-      * @param _id The unique id for the log entry
+      * @param _logNumber The log number.
+      * @param _id The unique id for the log entry.
       */ 
     function setId(address _storageAccount, uint256 _logNumber, bytes32 _id) private {
         return EternalStorage(_storageAccount).setBytes32Value(
             keccak256(abi.encodePacked(_logNumber, "id")), _id);
     } 
 
-    /** @dev Sets total count of logs (private)
+    /** @dev Sets total count of logs (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _count The number of log entries
+      * @param _count The number of log entries.
       */ 
     function setCount(address _storageAccount, uint256 _count) private {
         return EternalStorage(_storageAccount).setUint256Value(
             keccak256(abi.encodePacked("count")), _count);
     } 
 
-    /** @dev Sets the log date
+    /** @dev Sets the log date  (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _logNumber The log number
-      * @param _date The date the work was done
+      * @param _logNumber The log number.
+      * @param _date The date the work was done.
       */ 
     function setDate(address _storageAccount, uint256 _logNumber, uint256 _date) private {
         return EternalStorage(_storageAccount).setUint256Value(
             keccak256(abi.encodePacked(_logNumber, "date")), _date);
     } 
 
-    /** @dev Sets the address of the maintainer logging the work
+    /** @dev Sets the address of the maintainer logging the work  (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _logNumber The log number
-      * @param _maintainer The address of the maintainer
+      * @param _logNumber The log number.
+      * @param _maintainer The address of the maintainer.
       */ 
     function setMaintainerAddress(address _storageAccount, uint256 _logNumber, address _maintainer) private {
         return EternalStorage(_storageAccount).setAddressValue(
             keccak256(abi.encodePacked(_logNumber, "maintainer")), _maintainer);
     }    
 
-    /** @dev Sets the id of the maintainer logging the work
+    /** @dev Sets the id of the maintainer logging the work  (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _logNumber The log number
-      * @param _maintainerId The id of the maintainer
+      * @param _logNumber The log number.
+      * @param _maintainerId The id of the maintainer.
       */ 
     function setMaintainerId(address _storageAccount, uint256 _logNumber, bytes32 _maintainerId) private {
         return EternalStorage(_storageAccount).setBytes32Value(
             keccak256(abi.encodePacked(_logNumber, "maintainerId")), _maintainerId);
     }         
 
-    /** @dev Sets the verified flag on a log entry
+    /** @dev Sets the verified flag on a log entry  (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _logNumber The log number
-      * @param _verified verified
+      * @param _logNumber The log number.
+      * @param _verified verified.
       */ 
     function setVerified(address _storageAccount, uint256 _logNumber, bool _verified) private {
         return EternalStorage(_storageAccount).setBooleanValue(
             keccak256(abi.encodePacked(_logNumber, "verified")), _verified);
     }  
 
-    /** @dev Sets the account of the verifier on a log entry
+    /** @dev Sets the account of the verifier on a log entry  (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _logNumber The log number
-      * @param _verifier The address of the verifier
+      * @param _logNumber The log number.
+      * @param _verifier The address of the verifier.
       */
     function setVerifier(address _storageAccount, uint256 _logNumber, address _verifier) private {
         return EternalStorage(_storageAccount).setAddressValue(
             keccak256(abi.encodePacked(_logNumber, "verifier")), _verifier);
     }         
 
-    /** @dev Sets the date of the verification on a log entry
+    /** @dev Sets the date of the verification on a log entry  (private).
       * @param _storageAccount The address of the EternalStorage contract.
-      * @param _logNumber The log number
-      * @param _verificationDate The verification date
+      * @param _logNumber The log number.
+      * @param _verificationDate The verification date.
       */
     function setVerificationDate(address _storageAccount, uint256 _logNumber, uint256 _verificationDate) private {
         return EternalStorage(_storageAccount).setUint256Value(
             keccak256(abi.encodePacked(_logNumber, "verificationDate")), _verificationDate);
     }
 
+    /** @dev Sets the title of the log entry  (private).
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @param _title The title.
+      */
     function setTitle(address _storageAccount, uint256 _logNumber, string _title) private {
         return EternalStorage(_storageAccount).setStringValue(
             keccak256(abi.encodePacked(_logNumber, "title")), _title);
     } 
 
+    /** @dev Sets the description of the log entry (private).
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @param _description The description.
+      */
     function setDescription(address _storageAccount, uint256 _logNumber, string _description) private {
         return EternalStorage(_storageAccount).setStringValue(
             keccak256(abi.encodePacked(_logNumber, "description")), _description);
     }  
 
+    /** @dev Gets the maintainer address for a log entry.
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @return The address of the maintainer.
+      */
     function getMaintainerAddress(address _storageAccount, uint256 _logNumber) public view
         returns (address){
         return EternalStorage(_storageAccount).getAddressValue(
             keccak256(abi.encodePacked(_logNumber, "maintainer")));
     } 
 
+    /** @dev Gets the maintainer address for a log entry.
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @return The address of the maintainer.
+      */
     function getMaintainerId(address _storageAccount, uint256 _logNumber) public view
         returns (bytes32){
         return EternalStorage(_storageAccount).getBytes32Value(
             keccak256(abi.encodePacked(_logNumber, "maintainerId")));
     }       
 
+    /** @dev Gets the title for a log entry.
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @return The title.
+      */
     function getTitle(address _storageAccount, uint256 _logNumber) 
         public view returns (string) {
         return EternalStorage(_storageAccount).getStringValue(
             keccak256(abi.encodePacked(_logNumber, "title")));
     } 
 
+    /** @dev Gets the description for a log entry.
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @return The description.
+      */
     function getDescription(address _storageAccount, uint256 _logNumber) 
         public view returns (string) {
         return EternalStorage(_storageAccount).getStringValue(
             keccak256(abi.encodePacked(_logNumber, "description")));
     }  
 
+    /** @dev Gets the date for a log entry.
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @return The date.
+      */
     function getDate(address _storageAccount, uint256 _logNumber) 
         public view returns (uint256) {
         return EternalStorage(_storageAccount).getUint256Value(
             keccak256(abi.encodePacked(_logNumber, "date")));
     }   
 
+    /** @dev Gets the verified flag for a log entry.
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @return A boolean indicated whether the log is verified.
+      */
     function getVerified(address _storageAccount, uint256 _logNumber) 
         public view returns (bool) {
         return EternalStorage(_storageAccount).getBooleanValue(
             keccak256(abi.encodePacked(_logNumber, "verified")));
     }         
 
+    /** @dev Gets the verifier account for a log entry.
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @return The address of the verifier.
+      */
     function getVerifier(address _storageAccount, uint256 _logNumber) 
         public view returns (address) {
         return EternalStorage(_storageAccount).getAddressValue(
             keccak256(abi.encodePacked(_logNumber, "verifier")));
     }         
 
+    /** @dev Gets the verification date for a log entry.
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _logNumber The log number.
+      * @return The verification date.
+      */
     function getVerificationDate(address _storageAccount, uint256 _logNumber) 
         public view returns (uint256) {
         return EternalStorage(_storageAccount).getUint256Value(
