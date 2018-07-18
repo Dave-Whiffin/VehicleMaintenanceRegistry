@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
 
+/** @title Eternal Storage - a key value storage vault. */
 contract EternalStorage is Claimable {
 
     mapping(bytes32 => uint256) private UIntStorage;
@@ -21,60 +22,105 @@ contract EternalStorage is Claimable {
         _;
     }    
 
+    /** @dev Binds the eternal storage to a specific contract.
+      * @param _address the contract address to attach to
+      */
     function setContractAddress(address _address) onlyOwner() public {
         AddressStorage[keccak256("contract.address")] = _address;
     }
 
+    /** @dev Returns the contract address the eternal storage is bound to.
+      */
     function getContractAddress() public view returns (address) {
         return AddressStorage[keccak256("contract.address")];
     }    
 
+    /** @dev Setting the storage as initialized prevents anyone but the contract address calling setters.
+      * @param _initialised A bool flag to indicate whether or not the storage should be initialised.
+      */
     function setStorageInitialised(bool _initialised) onlyOwner() public {
         BooleanStorage[keccak256("contract.storage.initialised")] = _initialised;
     }
 
+    /** @dev Returns the storage initialised flag
+      */
     function getStorageInitialised() public view returns (bool) {
         return BooleanStorage[keccak256("contract.storage.initialised")];
     }
 
-    function getUint256Value(bytes32 record) public view returns (uint256){
-        return UIntStorage[record];
+    /** @dev Returns a uint256 from storage
+      * @param key The storage key
+      */
+    function getUint256Value(bytes32 key) public view returns (uint256){
+        return UIntStorage[key];
     }
 
-    function setUint256Value(bytes32 record, uint256 value256) onlyRegisteredCaller() public {
-        UIntStorage[record] = value256;
+    /** @dev Set a uint256 in storage
+      * @param key The storage key
+      * @param value The value to store
+      */
+    function setUint256Value(bytes32 key, uint256 value) onlyRegisteredCaller() public {
+        UIntStorage[key] = value;
     }
 
-    function getStringValue(bytes32 record)  public view returns (string){
-        return StringStorage[record];
+    /** @dev Returns a string from storage
+      * @param key The storage key
+      */
+    function getStringValue(bytes32 key)  public view returns (string){
+        return StringStorage[key];
     }
 
-    function setStringValue(bytes32 record, string value) onlyRegisteredCaller() public {
-        StringStorage[record] = value;
+    /** @dev Set a bytes32 in storage
+      * @param key The storage key
+      * @param value The value to store
+      */
+    function setStringValue(bytes32 key, string value) onlyRegisteredCaller() public {
+        StringStorage[key] = value;
     }
 
-    function getAddressValue(bytes32 record)  public view returns (address){
-        return AddressStorage[record];
+    /** @dev Returns an address from storage
+      * @param key The storage key
+      */
+    function getAddressValue(bytes32 key)  public view returns (address){
+        return AddressStorage[key];
     }
 
-    function setAddressValue(bytes32 record, address value) onlyRegisteredCaller() public {
-        AddressStorage[record] = value;
+    /** @dev Set an address in storage
+      * @param key The storage key
+      * @param value The value to store
+      */
+    function setAddressValue(bytes32 key, address value) onlyRegisteredCaller() public {
+        AddressStorage[key] = value;
     }
 
-    function getBytes32Value(bytes32 record)  public view returns (bytes32){
-        return BytesStorage[record];
+    /** @dev Returns a bytes32 from storage
+      * @param key The storage key
+      */
+    function getBytes32Value(bytes32 key)  public view returns (bytes32){
+        return BytesStorage[key];
     }
 
-    function setBytes32Value(bytes32 record, bytes32 value) onlyRegisteredCaller() public {
-        BytesStorage[record] = value;
+    /** @dev Set a bytes32 in storage
+      * @param key The storage key
+      * @param value The value to store
+      */
+    function setBytes32Value(bytes32 key, bytes32 value) onlyRegisteredCaller() public {
+        BytesStorage[key] = value;
     }
 
-    function getBooleanValue(bytes32 record)  public view returns (bool){
-        return BooleanStorage[record];
+    /** @dev Returns a bool from storage
+      * @param key The storage key
+      */
+    function getBooleanValue(bytes32 key)  public view returns (bool){
+        return BooleanStorage[key];
     }
 
-    function setBooleanValue(bytes32 record, bool value) onlyRegisteredCaller() public {
-        BooleanStorage[record] = value;
+    /** @dev Set a bool in storage
+      * @param key The storage key
+      * @param value The value to store
+      */
+    function setBooleanValue(bytes32 key, bool value) onlyRegisteredCaller() public {
+        BooleanStorage[key] = value;
     }
 
 }

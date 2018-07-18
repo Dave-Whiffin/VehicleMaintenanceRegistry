@@ -5,46 +5,31 @@ upgradeability
 
 tests!!  (5 per contract)
 
-uport integration
+contracts
+=========
 vyper contract
+assembly
 
-full lifecycle test
-//manufacturer
-    register vehicle
-    create maintenanceLog
-    assign maintenanceLog to vehicle
-    assign mechanic1 as authorised to do work
+uport integration
 
-//mechanic 1
-    add work (pre sales checks)
-    add doc
+ENS
 
-//manufacturer
-    verify work
-    transfer ownership to customer (transfer) (supply key)
-
-//customer
-    accept vehicle ownership (with key)
-
-//manufacturer
-    transfer maintenance log to customer 
-
-add comments on contracts
-decouple maintenanceLog from vehicleRegistry
 
 //register vehicle
 
-FLOWS -
+FLOWS TO MODEL
+==============
 Vehicle Registration
-
 Vehicle Ownership Transfer
-
-Maintenance Work
+Maintenance Log
 
 DESIGN DECISIONS
 
-VehicleManufacturerRegistry
-* haven't implemented emergency stop - rules are that only owner can add manufacturers
+DEPENDENCIES
+============
+
+npm openzeppelin-solidity
+truffle install oraclize-api
 
 Ethereum Bridge - For oraclize
 powershell - run as admin!
@@ -62,9 +47,12 @@ ethereum-bridge -H localhost:8545 -a 1
 Broadcast mode
 Generate a new local address:
 
-//TO RUN Tests
+RUNNING Tests
+=============
 //start ganache with known mnemonic below
-//ganache-cli --mnemonic "VMR Tests" --accounts 50
+ganache-cli --mnemonic "VMR Tests" --accounts 50
 //start ethereum-bridge (FeeLookup tests depend on oraclize)
-//ethereum-bridge --dev -H localhost:8545 --broadcast --new
+//IMPORTANT!  don't use windows powershell - use cmd
+ethereum-bridge --dev -H localhost:8545 --broadcast --new
+
 //OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);

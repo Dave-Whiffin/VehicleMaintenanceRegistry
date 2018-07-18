@@ -1,7 +1,11 @@
 pragma solidity ^0.4.23;
 
+/** @title bytes32 utils. */
 library ByteUtilsLib {
 
+    /** @dev creates a string from a bytes32.
+      * @param x the bytes32 input value.
+      */
     function bytes32ToString(bytes32 x) public pure returns (string) {
         bytes memory bytesString = new bytes(32);
         uint charCount = 0;
@@ -20,6 +24,9 @@ library ByteUtilsLib {
         return string(bytesStringTrimmed);
     }
 
+    /** @dev converts the bytes32 parameter to a string and returns the length.
+      * @param x the bytes32 input value.
+      */
     function getStringLength(bytes32 x) public pure returns (uint) {
         string memory s = bytes32ToString(x);
         return bytes(s).length;        
