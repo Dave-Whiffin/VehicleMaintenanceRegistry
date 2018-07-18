@@ -153,7 +153,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         external view 
         logNumberExists(_logNumber)
         returns 
-    (uint256 logNumber, bytes32 id, bytes32 maintainerId, address maintainerAddress, uint256 date, string  title, string description, bool verified) {
+    (uint256 logNumber, bytes32 id, bytes32 maintainerId, address maintainerAddress, uint256 date, string title, string description, bool verified) {
 
         MaintenanceLogStorageLib.Log memory log = MaintenanceLogStorageLib.getLog(storageAddress, _logNumber);
 
