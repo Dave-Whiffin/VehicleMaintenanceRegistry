@@ -14,12 +14,16 @@ contract('MaintenanceLog', function (accounts) {
     let mockMaintainerRegistry;
     let maintainerId1;
     let maintainerAddress1;
+    let maintainerId2;
+    let maintainerAddress2;    
 
     before(async function () {
 
         manufacturerAccount = accounts[0];
         maintainerId1 = web3.fromAscii("Quality Servicing LTD");
         maintainerAddress1 = accounts[3];
+        maintainerId2 = web3.fromAscii("Barnes Vehicle Servicing");
+        maintainerAddress2 = accounts[4];        
         vin = web3.fromAscii("01234567890123456");
         eternalStorage = await EternalStorage.new({from: manufacturerAccount});
         //ensure our vehicle appears to be registered to the manufacturer
@@ -259,15 +263,37 @@ contract('MaintenanceLog', function (accounts) {
                             await assertRevert(maintenanceLog.addDoc(logNumber, docTitle, ipfsAddress, {from: maintainerAddress1}));
                         });
                     });        
+
+                    describe("When maintainer is disabled in maintainer registry", function() {
+                        before(async function() {
+                            await mockMaintainerRegistry.setMock(maintainerId1, maintainerAddress1, false);
+                        });
+                        after(async function() {
+                            await mockMaintainerRegistry.setMock(maintainerId1, maintainerAddress1, true);
+                        });                     
+                        it("they can not add to log", async function() {
+                            let failingJobId = web3.fromAscii("ThisShouldFail1");
+                            await assertRevert(maintenanceLog.add(failingJobId, maintainerId1, date, title, description, {from: maintainerAddress1}));
+                        });
+                    });
+
+                    describe("When maintainer owner in the maintainer registry is not the message sender", function() {
+                        before(async function() {
+                            //deliberately mix up the owner of the maintainer
+                            await mockMaintainerRegistry.setMock(maintainerId1, maintainerAddress2, true);
+                        });
+                        after(async function() {
+                            await mockMaintainerRegistry.setMock(maintainerId1, maintainerAddress1, true);
+                        });                     
+                        it("they can not add to maintenance log", async function() {
+                            let failingJobId = web3.fromAscii("ThisShouldFail1");
+                            await assertRevert(maintenanceLog.add(failingJobId, maintainerId1, date, title, description, {from: maintainerAddress1}));
+                        });
+                    });                    
                     
                     describe("Another maintainer can be authorised to log work", function() {
-                        
-                        let maintainerId2;
-                        let maintainerAddress2;
-                        
+                                                
                         before(async function() {
-                            maintainerId2 = web3.fromAscii("Barnes Vehicle Servicing");
-                            maintainerAddress2 = accounts[6];
                             mockMaintainerRegistry.setMock(maintainerId2, maintainerAddress2, true);
                             jobId = web3.fromAscii("job2");
                             await maintenanceLog.addWorkAuthorisation(maintainerId2, {from: manufacturerAccount});
