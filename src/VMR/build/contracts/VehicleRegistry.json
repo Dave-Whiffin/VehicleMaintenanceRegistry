@@ -7366,8 +7366,15 @@
         "ByteUtilsLib": "0xd007a668e19689532d965817bdd0c5ec58a95ecc",
         "RegistryStorageLib": "0xdd70c68f280b9bbca21dddb2980a06fd72d2166f"
       }
+    },
+    "1531934953061": {
+      "events": {},
+      "links": {
+        "ByteUtilsLib": "0xd007a668e19689532d965817bdd0c5ec58a95ecc",
+        "RegistryStorageLib": "0xdd70c68f280b9bbca21dddb2980a06fd72d2166f"
+      }
     }
   },
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-18T16:53:47.775Z"
+  "updatedAt": "2018-07-18T17:29:45.857Z"
 }
