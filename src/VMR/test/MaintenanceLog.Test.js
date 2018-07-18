@@ -11,27 +11,39 @@ contract('MaintenanceLog', function (accounts) {
     let maintenanceLog;
     let eternalStorage;
     let mockVehicleRegistry;
+    let mockMaintainerRegistry;
+    let maintainerId1;
+    let maintainerAddress1;
 
     before(async function () {
 
         manufacturerAccount = accounts[0];
+        maintainerId1 = web3.fromAscii("Quality Servicing LTD");
+        maintainerAddress1 = accounts[3];
         vin = web3.fromAscii("01234567890123456");
         eternalStorage = await EternalStorage.new({from: manufacturerAccount});
         //ensure our vehicle appears to be registered to the manufacturer
         mockVehicleRegistry = await MockRegistryLookup.new();
         await mockVehicleRegistry.setMock(vin, manufacturerAccount, true);        
+
+        mockMaintainerRegistry = await MockRegistryLookup.new();
+        await mockMaintainerRegistry.setMock(maintainerId1, maintainerAddress1, true);
       });
 
     it("only the owner of the vehicle can create a log", async function() {
-        await assertRevert(MaintenanceLog.new(eternalStorage.address, mockVehicleRegistry.address, vin, {from: accounts[1]}))
+        await assertRevert(MaintenanceLog.new(eternalStorage.address, mockVehicleRegistry.address, mockMaintainerRegistry.address, vin, {from: accounts[1]}))
     });
 
     it("the vehicle registry address must be a contract", async function() {
-        await assertRevert(MaintenanceLog.new(eternalStorage.address, accounts[1], vin, {from: manufacturerAccount}))
-    });    
+        await assertRevert(MaintenanceLog.new(eternalStorage.address, accounts[1], mockMaintainerRegistry.address, vin, {from: manufacturerAccount}))
+    });   
+    
+    it("the maintainer registry address must be a contract", async function() {
+        await assertRevert(MaintenanceLog.new(eternalStorage.address, mockVehicleRegistry.address, accounts[1], vin, {from: manufacturerAccount}))
+    });       
 
     it("the storage address must be a contract", async function() {
-        await assertRevert(MaintenanceLog.new(accounts[1], mockVehicleRegistry.addres, vin, {from: manufacturerAccount}))
+        await assertRevert(MaintenanceLog.new(accounts[1], mockVehicleRegistry.addres, mockMaintainerRegistry.address, vin, {from: manufacturerAccount}))
     });        
 
     it("the mockVehicleRegistry shows vin as registered to the manufacturer", async function() {
@@ -42,10 +54,14 @@ contract('MaintenanceLog', function (accounts) {
         assert.isTrue(await mockVehicleRegistry.isMemberRegisteredAndEnabled(vin));
     });
 
+    it("the mockMaintainerRegistry shows maintainer1 as registered and enabled", async function() {
+        assert.isTrue(await mockMaintainerRegistry.isMemberRegisteredAndEnabled(maintainerId1));
+    });    
+
     describe("after deployment", function () {
 
         before(async function () {
-            maintenanceLog = await MaintenanceLog.new(eternalStorage.address, mockVehicleRegistry.address, vin, {from: manufacturerAccount});
+            maintenanceLog = await MaintenanceLog.new(eternalStorage.address, mockVehicleRegistry.address, mockMaintainerRegistry.address, vin, {from: manufacturerAccount});
             await eternalStorage.setContractAddress(maintenanceLog.address, {from: manufacturerAccount});
             await eternalStorage.setStorageInitialised(true, {from: manufacturerAccount});
           });
@@ -58,16 +74,26 @@ contract('MaintenanceLog', function (accounts) {
             assert.equal(web3.toUtf8(vin), web3.toUtf8(await maintenanceLog.vin.call()));
         });
 
+        it("the vehicle registry address is correct", async function() {
+            assert.equal(mockVehicleRegistry.address, await maintenanceLog.vehicleRegistryAddress.call());
+        });
+
+        it("the maintainer registry address is correct", async function() {
+            assert.equal(mockMaintainerRegistry.address, await maintenanceLog.maintainerRegistryAddress.call());
+        });        
+        
+        it("the vin is stored correctly", async function() {
+            assert.equal(web3.toUtf8(vin), web3.toUtf8(await maintenanceLog.vin.call()));
+        });
+
         describe("the ownership of the maintenance log can be transferred", function () {
             let firstCustomer;
-            let authorisedMechanic;
 
             before(async function(){
                 firstCustomer = accounts[4];
-                authorisedMechanic = accounts[5];
                 //pretend there was a prior authorisation from the manufacturer
                 //so we can test that it gets removed after ownership is claimed
-                await maintenanceLog.addWorkAuthorisation(authorisedMechanic, {from: manufacturerAccount});
+                await maintenanceLog.addWorkAuthorisation(maintainerId1, {from: manufacturerAccount});
                 //pretend the customer has got ownership of the vin in the registry
                 await mockVehicleRegistry.setMock(vin, firstCustomer, true);
                 await maintenanceLog.transferOwnership(firstCustomer, {from: manufacturerAccount});
@@ -86,11 +112,11 @@ contract('MaintenanceLog', function (accounts) {
             });
 
             it("the pending owner can claim ownership and work authorisations are cleared", async function () {
-                assert.isTrue(await maintenanceLog.isAuthorised(authorisedMechanic), "Expected work authorisation to be present until it ownership is claimed");
+                assert.isTrue(await maintenanceLog.isAuthorised(maintainerId1), "Expected work authorisation to be present until it ownership is claimed");
                 assert.equal(firstCustomer, await maintenanceLog.pendingOwner.call());
                 await maintenanceLog.claimOwnership({from: firstCustomer});                
                 assert.equal(firstCustomer, await maintenanceLog.owner.call());
-                assert.isFalse(await maintenanceLog.isAuthorised(authorisedMechanic), "All work authorisations should be cleared on claiming ownership");
+                assert.isFalse(await maintenanceLog.isAuthorised(maintainerId1), "All work authorisations should be cleared on claiming ownership");
             });
         });
 
@@ -115,34 +141,30 @@ contract('MaintenanceLog', function (accounts) {
 
         describe("a maintainer can be authorised to log work on the vehicle", function() {
 
-            let mechanic1;
-            let mechanic2;
-
             before(async function() {
-                mechanic1 = accounts[2];
-                mechanic2 = accounts[3];
-                await maintenanceLog.addWorkAuthorisation(mechanic1);
+                await maintenanceLog.addWorkAuthorisation(maintainerId1);
             });
 
             it("shows authorised maintainer as authorised", async function() {
-                assert.isTrue(await maintenanceLog.isAuthorised(mechanic1));
+                assert.isTrue(await maintenanceLog.isAuthorised(maintainerId1));
             });
 
             it("shows not authorised maintainer as unauthorised", async function() {
-                assert.isFalse(await maintenanceLog.isAuthorised(mechanic2));
+                let rogue = web3.fromAscii("rogue");
+                assert.isFalse(await maintenanceLog.isAuthorised(rogue));
             });
 
             describe("the maintainer can be unauthorised", function() {
                 before(async function() {
-                    await maintenanceLog.removeWorkAuthorisation(mechanic1);
+                    await maintenanceLog.removeWorkAuthorisation(maintainerId1);
                 });
 
                 after(async function() {
-                    await maintenanceLog.addWorkAuthorisation(mechanic1);
+                    await maintenanceLog.addWorkAuthorisation(maintainerId1);
                 });                
 
                 it("shows as unauthorised", async function() {
-                    assert.isFalse(await maintenanceLog.isAuthorised(mechanic1));
+                    assert.isFalse(await maintenanceLog.isAuthorised(maintainerId1));
                 });                            
             });            
 
@@ -154,14 +176,16 @@ contract('MaintenanceLog', function (accounts) {
                 let description;
                 let logAddedEventWatcher;
                 let logAddedEvents;
+                let rogueMaintainerAddress;
 
                 before(async function() {
+                    rogueMaintainerAddress = accounts[5];
                     jobId = web3.fromAscii("job1");
                     date  = Math.round(new Date().getTime() / 1000);
                     title = "Post factory check";
                     description = "QA Verification following manufacture";
                     logAddedEventWatcher = maintenanceLog.LogAdded();
-                    await maintenanceLog.add(jobId, date, title, description, {from: mechanic1});
+                    await maintenanceLog.add(jobId, maintainerId1, date, title, description, {from: maintainerAddress1});
                     logAddedEvents = await logAddedEventWatcher.get();
                     logNumber = await maintenanceLog.getLogNumber(jobId);
                 });
@@ -178,21 +202,22 @@ contract('MaintenanceLog', function (accounts) {
                     let log = await maintenanceLog.getLog(logNumber);
                     assert.equal(parseInt(logNumber), parseInt(log[0]));
                     assert.equal(web3.toUtf8(jobId), web3.toUtf8(log[1]));
-                    assert.equal(mechanic1, log[2]);
-                    assert.equal(parseInt(date), parseInt(log[3]));
-                    assert.equal(title, log[4]);
-                    assert.equal(description, log[5]);
-                    assert.isFalse(log[6], "log should not be verified"); 
+                    assert.equal(web3.toUtf8(maintainerId1), web3.toUtf8(log[2]));
+                    assert.equal(maintainerAddress1, log[3]);
+                    assert.equal(parseInt(date), parseInt(log[4]));
+                    assert.equal(title, log[5]);
+                    assert.equal(description, log[6]);
+                    assert.isFalse(log[7], "log should not be verified"); 
                 });                   
 
                 it("emits LogAdded event with logNumber and maintainer", async function() {
                     assert.equal(1, logAddedEvents.length);
                     assert.equal(1, logAddedEvents[0].args.logNumber);
-                    assert.equal(mechanic1, logAddedEvents[0].args.maintainer);
+                    assert.equal(web3.toUtf8(maintainerId1), web3.toUtf8(logAddedEvents[0].args.maintainerId));
                 });
 
                 it("unauthorised mechanics can not log work", async function() {
-                    await assertRevert(maintenanceLog.add(jobId, date, title, description, {from: mechanic2}));
+                    await assertRevert(maintenanceLog.add(jobId, maintainerId1, date, title, description, {from: rogueMaintainerAddress}));
                 });                
 
                 describe("Docs can be added to the log", function() {
@@ -202,11 +227,11 @@ contract('MaintenanceLog', function (accounts) {
                     before(async function() {
                         docTitle = "Post Factory Check Certificate (PDF)";
                         ipfsAddress = web3.fromAscii("SomeAddress");
-                        await maintenanceLog.addDoc(logNumber, docTitle, ipfsAddress, {from: mechanic1});
+                        await maintenanceLog.addDoc(logNumber, docTitle, ipfsAddress, {from: maintainerAddress1});
                     });
 
                     it("unauthorised mechanics can not add docs", async function() {
-                        await assertRevert(maintenanceLog.addDoc(logNumber, docTitle, ipfsAddress, {from: mechanic2}));
+                        await assertRevert(maintenanceLog.addDoc(logNumber, docTitle, ipfsAddress, {from: rogueMaintainerAddress}));
                     });
 
                     it("increments the doc count", async function () {
@@ -227,19 +252,25 @@ contract('MaintenanceLog', function (accounts) {
     
                         it("the log shows as verified", async function() {
                             let log = await maintenanceLog.getLog(logNumber);
-                            assert.isTrue(log[6], "log should be verified"); 
+                            assert.isTrue(log[7], "log should be verified"); 
                         });
     
                         it("can not add doc to verified log", async function() {
-                            await assertRevert(maintenanceLog.addDoc(logNumber, docTitle, ipfsAddress, {from: mechanic1}));
+                            await assertRevert(maintenanceLog.addDoc(logNumber, docTitle, ipfsAddress, {from: maintainerAddress1}));
                         });
                     });        
                     
                     describe("Another maintainer can be authorised to log work", function() {
-
+                        
+                        let maintainerId2;
+                        let maintainerAddress2;
+                        
                         before(async function() {
-                            jobId = 
-                            await maintenanceLog.addWorkAuthorisation(mechanic2, {from: manufacturerAccount});
+                            maintainerId2 = web3.fromAscii("Barnes Vehicle Servicing");
+                            maintainerAddress2 = accounts[6];
+                            mockMaintainerRegistry.setMock(maintainerId2, maintainerAddress2, true);
+                            jobId = web3.fromAscii("job2");
+                            await maintenanceLog.addWorkAuthorisation(maintainerId2, {from: manufacturerAccount});
                         })
 
                         describe("who can also add work to the log", function () {
@@ -249,7 +280,7 @@ contract('MaintenanceLog', function (accounts) {
                                 date  = Math.round(new Date().getTime() / 1000);
                                 title = "Pre Customer Delivery Check";
                                 description = "Full customer pre delivery check - level 1";
-                                await maintenanceLog.add(jobId, date, title, description, {from: mechanic2});
+                                await maintenanceLog.add(jobId, maintainerId2, date, title, description, {from: maintainerAddress2});
                             });
 
                             it("increments log count", async function() {
@@ -274,15 +305,15 @@ contract('MaintenanceLog', function (accounts) {
                         });
             
                         it("can not add to log", async function() {
-                            await assertRevert(maintenanceLog.add(jobId, date, title, description, {from: mechanic1}));
+                            await assertRevert(maintenanceLog.add(jobId, maintainerId1, date, title, description, {from: maintainerAddress1}));
                         });            
             
                         it("can not authorise maintainer", async function() {
-                            await assertRevert(maintenanceLog.addWorkAuthorisation(mechanic2));
+                            await assertRevert(maintenanceLog.addWorkAuthorisation(maintainerId1));
                         });                        
             
                         it("can not remove maintainer", async function() {
-                            await assertRevert(maintenanceLog.addWorkAuthorisation(mechanic1));
+                            await assertRevert(maintenanceLog.addWorkAuthorisation(maintainerId1));
                         });    
                         
                         it("can not verify log", async function() {

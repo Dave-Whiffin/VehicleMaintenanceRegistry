@@ -12,19 +12,22 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     using AddressUtils for address;
 
     bytes32 public vin;
-    address private storageAddress;
-    address private vehicleRegistryAddress;
+    address public storageAddress;
+    address public vehicleRegistryAddress;
+    address public maintainerRegistryAddress;
     
-    event WorkAuthorisationAdded(address indexed maintainer);
-    event WorkAuthorisationRemoved(address indexed maintainer);
-    event LogAdded(uint indexed logNumber, address indexed maintainer);
+    event WorkAuthorisationAdded(bytes32 indexed maintainerId);
+    event WorkAuthorisationRemoved(bytes32 indexed maintainerId);
+    event LogAdded(uint indexed logNumber, bytes32 indexed maintainerId);
     event DocAdded(uint indexed logNumber, uint indexed docNumber);
     event LogVerified(uint indexed logNumber);
 
-    constructor(address _storageAddress, address _vehicleRegistryAddress, bytes32 _VIN) public {
+    constructor(address _storageAddress, address _vehicleRegistryAddress, address _maintainerRegistryAddress, bytes32 _VIN) public {
         
         require(_storageAddress.isContract());
         require(_vehicleRegistryAddress.isContract());
+        require(_maintainerRegistryAddress.isContract());
+
         require(
             IRegistryLookup(_vehicleRegistryAddress).isMemberRegisteredAndEnabled(_VIN));
         require(
@@ -32,6 +35,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
         storageAddress = _storageAddress;
         vehicleRegistryAddress = _vehicleRegistryAddress;            
+        maintainerRegistryAddress = _maintainerRegistryAddress;
         vin = _VIN;
     }
 
@@ -41,10 +45,16 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         _;
     }
 
-    modifier isMaintainerAuthorised(address _maintainer) {
-        require(isAuthorised(_maintainer));
+    modifier isMaintainerAuthorised(bytes32 _maintainerId) {
+        require(isAuthorisedAndSenderAllowed(_maintainerId, msg.sender));
         _;
     }
+
+    modifier isMaintainerAuthorisedForLogNumber(uint256 _logNumber) {
+        MaintenanceLogStorageLib.Log memory log = MaintenanceLogStorageLib.getLog(storageAddress, _logNumber);
+        require(isAuthorisedAndSenderAllowed(log.maintainerId, msg.sender));
+        _;
+    }    
 
     modifier logExists(bytes32 _logId) {
         require(
@@ -76,44 +86,44 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         _;
     }
 
-    function isAuthorised(address _maintainer) 
+    function isAuthorised(bytes32 _maintainerId) 
         public view 
         returns (bool) {
-        return MaintenanceLogStorageLib.isAuthorised(storageAddress, _maintainer);
+        return MaintenanceLogStorageLib.isAuthorised(storageAddress, _maintainerId);
     }
 
-    function addWorkAuthorisation(address _maintainer) 
+    function addWorkAuthorisation(bytes32 _maintainerId) 
         whenNotPaused()
         onlyVehicleOwner()        
         external payable
          {
-        MaintenanceLogStorageLib.addAuthorisation(storageAddress, _maintainer);
-        emit WorkAuthorisationAdded(_maintainer);
+        MaintenanceLogStorageLib.addAuthorisation(storageAddress, _maintainerId);
+        emit WorkAuthorisationAdded(_maintainerId);
     }
 
-    function removeWorkAuthorisation(address _maintainer) 
+    function removeWorkAuthorisation(bytes32 _maintainerId) 
         whenNotPaused()
         onlyVehicleOwner()        
         external payable
          {
-        MaintenanceLogStorageLib.removeAuthorisation(storageAddress, _maintainer);
-        emit WorkAuthorisationRemoved(_maintainer);
+        MaintenanceLogStorageLib.removeAuthorisation(storageAddress, _maintainerId);
+        emit WorkAuthorisationRemoved(_maintainerId);
     }    
    
-    function add(bytes32 _logId, uint256 _date, string _title, string _description) 
+    function add(bytes32 _logId, bytes32 _maintainerId, uint256 _date, string _title, string _description) 
         whenNotPaused() 
-        isMaintainerAuthorised(msg.sender) 
+        isMaintainerAuthorised(_maintainerId) 
         external payable {
-        uint256 logNumber = MaintenanceLogStorageLib.storeLog(storageAddress, msg.sender, _logId, _date, _title, _description);
-        emit LogAdded(logNumber, msg.sender);
+        uint256 logNumber = MaintenanceLogStorageLib.storeLog(storageAddress, _maintainerId, msg.sender, _logId, _date, _title, _description);
+        emit LogAdded(logNumber, _maintainerId);
     }
 
     function addDoc(uint256 _logNumber, string _title, bytes32 _ipfsAddressForDoc) 
         whenNotPaused() 
-        isMaintainerAuthorised(msg.sender)
         isNotEmpty(_title)
         logNumberExists(_logNumber)
         logIsNotVerified(_logNumber)
+        isMaintainerAuthorisedForLogNumber(_logNumber)        
         external payable {
         uint256 docNumber = MaintenanceLogStorageLib.storeLogDoc(storageAddress, _logNumber, _title, _ipfsAddressForDoc);
         emit DocAdded(_logNumber, docNumber);
@@ -143,13 +153,14 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         external view 
         logNumberExists(_logNumber)
         returns 
-    (uint256 logNumber, bytes32 id, address maintainer, uint256 date, string  title, string description, bool verified) {
+    (uint256 logNumber, bytes32 id, bytes32 maintainerId, address maintainerAddress, uint256 date, string  title, string description, bool verified) {
 
         MaintenanceLogStorageLib.Log memory log = MaintenanceLogStorageLib.getLog(storageAddress, _logNumber);
 
         logNumber = log.logNumber;
         id = log.id;
-        maintainer = log.maintainer;
+        maintainerId = log.maintainerId;
+        maintainerAddress = log.maintainerAddress;
         date = log.date;
         title = log.title;
         description = log.description;
@@ -181,5 +192,17 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         public {
         Claimable.claimOwnership();
         MaintenanceLogStorageLib.removeAllAuthorisations(storageAddress);
+    }    
+
+    function isAuthorisedAndSenderAllowed(bytes32 _maintainerId, address _maintainerAddress) 
+        private view
+        returns (bool) {
+
+        IRegistryLookup maintainerLookup = IRegistryLookup(maintainerRegistryAddress);
+
+        return
+            MaintenanceLogStorageLib.isAuthorised(storageAddress, _maintainerId) &&
+            maintainerLookup.isMemberRegisteredAndEnabled(_maintainerId) &&
+            _maintainerAddress == maintainerLookup.getMemberOwner(_maintainerId);
     }    
 }

@@ -7,6 +7,7 @@ var MaintenanceLogStorageLib = artifacts.require("MaintenanceLogStorageLib.sol")
 var EternalStorage = artifacts.require("EternalStorage.sol");
 var Registry = artifacts.require("Registry.sol");
 var ManufacturerRegistry = artifacts.require("ManufacturerRegistry.sol");
+var MaintainerRegistry = artifacts.require("MaintainerRegistry.sol");
 var VehicleRegistry = artifacts.require("VehicleRegistry.sol");
 var VehicleRegistry = artifacts.require("VehicleRegistry.sol");
 var MaintenanceLog = artifacts.require("MaintenanceLog.sol");
@@ -20,12 +21,14 @@ module.exports = function(deployer) {
   deployer.deploy(ByteUtilsLib);
   deployer.link(ByteUtilsLib, ManufacturerRegistry);
   deployer.link(ByteUtilsLib, VehicleRegistry);
+  deployer.link(ByteUtilsLib, MaintainerRegistry);
   deployer.link(ByteUtilsLib, MaintenanceLog);
 
   deployer.deploy(RegistryStorageLib);
   deployer.link(RegistryStorageLib, Registry);
   deployer.link(RegistryStorageLib, ManufacturerRegistry);
   deployer.link(RegistryStorageLib, VehicleRegistry);
+  deployer.link(RegistryStorageLib, MaintainerRegistry);
 
   deployer.deploy(MaintenanceLogStorageLib);
   deployer.link(MaintenanceLogStorageLib, MaintenanceLog);

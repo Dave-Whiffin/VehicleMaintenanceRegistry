@@ -7,7 +7,8 @@ library MaintenanceLogStorageLib {
     struct Log {
         uint256 logNumber;
         bytes32 id;
-        address maintainer;
+        bytes32 maintainerId;
+        address maintainerAddress;
         uint256 date;
         string  title;
         string description;
@@ -22,7 +23,8 @@ library MaintenanceLogStorageLib {
 
     function storeLog (
         address _storageAccount, 
-        address _maintainer,
+        bytes32 _maintainerId,
+        address _maintainerAddress,
         bytes32 _id,
         uint256 _date,
         string _title,
@@ -35,7 +37,8 @@ library MaintenanceLogStorageLib {
 
         setLogNumber(_storageAccount, _id, logNumber);
         setId(_storageAccount, logNumber, _id);
-        setMaintainer(_storageAccount, logNumber, _maintainer);
+        setMaintainerId(_storageAccount, logNumber, _maintainerId);
+        setMaintainerAddress(_storageAccount, logNumber, _maintainerAddress);
         setDate(_storageAccount, logNumber, _date);
         setTitle(_storageAccount, logNumber, _title);
         setDescription(_storageAccount, logNumber, _description);
@@ -46,42 +49,42 @@ library MaintenanceLogStorageLib {
         return logNumber;
     }
 
-    function getAuthorisationCount(address _storageAccount) public view returns (uint256) {
+    function getMaintainerCount(address _storageAccount) public view returns (uint256) {
         return EternalStorage(_storageAccount).getUint256Value
             (keccak256(abi.encodePacked("maintainerCount")));        
     }
 
-    function setAuthorisationCount(address _storageAccount, uint256 _count) public {
+    function setMaintainerCount(address _storageAccount, uint256 _count) public {
         EternalStorage(_storageAccount).setUint256Value
             (keccak256(abi.encodePacked("maintainerCount")), _count);        
     }    
 
-    function getMaintainerNumber(address _storageAccount, address _maintainer) public view returns (uint256) {
+    function getMaintainerNumber(address _storageAccount, bytes32 _maintainerId) public view returns (uint256) {
         return EternalStorage(_storageAccount).getUint256Value
-            (keccak256(abi.encodePacked("maintainerNumber", _maintainer)));          
+            (keccak256(abi.encodePacked("maintainerNumber", _maintainerId)));          
     }
 
-    function setMaintainerNumber(address _storageAccount, address _maintainer, uint256 _maintainerNumber) public {
+    function setMaintainerNumber(address _storageAccount, bytes32 _maintainerId, uint256 _maintainerNumber) public {
         EternalStorage(_storageAccount).setUint256Value
-            (keccak256(abi.encodePacked("maintainerNumber", _maintainer)), _maintainerNumber);          
+            (keccak256(abi.encodePacked("maintainerNumber", _maintainerId)), _maintainerNumber);          
     }   
 
-    function addAuthorisation(address _storageAccount, address _maintainer) public {
+    function addAuthorisation(address _storageAccount, bytes32 _maintainerId) public {
 
-        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainer);
+        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainerId);
 
         if(maintainerNumber == 0) {
-            uint256 currentCount = getAuthorisationCount(_storageAccount);
+            uint256 currentCount = getMaintainerCount(_storageAccount);
             maintainerNumber = currentCount + 1;
-            setMaintainerNumber(_storageAccount, _maintainer, maintainerNumber);
-            setAuthorisationCount(_storageAccount, maintainerNumber);
+            setMaintainerNumber(_storageAccount, _maintainerId, maintainerNumber);
+            setMaintainerCount(_storageAccount, maintainerNumber);
         }
 
         setAuthorisation(_storageAccount, maintainerNumber, true);
     }
 
-    function removeAuthorisation(address _storageAccount, address _maintainer) public {
-        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainer);
+    function removeAuthorisation(address _storageAccount, bytes32 _maintainerId) public {
+        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainerId);
         setAuthorisation(_storageAccount, maintainerNumber, false);
     }
 
@@ -92,14 +95,14 @@ library MaintenanceLogStorageLib {
 
     function removeAllAuthorisations(address _storageAccount) public {
         for(uint256 maintainerNumber = 1; 
-            maintainerNumber < getAuthorisationCount(_storageAccount) + 1; 
+            maintainerNumber < getMaintainerCount(_storageAccount) + 1; 
             maintainerNumber ++ ) {
             setAuthorisation(_storageAccount, maintainerNumber, false);
         }
     }
 
-    function isAuthorised(address _storageAccount, address _maintainer) public view returns (bool) {
-        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainer);
+    function isAuthorised(address _storageAccount, bytes32 _maintainerId) public view returns (bool) {
+        uint256 maintainerNumber = getMaintainerNumber(_storageAccount, _maintainerId);
         
         return EternalStorage(_storageAccount).getBooleanValue
             (keccak256(abi.encodePacked("maintainerAuthorisation", maintainerNumber)));
@@ -182,7 +185,8 @@ library MaintenanceLogStorageLib {
         Log memory log = Log({
             logNumber: _logNumber,
             id: getId(_storageAccount, _logNumber),
-            maintainer: getMaintainer(_storageAccount, _logNumber),
+            maintainerId: getMaintainerId(_storageAccount, _logNumber),
+            maintainerAddress: getMaintainerAddress(_storageAccount, _logNumber),
             date: getDate(_storageAccount, _logNumber),
             title: getTitle(_storageAccount, _logNumber),
             description: getDescription(_storageAccount, _logNumber),
@@ -224,10 +228,15 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked(_logNumber, "date")), _date);
     } 
 
-    function setMaintainer(address _storageAccount, uint256 _logNumber, address _maintainer) public {
+    function setMaintainerAddress(address _storageAccount, uint256 _logNumber, address _maintainer) public {
         return EternalStorage(_storageAccount).setAddressValue(
             keccak256(abi.encodePacked(_logNumber, "maintainer")), _maintainer);
-    }     
+    }    
+
+    function setMaintainerId(address _storageAccount, uint256 _logNumber, bytes32 _maintainerId) public {
+        return EternalStorage(_storageAccount).setBytes32Value(
+            keccak256(abi.encodePacked(_logNumber, "maintainerId")), _maintainerId);
+    }         
 
     function setVerified(address _storageAccount, uint256 _logNumber, bool _verified) public {
         return EternalStorage(_storageAccount).setBooleanValue(
@@ -244,11 +253,17 @@ library MaintenanceLogStorageLib {
             keccak256(abi.encodePacked(_logNumber, "description")), _description);
     }  
 
-    function getMaintainer(address _storageAccount, uint256 _logNumber) public view
+    function getMaintainerAddress(address _storageAccount, uint256 _logNumber) public view
         returns (address){
         return EternalStorage(_storageAccount).getAddressValue(
             keccak256(abi.encodePacked(_logNumber, "maintainer")));
-    }   
+    } 
+
+    function getMaintainerId(address _storageAccount, uint256 _logNumber) public view
+        returns (bytes32){
+        return EternalStorage(_storageAccount).getBytes32Value(
+            keccak256(abi.encodePacked(_logNumber, "maintainerId")));
+    }       
 
     function getTitle(address _storageAccount, uint256 _logNumber) 
         public view returns (string) {

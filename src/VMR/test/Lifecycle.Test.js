@@ -125,7 +125,7 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
 
                 describe("manufacturer assigns maintenance log to vehicle registry", function () { 
                     before(async function () {
-                        await vehicleRegistry.setMaintainceLogAddress(vehicleNumber, maintenanceLog.address, {from: manufacturerAccount});
+                        await vehicleRegistry.setMaintenanceLogAddress(vehicleNumber, maintenanceLog.address, {from: manufacturerAccount});
                     });
 
                     describe("manufacturer adds work authorisation to mechanic 1", function () { 
