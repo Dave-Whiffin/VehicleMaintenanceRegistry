@@ -212,6 +212,8 @@ contract('MaintenanceLog', function (accounts) {
                     assert.equal(title, log[5]);
                     assert.equal(description, log[6]);
                     assert.isFalse(log[7], "log should not be verified"); 
+                    assert.equal(0, log[8], "verifier should be 0"); 
+                    assert.equal(0, log[9], "verificationDate should be 0"); 
                 });                   
 
                 it("emits LogAdded event with logNumber and maintainer", async function() {
@@ -257,6 +259,8 @@ contract('MaintenanceLog', function (accounts) {
                         it("the log shows as verified", async function() {
                             let log = await maintenanceLog.getLog(logNumber);
                             assert.isTrue(log[7], "log should be verified"); 
+                            assert.equal(manufacturerAccount, log[8], "verifier should be manufacturer"); 
+                            assert.isTrue(log[9] > 0, "verificationDate should be greater than 0");                             
                         });
     
                         it("can not add doc to verified log", async function() {

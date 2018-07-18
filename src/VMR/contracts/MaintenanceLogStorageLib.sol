@@ -13,6 +13,8 @@ library MaintenanceLogStorageLib {
         string  title;
         string description;
         bool verified;
+        address verifier;
+        uint256 verificationDate;
     }
 
     struct Doc {
@@ -47,6 +49,13 @@ library MaintenanceLogStorageLib {
         setCount(_storageAccount, logNumber);
 
         return logNumber;
+    }
+
+    function storeVerification(address _storageAccount, uint256 _logNumber, address _verifier, uint256 _verificationDate) 
+        public {
+        setVerified(_storageAccount, _logNumber, true);
+        setVerifier(_storageAccount, _logNumber, _verifier);
+        setVerificationDate(_storageAccount, _logNumber, _verificationDate);
     }
 
     function getMaintainerCount(address _storageAccount) public view returns (uint256) {
@@ -190,7 +199,9 @@ library MaintenanceLogStorageLib {
             date: getDate(_storageAccount, _logNumber),
             title: getTitle(_storageAccount, _logNumber),
             description: getDescription(_storageAccount, _logNumber),
-            verified: getVerified(_storageAccount, _logNumber)
+            verified: getVerified(_storageAccount, _logNumber),
+            verifier: getVerifier(_storageAccount, _logNumber),
+            verificationDate: getVerificationDate(_storageAccount, _logNumber)
         });
 
         return log;
@@ -241,7 +252,17 @@ library MaintenanceLogStorageLib {
     function setVerified(address _storageAccount, uint256 _logNumber, bool _verified) public {
         return EternalStorage(_storageAccount).setBooleanValue(
             keccak256(abi.encodePacked(_logNumber, "verified")), _verified);
-    }     
+    }  
+
+    function setVerifier(address _storageAccount, uint256 _logNumber, address _verifier) public {
+        return EternalStorage(_storageAccount).setAddressValue(
+            keccak256(abi.encodePacked(_logNumber, "verifier")), _verifier);
+    }         
+
+    function setVerificationDate(address _storageAccount, uint256 _logNumber, uint256 _verificationDate) public {
+        return EternalStorage(_storageAccount).setUint256Value(
+            keccak256(abi.encodePacked(_logNumber, "verificationDate")), _verificationDate);
+    }
 
     function setTitle(address _storageAccount, uint256 _logNumber, string _title) public {
         return EternalStorage(_storageAccount).setStringValue(
@@ -288,5 +309,17 @@ library MaintenanceLogStorageLib {
         return EternalStorage(_storageAccount).getBooleanValue(
             keccak256(abi.encodePacked(_logNumber, "verified")));
     }         
+
+    function getVerifier(address _storageAccount, uint256 _logNumber) 
+        public view returns (address) {
+        return EternalStorage(_storageAccount).getAddressValue(
+            keccak256(abi.encodePacked(_logNumber, "verifier")));
+    }         
+
+    function getVerificationDate(address _storageAccount, uint256 _logNumber) 
+        public view returns (uint256) {
+        return EternalStorage(_storageAccount).getUint256Value(
+            keccak256(abi.encodePacked(_logNumber, "verificationDate")));
+    }                 
   
 }

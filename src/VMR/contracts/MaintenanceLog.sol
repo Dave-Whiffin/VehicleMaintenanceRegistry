@@ -134,7 +134,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         onlyVehicleOwner() 
         logNumberExists(_logNumber) 
         external payable {
-        MaintenanceLogStorageLib.setVerified(storageAddress, _logNumber, true);
+        MaintenanceLogStorageLib.storeVerification(storageAddress, _logNumber, msg.sender, now);
         emit LogVerified(_logNumber);
     }
 
@@ -153,7 +153,9 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         external view 
         logNumberExists(_logNumber)
         returns 
-    (uint256 logNumber, bytes32 id, bytes32 maintainerId, address maintainerAddress, uint256 date, string title, string description, bool verified) {
+    (uint256 logNumber, bytes32 id, bytes32 maintainerId, 
+    address maintainerAddress, uint256 date, string title, string description, 
+    bool verified, address verifier, uint256 verificationDate) {
 
         MaintenanceLogStorageLib.Log memory log = MaintenanceLogStorageLib.getLog(storageAddress, _logNumber);
 
@@ -165,6 +167,8 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         title = log.title;
         description = log.description;
         verified = log.verified;
+        verifier = log.verifier;
+        verificationDate = log.verificationDate;
     }
 
     function getDocCount(uint256 _logNumber) 
