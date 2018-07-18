@@ -19,6 +19,9 @@ contract FeeChecker is usingOraclize, IFeeLookup, Pausable, Claimable {
     bool public autoRefresh;
     string public query;
 
+  /**
+   * @dev Modifier throws if sender is not owner or the oraclize_cbAddress
+   */
     modifier isSenderAllowedToUpdateFee() {
         require(msg.sender == owner || msg.sender == oraclize_cbAddress(), "Sender is not allowed to update fees");
         _;

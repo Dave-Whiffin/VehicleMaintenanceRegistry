@@ -25,9 +25,9 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     /** @dev The constructor
       * @param _storageAddress The address of the EternalStorage contract.
-      * @param _vehicleRegistryAddress The address of the contract implementing IVehicleRegistry for vehicles
-      * @param _maintainerRegistryAddress The address of the contract implementing IRegistry for maintainers
-      * @param _VIN The vehicle identification number (must be unique and present in the VehicleRegistry)
+      * @param _vehicleRegistryAddress The address of the contract implementing IVehicleRegistry for vehicles.
+      * @param _maintainerRegistryAddress The address of the contract implementing IRegistry for maintainers.
+      * @param _VIN The vehicle identification number (must be unique and present in the VehicleRegistry).
       */   
     constructor(address _storageAddress, address _vehicleRegistryAddress, address _maintainerRegistryAddress, bytes32 _VIN) public {
         
@@ -46,29 +46,44 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         vin = _VIN;
     }
 
+  /**
+   * @dev Modifier throws if sender is not the vehicle owner
+   */
     modifier onlyVehicleOwner() {
         require(
             IRegistryLookup(vehicleRegistryAddress).getMemberOwner(vin) == msg.sender);
         _;
     }
 
+  /**
+   * @dev Modifier throws if sender is maintainer is not authorised or if the sender is not the maintainer owner
+   */
     modifier isMaintainerAuthorised(bytes32 _maintainerId) {
         require(isAuthorisedAndSenderAllowed(_maintainerId, msg.sender));
         _;
     }
 
+  /**
+   * @dev Modifier throws if sender is not the owner relating to the maintainer on the log or the maintainer is not authorised
+   */
     modifier isMaintainerAuthorisedForLogNumber(uint256 _logNumber) {
         MaintenanceLogStorageLib.Log memory log = MaintenanceLogStorageLib.getLog(storageAddress, _logNumber);
         require(isAuthorisedAndSenderAllowed(log.maintainerId, msg.sender));
         _;
     }    
 
+  /**
+   * @dev Modifier throws if the logId does not exist
+   */
     modifier logExists(bytes32 _logId) {
         require(
             MaintenanceLogStorageLib.getLogNumber(storageAddress, _logId) > 0);
         _;
     }
 
+  /**
+   * @dev Modifier throws if the logNumber does not exist
+   */
     modifier logNumberExists(uint256 _logNumber) {
         require(
             _logNumber > 0 && _logNumber <= MaintenanceLogStorageLib.getCount(storageAddress)
@@ -76,6 +91,9 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         _;
     }
 
+  /**
+   * @dev Modifier throws if the doc number does not exist against the specified log number
+   */
     modifier docNumberExists(uint256 _logNumber, uint _docNumber) {
         require(
             _docNumber > 0 && _docNumber <= MaintenanceLogStorageLib.getDocCount(storageAddress, _logNumber)
@@ -83,22 +101,34 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         _;
     }    
 
+  /**
+   * @dev Modifier throws if the log is verified
+   */
     modifier logIsNotVerified(uint256 _logNumber) {
         require(MaintenanceLogStorageLib.getVerified(storageAddress, _logNumber) == false);
         _;
     }
 
+  /**
+   * @dev Modifier throws if the string is empty
+   */
     modifier isNotEmpty(string s) {
         require(bytes(s).length > 0);
         _;
     }
 
+    /** @dev Indicates if a maintainer is authorised.
+      * @param _maintainerId The maintainerId.
+      */  
     function isAuthorised(bytes32 _maintainerId) 
         public view 
         returns (bool) {
         return MaintenanceLogStorageLib.isAuthorised(storageAddress, _maintainerId);
     }
 
+    /** @dev Authorise a maintainer to add logs.
+      * @param _maintainerId The maintainerId.
+      */  
     function addWorkAuthorisation(bytes32 _maintainerId) 
         whenNotPaused()
         onlyVehicleOwner()        
@@ -108,6 +138,9 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         emit WorkAuthorisationAdded(_maintainerId);
     }
 
+    /** @dev Remove authorisation from a maintainer to add logs.
+      * @param _maintainerId The maintainerId.
+      */ 
     function removeWorkAuthorisation(bytes32 _maintainerId) 
         whenNotPaused()
         onlyVehicleOwner()        
@@ -117,6 +150,13 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         emit WorkAuthorisationRemoved(_maintainerId);
     }    
    
+    /** @dev Add a log entry.
+      * @param _logId A unique reference to the work done.
+      * @param _maintainerId The maintainerId who did the work.
+      * @param _date The date the work was done.
+      * @param _title The title of the work.
+      * @param _description The description of the work.
+      */    
     function add(bytes32 _logId, bytes32 _maintainerId, uint256 _date, string _title, string _description) 
         whenNotPaused() 
         isMaintainerAuthorised(_maintainerId) 
@@ -125,6 +165,11 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         emit LogAdded(logNumber, _maintainerId);
     }
 
+    /** @dev Add a doc to a log entry.
+      * @param _logNumber The log number to add the doc to.
+      * @param _title The title for the doc.
+      * @param _ipfsAddressForDoc The ipfs address for the doc.
+      */    
     function addDoc(uint256 _logNumber, string _title, bytes32 _ipfsAddressForDoc) 
         whenNotPaused() 
         isNotEmpty(_title)
@@ -136,6 +181,9 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         emit DocAdded(_logNumber, docNumber);
     }
 
+    /** @dev Marks a log entry as verified to ensure the vin owner is satisfied the work was done.
+      * @param _logNumber The log number to add the doc to.
+      */ 
     function verify(uint256 _logNumber) 
         whenNotPaused() 
         onlyVehicleOwner() 
@@ -145,10 +193,15 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         emit LogVerified(_logNumber);
     }
 
+    /** @dev Returns the count of log entries
+      */ 
     function getLogCount() external view returns (uint256) {
         return MaintenanceLogStorageLib.getCount(storageAddress);
     }
 
+    /** @dev Returns the log number for the a given logId
+      * @param _logId The maintainer specified unique reference to the log entry.
+      */ 
     function getLogNumber(bytes32 _logId)
         logExists(_logId)
         external view 
@@ -156,6 +209,19 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         return MaintenanceLogStorageLib.getLogNumber(storageAddress, _logId);
     }
 
+    /** @dev Returns a specific log entry
+      * @param _logNumber The Log Number for the entry.
+      * @return logNumber The Log Number for the entry.
+      * @return id The maintainer specified unique id for the log entry.
+      * @return maintainerId The maintainerId.
+      * @return maintainerAddress The maintainer address that added the log.
+      * @return date The date the work was done.
+      * @return title The title for the work.
+      * @return description The description of the work.
+      * @return verified Indicates if the vin owner verified the work.
+      * @return verifier The address of the verifier.
+      * @return verificationDate The date of the verification.
+      */
     function getLog(uint256 _logNumber) 
         external view 
         logNumberExists(_logNumber)
@@ -178,12 +244,22 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         verificationDate = log.verificationDate;
     }
 
+    /** @dev Returns the number of docs attached to a log entry
+      * @param _logNumber The log number for the entry
+      */ 
     function getDocCount(uint256 _logNumber) 
         logNumberExists(_logNumber)
         external view returns (uint256) {
         return MaintenanceLogStorageLib.getDocCount(storageAddress, _logNumber);
     }
 
+    /** @dev Returns a specific doc relating to a log
+      * @param _logNumber The Log Number for the entry.
+      * @param _docNumber The Document Number.
+      * @return docNumber The Document Number.
+      * @return title The Document Title.
+      * @return ipfsAddress The IPFS address for the doc.
+      */
     function getDoc(uint256 _logNumber, uint256 _docNumber) 
         logNumberExists(_logNumber)
         docNumberExists(_logNumber, _docNumber)
@@ -195,7 +271,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     }  
 
   /**
-   * @dev Allows the pendingOwner address to finalize the transfer BUT only if they own the vehicle.
+   * @dev Allows the pendingOwner address to finalize the transfer (only if they own the vehicle in the vehicle registry).
    */
     function claimOwnership() 
         onlyPendingOwner() 
@@ -205,6 +281,9 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         MaintenanceLogStorageLib.removeAllAuthorisations(storageAddress);
     }    
 
+  /**
+   * @dev Private function that returns if a maintainer is authorised, enabled and the maintainer address equals the maintainer owner
+   */
     function isAuthorisedAndSenderAllowed(bytes32 _maintainerId, address _maintainerAddress) 
         private view
         returns (bool) {

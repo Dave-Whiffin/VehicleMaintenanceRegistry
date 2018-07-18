@@ -12,6 +12,9 @@ contract EternalStorage is Claimable {
     mapping(bytes32 => bytes32) private BytesStorage;    
     mapping(bytes32 => bool) private BooleanStorage;    
 
+  /**
+   * @dev Modifier throws when A: is initialised and sender isn't the bound contract address.  B: not initialised and sender is not owner.
+   */
     modifier onlyRegisteredCaller() {
         if(getStorageInitialised()) {
             require(getContractAddress() == msg.sender, "Once storage is initialised - only the contract address can invoke this function");
