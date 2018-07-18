@@ -119,6 +119,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     /** @dev Indicates if a maintainer is authorised.
       * @param _maintainerId The maintainerId.
+      * @return Whether or not the maintainer is authorised to log entries
       */  
     function isAuthorised(bytes32 _maintainerId) 
         public view 
@@ -201,6 +202,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     /** @dev Returns the log number for the a given logId
       * @param _logId The maintainer specified unique reference to the log entry.
+      * @return The count of log entries
       */ 
     function getLogNumber(bytes32 _logId)
         logExists(_logId)
@@ -246,6 +248,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     /** @dev Returns the number of docs attached to a log entry
       * @param _logNumber The log number for the entry
+      * @return The doc count
       */ 
     function getDocCount(uint256 _logNumber) 
         logNumberExists(_logNumber)
@@ -283,7 +286,10 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
   /**
    * @dev Private function that returns if a maintainer is authorised, enabled and the maintainer address equals the maintainer owner
-   */
+   * @param _maintainerId The id of the maintainer
+   * @param _maintainerAddress The address of the caller expected to be the maintainer owner
+   * @return if the maintainer and maintainer address are authorised
+   */   
     function isAuthorisedAndSenderAllowed(bytes32 _maintainerId, address _maintainerAddress) 
         private view
         returns (bool) {
