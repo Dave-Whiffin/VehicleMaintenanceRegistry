@@ -365,7 +365,7 @@
         "id": 117,
         "nodeType": "ImportDirective",
         "scope": 367,
-        "sourceUnit": 2863,
+        "sourceUnit": 2865,
         "src": "28:81:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -379,10 +379,10 @@
               "id": 118,
               "name": "Claimable",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2862,
+              "referencedDeclaration": 2864,
               "src": "304:9:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Claimable_$2862",
+                "typeIdentifier": "t_contract$_Claimable_$2864",
                 "typeString": "contract Claimable"
               }
             },
@@ -392,8 +392,8 @@
           }
         ],
         "contractDependencies": [
-          2862,
-          2948
+          2864,
+          2950
         ],
         "contractKind": "contract",
         "documentation": "@title Eternal Storage\r\n@dev A key value storage container for contracts.\r\nAllows the bound contract to be upgraded whilst maintaining storage data\r",
@@ -401,8 +401,8 @@
         "id": 366,
         "linearizedBaseContracts": [
           366,
-          2862,
-          2948
+          2864,
+          2950
         ],
         "name": "EternalStorage",
         "nodeType": "ContractDefinition",
@@ -742,7 +742,7 @@
                                   "name": "msg",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 2995,
+                                  "referencedDeclaration": 2997,
                                   "src": "1077:3:1",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_magic_message",
@@ -771,7 +771,7 @@
                                 "name": "owner",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 2866,
+                                "referencedDeclaration": 2868,
                                 "src": "1091:5:1",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_address",
@@ -818,10 +818,10 @@
                             "name": "require",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [
-                              2998,
-                              2999
+                              3000,
+                              3001
                             ],
-                            "referencedDeclaration": 2999,
+                            "referencedDeclaration": 3001,
                             "src": "1069:7:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -911,7 +911,7 @@
                                   "name": "msg",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 2995,
+                                  "referencedDeclaration": 2997,
                                   "src": "933:3:1",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_magic_message",
@@ -972,10 +972,10 @@
                             "name": "require",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [
-                              2998,
-                              2999
+                              3000,
+                              3001
                             ],
-                            "referencedDeclaration": 2999,
+                            "referencedDeclaration": 3001,
                             "src": "901:7:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -1086,7 +1086,7 @@
                           "name": "keccak256",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2989,
+                          "referencedDeclaration": 2991,
                           "src": "1442:9:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_sha3_pure$__$returns$_t_bytes32_$",
@@ -1160,7 +1160,7 @@
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 2896,
+                  "referencedDeclaration": 2898,
                   "src": "1397:9:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
@@ -1275,7 +1275,7 @@
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2989,
+                        "referencedDeclaration": 2991,
                         "src": "1678:9:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_sha3_pure$__$returns$_t_bytes32_$",
@@ -1431,7 +1431,7 @@
                           "name": "keccak256",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2989,
+                          "referencedDeclaration": 2991,
                           "src": "2043:9:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_sha3_pure$__$returns$_t_bytes32_$",
@@ -1505,7 +1505,7 @@
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 2896,
+                  "referencedDeclaration": 2898,
                   "src": "1998:9:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
@@ -1620,7 +1620,7 @@
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2989,
+                        "referencedDeclaration": 2991,
                         "src": "2270:9:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_sha3_pure$__$returns$_t_bytes32_$",
@@ -3327,7 +3327,7 @@
         "id": 117,
         "nodeType": "ImportDirective",
         "scope": 367,
-        "sourceUnit": 2863,
+        "sourceUnit": 2865,
         "src": "28:81:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -3341,10 +3341,10 @@
               "id": 118,
               "name": "Claimable",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2862,
+              "referencedDeclaration": 2864,
               "src": "304:9:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Claimable_$2862",
+                "typeIdentifier": "t_contract$_Claimable_$2864",
                 "typeString": "contract Claimable"
               }
             },
@@ -3354,8 +3354,8 @@
           }
         ],
         "contractDependencies": [
-          2862,
-          2948
+          2864,
+          2950
         ],
         "contractKind": "contract",
         "documentation": "@title Eternal Storage\r\n@dev A key value storage container for contracts.\r\nAllows the bound contract to be upgraded whilst maintaining storage data\r",
@@ -3363,8 +3363,8 @@
         "id": 366,
         "linearizedBaseContracts": [
           366,
-          2862,
-          2948
+          2864,
+          2950
         ],
         "name": "EternalStorage",
         "nodeType": "ContractDefinition",
@@ -3704,7 +3704,7 @@
                                   "name": "msg",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 2995,
+                                  "referencedDeclaration": 2997,
                                   "src": "1077:3:1",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_magic_message",
@@ -3733,7 +3733,7 @@
                                 "name": "owner",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 2866,
+                                "referencedDeclaration": 2868,
                                 "src": "1091:5:1",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_address",
@@ -3780,10 +3780,10 @@
                             "name": "require",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [
-                              2998,
-                              2999
+                              3000,
+                              3001
                             ],
-                            "referencedDeclaration": 2999,
+                            "referencedDeclaration": 3001,
                             "src": "1069:7:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -3873,7 +3873,7 @@
                                   "name": "msg",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 2995,
+                                  "referencedDeclaration": 2997,
                                   "src": "933:3:1",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_magic_message",
@@ -3934,10 +3934,10 @@
                             "name": "require",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [
-                              2998,
-                              2999
+                              3000,
+                              3001
                             ],
-                            "referencedDeclaration": 2999,
+                            "referencedDeclaration": 3001,
                             "src": "901:7:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -4048,7 +4048,7 @@
                           "name": "keccak256",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2989,
+                          "referencedDeclaration": 2991,
                           "src": "1442:9:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_sha3_pure$__$returns$_t_bytes32_$",
@@ -4122,7 +4122,7 @@
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 2896,
+                  "referencedDeclaration": 2898,
                   "src": "1397:9:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
@@ -4237,7 +4237,7 @@
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2989,
+                        "referencedDeclaration": 2991,
                         "src": "1678:9:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_sha3_pure$__$returns$_t_bytes32_$",
@@ -4393,7 +4393,7 @@
                           "name": "keccak256",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2989,
+                          "referencedDeclaration": 2991,
                           "src": "2043:9:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_sha3_pure$__$returns$_t_bytes32_$",
@@ -4467,7 +4467,7 @@
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 2896,
+                  "referencedDeclaration": 2898,
                   "src": "1998:9:1",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
@@ -4582,7 +4582,7 @@
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2989,
+                        "referencedDeclaration": 2991,
                         "src": "2270:9:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_sha3_pure$__$returns$_t_bytes32_$",
@@ -6293,5 +6293,5 @@
     }
   },
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-19T09:23:08.801Z"
+  "updatedAt": "2018-07-19T10:11:53.816Z"
 }

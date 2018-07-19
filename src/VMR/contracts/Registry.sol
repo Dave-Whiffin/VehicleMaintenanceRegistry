@@ -11,13 +11,13 @@ import "./IRegistryLookup.sol";
 
 /** @title Registry
   * @dev A registry of members.
-  Each member must have a unique memberId.
-  Each member will be assigned a member number when initially added.
-  Allowing members to be added.
-  Allowing attributes to be set against members.
-  Members to be disabled and re-enabled.
-  Initial ownership of members is the owner of the registry.
-  The owner of the registry can transfer ownership of the member.  
+  * Each member must have a unique memberId.
+  * Each member will be assigned a member number when initially added.
+  * Allowing members to be added.
+  * Allowing attributes to be set against members.
+  * Members to be disabled and re-enabled.
+  * Initial ownership of members is the owner of the registry.
+  * The owner of the registry can transfer ownership of the member.  
  */
 contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
 
@@ -168,12 +168,19 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         _;
     }    
 
+    /** @dev Modifier pendingMemberNumberOwner - Throws when sender is not pending owner.
+      * @param _memberNumber the member number.
+     */
     modifier pendingMemberNumberOwner(uint256 _memberNumber) {
         require(
             RegistryStorageLib.getMemberPendingOwner(storageAddress, _memberNumber) == msg.sender);
         _;
     }        
 
+    /** @dev Modifier memberMumberTransferKeyMatches - Throws when a hash of the key provided does not match the stored hash.
+      * @param _memberNumber the member number.
+      * @param _key the secret (not the hash, the actual value).
+     */
     modifier memberMumberTransferKeyMatches(uint256 _memberNumber, string _key) {
         bytes32 storedKeyHash = RegistryStorageLib.getMemberTransferKeyHash(storageAddress, _memberNumber);
         bytes32 keyHash = keccak256(abi.encodePacked(_key));
@@ -181,41 +188,65 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         _;        
     }
 
+    /** @dev Modifier attributeNameDoesNotExist - Throws if the attribute name already exists against the member.
+      * @param _memberNumber the member number.
+      * @param _attribName the attribute name
+     */
     modifier attributeNameDoesNotExist(uint256 _memberNumber, bytes32 _attribName) {
         require(RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attribName) == 0);
         _;
     }
 
+    /** @dev Modifier attributeNameExists - Throws if the attribute name does not exist against the member.
+      * @param _memberNumber the member number.
+      * @param _attribName the attribute name
+     */
     modifier attributeNameExists(uint256 _memberNumber, bytes32 _attribName) {
         require(RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attribName) > 0);
         _;
     }   
 
+    /** @dev Modifier attributeNumberExists - Throws if the attribute number does not exist.
+      * @param _memberNumber the member number.
+      * @param _attributeNumber the attribute number
+     */
     modifier attributeNumberExists(uint256 _memberNumber, uint256 _attributeNumber) {
         require(RegistryStorageLib.attributeNumberExists(storageAddress, _memberNumber, _attributeNumber));
         _;
     }
 
+    /** @dev Modifier paidMemberRegistrationFee - Throws if the msg.value is below the registration fee (Wei)
+     */
     modifier paidMemberRegistrationFee() {
         require(IFeeLookup(feeLookupAddress).getFeeInWei() <= msg.value);
         _;
     }
 
+    /** @dev Modifier paidMemberTransferFee - Throws if the msg.value is below the transfer fee (Wei)
+     */
     modifier paidMemberTransferFee() {
         require(IFeeLookup(feeLookupAddress).getFeeInWei() <= msg.value);
         _;
     }
 
+    /** @dev Modifier senderAllowedToRegisterMember - Throws if isAllowedToRegisterMember returns false
+     */
     modifier senderAllowedToRegisterMember() {
         require(isAllowedToRegisterMember(msg.sender));
         _;
     }
 
-    //interception point for contracts inheriting from this
+    /** @dev Returns true if the sender is the registry owner.
+      * This may be overriden in contracts inheriting from Registry.
+      * @param _address the address to check 
+     */
     function isAllowedToRegisterMember(address _address) public view returns (bool) {
         return _address == owner;
     }
 
+    /** @dev Sets the address of the IFeeLookup contract. Must be called by owner and contract is paused.
+      * Requires a different addres to the current address.  
+      * @param _feeLookupAddress the address of the IFeeLookup contract.     */
     function setFeeLookupAddress(address _feeLookupAddress) 
         public
         onlyOwner() 
@@ -225,19 +256,24 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         feeLookupAddress = _feeLookupAddress;
     }
 
-//member related getters
+    /** @dev Returns the total count of members in the registry.  */
     function getMemberTotalCount() 
         public view 
         returns (uint256) {
         return RegistryStorageLib.getMemberTotalCount(storageAddress);
     }
 
+    /** @dev Returns true if the member is registered. 
+      * @param _memberNumber the member number.
+    */
     function isMemberRegistered(uint256 _memberNumber) 
         public view 
         returns (bool) {
         return RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber);
     } 
 
+    /** @dev Returns the member number for a given member id.  Throws if member id is not registered.
+      * @param _memberId the member id. */
     function getMemberNumber(bytes32 _memberId) 
         public view 
         memberIdRegistered(_memberId)
@@ -245,6 +281,9 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return getMemberNum(_memberId);
     }
 
+    /** @dev Returns the member details for a given member.  Throws if the member does not exist.
+      * @param _memberNumber the member number.
+     */
     function getMember(uint256 _memberNumber) 
         public view
         memberNumberRegistered(_memberNumber)
@@ -258,13 +297,17 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         created = member.created;
     }
 
+    /** @dev A Internal function to get the member struct for a member.
+      * @param _memberNumber the member number. */
     function getMemberInternal(uint256 _memberNumber)
         internal view returns (RegistryStorageLib.Member memory) {
         RegistryStorageLib.Member memory m = RegistryStorageLib.getMember(storageAddress, _memberNumber);
         return m;
     }
 
-//IRegistryLookup
+    /** @dev IRegistryLookup implementation.  Returns the owner address for a given member.
+      * @param _memberId the member id.
+      */
     function getMemberOwner(bytes32 _memberId)
         external view
         memberIdRegistered(_memberId)
@@ -274,7 +317,9 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return member.owner;
     }
 
-//IRegistryLookup
+    /** @dev IRegistryLookup implementation.  Returns true if the member is registered and enabled.
+      * @param _memberId the member id.
+      */
     function isMemberRegisteredAndEnabled(bytes32 _memberId)
         external view
         returns (bool) {
@@ -286,6 +331,10 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return member.enabled;
     }    
  
+    /** @dev Returns the total attribute count for a given member.
+    Throws if member does not exist.
+      * @param _memberNumber the member number.
+     */
     function getMemberAttributeTotalCount(uint256 _memberNumber) 
         public view
         memberNumberRegistered(_memberNumber)
@@ -293,6 +342,12 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return RegistryStorageLib.getAttributeTotalCount(storageAddress, _memberNumber);
     }
 
+    /** @dev Returns the attribute number relating to an attribute name for a member.
+      * Throws when member is not registered.
+      * Throws when attribute name does not exist.
+      @param _memberNumber the member number
+      @param _attributeName the attribute name
+     */
     function getMemberAttributeNumber(uint256 _memberNumber, bytes32 _attributeName) 
         public view
         memberNumberRegistered(_memberNumber)
@@ -301,6 +356,12 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attributeName);
     }    
 
+    /** @dev Returns the attribute for a given member and attribute number.
+      * Throws when member is not registered.
+      * Throws when attribute number does not exist.
+      @param _memberNumber the member number
+      @param _attributeNumber the attribute name
+     */
     function getMemberAttribute(uint256 _memberNumber, uint256 _attributeNumber) 
         memberNumberRegistered(_memberNumber)
         attributeNumberExists(_memberNumber, _attributeNumber)    
@@ -311,7 +372,14 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return (attribute.attributeNumber, attribute.name, attribute.attributeType, attribute.value);
     }
 
-//payable
+    /** @dev Adds a new member to the registry.
+      * Throws if contract is paused.
+      * Throws if member id is already registered.
+      * Throw if the sender is not allowed to register (is not the owner).
+      * Throws if the msg.value is below the registration fee
+      * @param _memberId the user allocated member id - must be unique.
+      @return The member number.
+     */
     function registerMember(bytes32 _memberId) 
         public payable
         whenNotPaused()
@@ -325,6 +393,13 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return memberNumber;
     }
 
+    /** @dev Enables a member in the registry.
+      * Throws if contract is paused.
+      * Throws if the sender is not the registry owner.
+      * Throws if member number is not registered.
+      * Throws is member is alredy enabled.
+      * @param _memberNumber the member number to enable.
+     */
     function enableMember(uint256 _memberNumber) 
         public payable 
         whenNotPaused()
@@ -336,6 +411,13 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         emit MemberEnabled(_memberNumber);
     }        
 
+    /** @dev Disables a member in the registry
+      * Throws when contract is paused
+      * Throws if the sender is not the registry owner 
+      * Throws if member is not registered
+      * Throws if member is not enabled
+      * @param _memberNumber the member number
+    */
     function disableMember(uint256 _memberNumber) 
         public payable
         whenNotPaused()
@@ -347,6 +429,15 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         emit MemberDisabled(_memberNumber);
     }
 
+    /** @dev Sets the pending owner of a member (requires new owner to accept).
+      * Throws when contract is paused
+      * Throws when member is not registerd
+      * Throws when sender does not own the member
+      * Throws when msg.value is below the transfer fee
+      * @param _memberNumber the member number
+      * @param _newOwner the address of the new owner
+      * @param _keyHash a hash of a secret (the secret should have been given to the new owner by other means)
+    */
     function transferMemberOwnership(uint256 _memberNumber, address _newOwner, bytes32 _keyHash) 
         public payable 
         whenNotPaused()
@@ -360,6 +451,14 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         emit MemberOwnershipTransferRequest(_memberNumber, currentOwner, _newOwner);
     }
 
+    /** @dev The pending owner becomes the new owner of the member.
+      * Throws when member does not exist.
+      * Throws when contract is paused.
+      * Throws when sender is not the pending owner address.
+      * Throws when the hash of the provided key does not match the stored hash.
+      @param _memberNumber the member number.
+      @param _key the secret/password given to the pending owner by the current owner.
+     */
     function acceptMemberOwnership(uint256 _memberNumber, string _key) 
         public payable
         whenNotPaused()
@@ -371,11 +470,25 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         emit MemberOwnershipTransferAccepted(_memberNumber, msg.sender);
     }     
 
+    /** @dev Adds an attibute to a member
+      * Attributes are primarily key/value pairs.
+      * They are indexed by attribute name (which must be unique for the member) and a registry allocated attribute number.
+      * They can have a user specified attribute type to help group attributes.
+      * Throws when contract is paused.
+      * Throws when sender is not the member number owner.
+      * Throws when member is not registered.
+      * Throws is attribute name already exists for member.
+      @param _memberNumber the member number.
+      @param _attributeName the user specified attribute name (must be unique for member).
+      @param _attributeType the user specified attribute type.
+      @param _attributeValue the user specified value of the attribute.
+      @return the registry allocated attribute number.
+     */
     function addMemberAttribute(uint256 _memberNumber, bytes32 _attributeName, bytes32 _attributeType, bytes32 _attributeValue) 
         public payable 
         whenNotPaused()
-        onlyOwner()
-        memberNumberRegistered(_memberNumber)
+        memberNumberRegistered(_memberNumber)        
+        memberNumberOwner(_memberNumber)
         attributeNameDoesNotExist(_memberNumber, _attributeName)
         returns (uint256) {
         uint256 attributeNumber = RegistryStorageLib.storeMemberAttribute(
@@ -384,11 +497,21 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return attributeNumber;
     } 
 
+    /** @dev Sets the type and value on an existing attribute (both the type and value will be set even if empty)
+      * Thows when contract is paused.
+      * Throws when the member does not exist
+      * Throws when the caller is not the owner of the member
+      * Throws when the attribute number does not exist against the member
+      * @param _memberNumber the member number
+      * @param _attributeNumber the attribute number
+      * @param _attributeType the attribute type to set
+      * @param _attributeValue the attribute value to set
+    */
     function setMemberAttribute(uint256 _memberNumber, uint256 _attributeNumber, bytes32 _attributeType, bytes32 _attributeValue) 
         public payable 
         whenNotPaused()
-        onlyOwner()
         memberNumberRegistered(_memberNumber)
+        memberNumberOwner(_memberNumber)
         attributeNumberExists(_memberNumber, _attributeNumber) {
 
         RegistryStorageLib.setAttribute(storageAddress, _memberNumber, _attributeNumber, _attributeType, _attributeValue);
@@ -396,6 +519,10 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         emit MemberAttributeChanged(_memberNumber, _attributeNumber, attributeName, _attributeType, _attributeValue);
     }      
 
+    /** @dev Internal method which returns the member number from the given member id.
+      * Does not throw if member does not exist (which the public or external getters do) 
+      * @param _memberId the member id
+      */
     function getMemberNum(bytes32 _memberId) 
         internal view 
         returns (uint256) {
