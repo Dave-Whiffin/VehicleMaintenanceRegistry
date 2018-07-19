@@ -81,9 +81,10 @@ contract('Registry', function (accounts) {
 
     it('transferMemberOwnership fails', async function () {
       var initialOwner = accounts[0];      
-      var transferKey = web3.sha3("transfer secret");
+      let transferSecret = "TheKey";
+      var transferKeyHash = web3.sha3(transferSecret);
       let newOwner = accounts[1];
-      await assertRevert(registry.transferMemberOwnership(0, newOwner, transferKey, {from: initialOwner}));
+      await assertRevert(registry.transferMemberOwnership(0, newOwner, transferKeyHash, {from: initialOwner}));
     });    
   });
 
@@ -114,11 +115,12 @@ contract('Registry', function (accounts) {
     });  
     
     it('transferMemberOwnership can not be called', async function () {
-      await assertRevert(registry.transferMemberOwnership(memberNumber, accounts[2], web3.fromAscii('test'), {from: registryOwner}));
+      let keyHash = web3.sha3(web3.toHex("test"), {encoding:"hex"});
+      await assertRevert(registry.transferMemberOwnership(memberNumber, accounts[2], keyHash, {from: registryOwner}));
     });  
   
     it('acceptMemberOwnership can not be called', async function () {
-      await assertRevert(registry.acceptMemberOwnership(memberNumber, web3.fromAscii('test'), {from: registryOwner}));
+      await assertRevert(registry.acceptMemberOwnership(memberNumber, 'test', {from: registryOwner}));
     });   
     
     it('addMemberAttribute can not be called', async function () {
@@ -323,6 +325,7 @@ contract('Registry', function (accounts) {
 
         describe('the owner can transfer the ownership of the member', function () {
           let transferKey;
+          let transferKeyHash;
           let newOwner;
           let initialOwner;
           let transferEventWatcher;
@@ -330,11 +333,12 @@ contract('Registry', function (accounts) {
     
           before(async function () {
             transferEventWatcher = registry.MemberOwnershipTransferRequest();        
-            transferKey = web3.sha3("transfer secret");
+            transferKey = "Shhhhhhh";
+            transferKeyHash = web3.sha3(web3.toHex(transferKey), {encoding:"hex"});
             newOwner = accounts[1];
             var member = await registry.getMember(1)
             initialOwner = member[2];
-            await registry.transferMemberOwnership(memberNumber, newOwner, transferKey, {from: initialOwner});
+            await registry.transferMemberOwnership(memberNumber, newOwner, transferKeyHash, {from: initialOwner});
             transferEvents = await transferEventWatcher.get();
           });
     
@@ -349,8 +353,7 @@ contract('Registry', function (accounts) {
           });       
     
           it('the transfer key must match', async function () {      
-            let incorrectTransferKey = web3.sha3("wrong secret");
-            await assertRevert(registry.acceptMemberOwnership(memberNumber, incorrectTransferKey, {from: newOwner}));
+            await assertRevert(registry.acceptMemberOwnership(memberNumber, "wrong secret", {from: newOwner}));
           });        
           
           it('emits the MemberOwnershipTransferRequest event', async function () {

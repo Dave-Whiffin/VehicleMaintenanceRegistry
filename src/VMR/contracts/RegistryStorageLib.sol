@@ -218,9 +218,9 @@ library RegistryStorageLib {
             keccak256(abi.encodePacked(_memberNumber, "created")));
     }               
 
-    function getMemberTransferKey(address _storageAccount, uint256 _memberNumber) public view returns(bytes32) {
+    function getMemberTransferKeyHash(address _storageAccount, uint256 _memberNumber) public view returns(bytes32) {
         return EternalStorage(_storageAccount).getBytes32Value(
-            keccak256(abi.encodePacked(_memberNumber, "transferKey")));
+            keccak256(abi.encodePacked(_memberNumber, "transferKeyHash")));
     }    
 
     function getMemberPendingOwner(address _storageAccount, uint256 _memberNumber) public view returns(address) {
@@ -265,9 +265,9 @@ library RegistryStorageLib {
             keccak256(abi.encodePacked(_memberNumber, "pendingOwner")), _pendingOwner);
     }   
 
-    function setMemberTransferKey(address _storageAccount, uint256 _memberNumber, bytes32 _keyHash) public {
+    function setMemberTransferKeyHash(address _storageAccount, uint256 _memberNumber, bytes32 _keyHash) public {
         EternalStorage(_storageAccount).setBytes32Value(
-            keccak256(abi.encodePacked(_memberNumber, "transferKey")), _keyHash);
+            keccak256(abi.encodePacked(_memberNumber, "transferKeyHash")), _keyHash);
     }    
 
 }

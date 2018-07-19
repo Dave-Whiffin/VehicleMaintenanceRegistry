@@ -1,6 +1,8 @@
 pragma solidity ^0.4.23;
 
-/** @title bytes32 utils. */
+/** @title Byte Utils Lib.
+  * @dev Utils library for bytes32.
+ */
 library ByteUtilsLib {
 
     /** @dev creates a string from a bytes32.

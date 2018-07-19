@@ -2,7 +2,10 @@ pragma solidity ^0.4.23;
 
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
 
-/** @title Eternal Storage - a key value storage vault. */
+/** @title Eternal Storage
+  * @dev A key value storage container for contracts.
+  Allows the bound contract to be upgraded whilst maintaining storage data
+ */
 contract EternalStorage is Claimable {
 
     mapping(bytes32 => uint256) private UIntStorage;

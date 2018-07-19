@@ -5,7 +5,9 @@ import "../installed_contracts/oraclize-api/contracts/usingOraclize.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol";
 
-/** @title Fee Checker - an oraclize based contract for returning a fee. */
+/** @title Fee Checker.
+  * @dev  An oraclize based contract for returning a fee with ability to auto refresh.
+ */
 contract FeeChecker is usingOraclize, IFeeLookup, Pausable, Claimable {
 
     event OraclizeCallBack(bytes32 queryId, string result);

@@ -92,9 +92,10 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         _;
     }        
 
-    modifier memberMumberTransferKeyMatches(uint256 _memberNumber, bytes32 _keyHash) {
-        bytes32 transferKey = RegistryStorageLib.getMemberTransferKey(storageAddress, _memberNumber);
-        require(transferKey == _keyHash);
+    modifier memberMumberTransferKeyMatches(uint256 _memberNumber, string _key) {
+        bytes32 storedKeyHash = RegistryStorageLib.getMemberTransferKeyHash(storageAddress, _memberNumber);
+        bytes32 keyHash = keccak256(abi.encodePacked(_key));
+        require(storedKeyHash == keyHash);
         _;        
     }
 
@@ -273,16 +274,16 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         { 
         address currentOwner = RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber);  
         RegistryStorageLib.setMemberPendingOwner(storageAddress, _memberNumber, _newOwner);  
-        RegistryStorageLib.setMemberTransferKey(storageAddress, _memberNumber, _keyHash);  
+        RegistryStorageLib.setMemberTransferKeyHash(storageAddress, _memberNumber, _keyHash);  
         emit MemberOwnershipTransferRequest(_memberNumber, currentOwner, _newOwner);
     }
 
-    function acceptMemberOwnership(uint256 _memberNumber, bytes32 _keyHash) 
+    function acceptMemberOwnership(uint256 _memberNumber, string _key) 
         public payable
         whenNotPaused()
         memberNumberRegistered(_memberNumber)
         pendingMemberNumberOwner(_memberNumber)
-        memberMumberTransferKeyMatches(_memberNumber, _keyHash)
+        memberMumberTransferKeyMatches(_memberNumber, _key)
          {  
         RegistryStorageLib.setMemberOwner(storageAddress, _memberNumber, msg.sender);
         emit MemberOwnershipTransferAccepted(_memberNumber, msg.sender);

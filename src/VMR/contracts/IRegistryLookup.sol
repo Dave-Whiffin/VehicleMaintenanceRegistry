@@ -1,6 +1,8 @@
 pragma solidity ^0.4.23;
 
-/** @title Registry Lookup interface - indicates a contract has registry read functionality. */
+/** @title IRegistry Lookup interface.
+  * @dev Indicates a contract has registry read functionality. 
+*/
 interface IRegistryLookup {
 
     /** @dev Gets the address of the owner relating to the member
