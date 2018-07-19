@@ -157,6 +157,11 @@ contract('VehicleRegistry', function (accounts) {
             assert.equal(web3.toUtf8(manufacturerId), value);
         });           
 
+        it("The manafucturer can not be changed", async function() {
+            let attributeNumber = await registry.getMemberAttributeNumber(memberNumber, "manufacturer");
+            await assertRevert(registry.setMemberAttribute(memberNumber, attributeNumber, web3.fromAscii("type"),  web3.fromAscii("val")));
+        })
+
         it("The maintenance log address can be set and returned", async function() {
             //requires a contract address
             let maintenancelogAddress = registry.address;
