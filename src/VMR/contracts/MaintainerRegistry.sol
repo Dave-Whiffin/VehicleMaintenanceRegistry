@@ -4,7 +4,7 @@ import "./Registry.sol";
 
 /** @title Maintainer Registry
   * @dev A registry of vehicle maintainers (garages etc).
-  Does not do much at present except for inheriting from Registry which provides the funcitonality.
+  Inherits Registry which provides all of the functionality.
   Is a base for future maintainer specific functionality
 */
 contract MaintainerRegistry is Registry {

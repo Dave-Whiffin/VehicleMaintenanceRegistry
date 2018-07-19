@@ -7,7 +7,9 @@ import "../node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol"
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/TokenDestructible.sol";
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
-/** @title Maintenance Log - a digital equivalent of a vehicle log book (to hold service history etc) */
+/** @title Maintenance Log
+  * @dev A digital equivalent of a vehicle log book (to hold service history etc) 
+*/
 contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     using AddressUtils for address;

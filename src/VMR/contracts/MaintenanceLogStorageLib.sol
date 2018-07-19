@@ -2,7 +2,8 @@ pragma solidity ^0.4.23;
 
 import "./EternalStorage.sol";
 
-/** @title Maintenance Log Storage Library - controls how maintenance log contracts store data in the eternal storage contract */
+/** @title Maintenance Log Storage Library
+  * @dev Controls how maintenance log contracts store data in the eternal storage contract */
 library MaintenanceLogStorageLib {
 
     /** @dev Struct defining the values in a log entry.

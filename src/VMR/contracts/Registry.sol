@@ -9,23 +9,75 @@ import "./ByteUtilsLib.sol";
 import "./IFeeLookup.sol";
 import "./IRegistryLookup.sol";
 
+/** @title Registry
+  * @dev A registry of members.
+  Each member must have a unique memberId.
+  Each member will be assigned a member number when initially added.
+  Allowing members to be added.
+  Allowing attributes to be set against members.
+  Members to be disabled and re-enabled.
+  Initial ownership of members is the owner of the registry.
+  The owner of the registry can transfer ownership of the member.  
+ */
 contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
 
     using ByteUtilsLib for bytes32;
     using AddressUtils for address;
     
+    /** @dev Event LogInfo.
+      * @param message a message.
+     */
     event LogInfo(string message);
+
+    /** @dev Event MemberRegistered - occurs when a member is first registered.
+      * @param memberNumber the member.
+      * @param memberId the member Id.
+     */    
     event MemberRegistered(uint256 indexed memberNumber, bytes32 indexed memberId);
+
+    /** @dev Event MemberEnabled - occurs when a member re-enabled.
+      * @param memberNumber the member number.
+     */    
     event MemberEnabled(uint256 indexed memberNumber);
+
+    /** @dev Event MemberDisabled - occurs when a member disabled.
+      * @param memberNumber the member number.
+     */        
     event MemberDisabled(uint256 indexed memberNumber);
+
+    /** @dev Event MemberOwnershipTransferRequest - occurs when a member ownership transfer is requested.
+      * @param memberNumber the member number.
+      * @param from the address of the current owner.
+      * @param to the address of the pending owner.
+     */        
     event MemberOwnershipTransferRequest(uint256 indexed memberNumber, address indexed from, address indexed to);
+
+    /** @dev Event MemberOwnershipTransferAccepted - occurs when a pending owner accepts ownership of a member.
+      * @param memberNumber the member number.
+      * @param newOwner the address of the new owner.
+     */            
     event MemberOwnershipTransferAccepted(uint256 indexed memberNumber, address indexed newOwner);
+
+    /** @dev Event MemberAttributeChanged - occurs when an attribute is added or set.
+      * @param memberNumber the member number.
+      * @param attributeNumber the registry allocated attribute number.
+      * @param attributeName the attribute name (specified by the member owner).
+      * @param attributeType the attribute type (specified by the member owner).
+      * @param attributeValue the attribute value (specified by the member owner).
+     */        
     event MemberAttributeChanged(uint256 indexed memberNumber, 
     uint256 indexed attributeNumber, bytes32 indexed attributeName, bytes32 attributeType, bytes32 attributeValue);
 
+    /** @dev the address of the eternal storage contract holding the state data for the registry. */
     address public storageAddress;
+
+    /** @dev the address of the contract implementing IFeeLookup. */
     address public feeLookupAddress;
 
+    /** @dev The Constructor.
+      * @param _storageAddress the address of the eternal storage contract holding the state data for the registry.
+      * @param _feeLookupAddress the address of the contract implementing IFeeLookup .
+     */
     constructor(address _storageAddress, address _feeLookupAddress) public {
 
         require(_storageAddress.isContract());
@@ -34,52 +86,82 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         feeLookupAddress = _feeLookupAddress;
     }
 
+    /** @dev Modifier memberIdRegistered - Throws when memberId is not registered.
+      * @param _memberId the user specified member id.
+     */
     modifier memberIdRegistered(bytes32 _memberId) {
         require(RegistryStorageLib.memberNumberExists(storageAddress, getMemberNum(_memberId)));
         _;
     }
 
+    /** @dev Modifier memberNumberRegistered - Throws when the member number is not registered.
+      * @param _memberNumber the member number.
+    */
     modifier memberNumberRegistered(uint256 _memberNumber) {
         require(RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber));
         _;
     }
 
+    /** @dev Modifier memberIdEnabled - Throws when member is not enabled.
+      * @param _memberId the member id.
+     */
     modifier memberIdEnabled(bytes32 _memberId) {
         require(RegistryStorageLib.getMemberEnabled(storageAddress, getMemberNum(_memberId)));
         _;
     }
 
+    /** @dev Modifier memberNumberEnabled - Throws when member is not enabled.
+      * @param _memberNumber the member number.
+     */
     modifier memberNumberEnabled(uint256 _memberNumber) {
         require(RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber));
         _;
     }    
 
+    /** @dev Modifier memberIdDisabled - throws when member is not disabled.
+      * @param _memberId the member id.
+    */
     modifier memberIdDisabled(bytes32 _memberId) {
         require(!RegistryStorageLib.getMemberEnabled(storageAddress, getMemberNum(_memberId)));
         _;
     }    
 
+    /** @dev Modifier memberNumberDisabled - throws when member is not disabled.
+      * @param _memberNumber the member number.
+    */
     modifier memberNumberDisabled(uint256 _memberNumber) {
         require(!RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber));
         _;
     }          
 
+    /** @dev Modifier memberIdNotRegistered - throws when member is already registered.
+      * @param _memberId the member id.
+    */
     modifier memberIdNotRegistered(bytes32 _memberId) {
         require(!RegistryStorageLib.memberNumberExists(storageAddress, getMemberNum(_memberId)));
         _;
     }
 
+    /** @dev Modifier memberNumberNotRegistered - throws when member is already registered.
+      * @param _memberNumber the member number.
+    */
     modifier memberNumberNotRegistered(uint256 _memberNumber) {
         require(!RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber));
         _;
     }    
 
+    /** @dev Modifier memberIdOwner - Throws when sender is not the member owner.
+      * @param _memberId the member id.
+     */
     modifier memberIdOwner(bytes32 _memberId) {
         require(
             RegistryStorageLib.getMemberOwner(storageAddress, getMemberNum(_memberId)) == msg.sender);
         _;
     }
 
+    /** @dev Modifier memberNumberOwner - Throws when sender is not the member owner.
+      * @param _memberNumber the member number.
+     */
     modifier memberNumberOwner(uint256 _memberNumber) {
         require(
             RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber) == msg.sender);

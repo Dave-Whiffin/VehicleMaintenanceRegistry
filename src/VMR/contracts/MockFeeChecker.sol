@@ -2,7 +2,8 @@ pragma solidity ^0.4.23;
 
 import "./IFeeLookup.sol";
 
-/** @title Mock Fee Checker - for unit testing contracts depending on IFeeLookup */
+/** @title Mock Fee Checker
+  * @dev A contract to use as a test double when unit testing contract dependant on the IFeeLookup interface. */
 contract MockFeeChecker is IFeeLookup {
 
     uint256 public fee;

@@ -2,7 +2,9 @@ pragma solidity ^0.4.23;
 
 import "./IRegistryLookup.sol";
 
-/** @title Mock Registry Lookup - for unit testing contracts depending on IRegistryLookup */
+/** @title Mock Registry Lookup
+  * @dev A contract to use as a test double when unit testing contract dependant on the IRegistryLookup interface.
+ */
 contract MockRegistryLookup is IRegistryLookup {
     
     mapping(bytes32 => address) owners;
