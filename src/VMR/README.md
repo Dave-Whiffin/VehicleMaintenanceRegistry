@@ -7,19 +7,32 @@ Instead of having a paper based log book which is stamped thoughout the life of 
 
 * accessibility to anyone to view history
 * immutable log records
-* transparency
+* IPFS proof of work docs
+* vehicle ownership checks
 * protection against information loss
+* protection from log tampering by bad actors
 * protection against fraudelent claims of work done to the vehicle
-* IPFS proofs
 * Small registration and transfer fees for the related registries
 
+# The Primary Dapp
+
+## Typical Use Case 1
 Adding an entry to the maintenance log:
 1. The vehicle owner authorises a maintainer to do work on the vehicle
-2. The maintainer logs what work they did (maintainer id, date, title, description)
+2. The maintainer logs what work they did (jobid, maintainer id, date, title, description)
+    * The job id is something the maintainer should provide to the customer off chain.
 3. The maintainer adds proof docs to the logs (doc title and ipfs address)
-4. The vehicle owner checks the proof and marks the log entry as verified
+4. The vehicle owner checks the log entry and proof (via the jobId) and marks the log entry as verified
 
+## Typical Use Case 2
 Viewing Log History:
+
+Allow anyone to view the log history of a vehicle if they know the vin.
+* Supply the vin
+* All log records displayed sequentially (most recent first)
+* Option to view related docs for each log
+
+Notes (for UI implementation):
 * Get the maintenance log address from the vehicle registry.
 * Get the log information from the maintenance log
     * To iterate through all logs:
@@ -27,12 +40,6 @@ Viewing Log History:
         * Get the log count and iterate the number to retrieve each log
         * The docs for each log are also sequentially numbered and can be iterated in the same way
     * The log number can be retrieved from a known log entry id.
-
-# The Primary Dapp
-* Allow anyone to view the maintenance log history
-* Allow a vehicle owner to authorise a maintainer to log work
-* Allow the maintainer to log work and add docs
-* Allow the vehicle owner to verify
 
 Assumptions:
 * Manufacturer, Maintainer and Vehicle registry will be pre populated with static data.
