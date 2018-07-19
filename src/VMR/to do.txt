@@ -5,6 +5,10 @@ upgradeability
 
 tests!!  (5 per contract)
 
+fix git - (remove bin/build files from repo)
+if already present use line below
+git rm --cached FILENAME
+
 contracts
 =========
 vyper contract
