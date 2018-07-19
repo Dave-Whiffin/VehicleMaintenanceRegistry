@@ -56,12 +56,18 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
     let logNumber;
     let docNumber;
 
+    let transferKey;
+    let transferKeyHash;
+
     before(async function () {
 
         vin = web3.fromAscii("01234567890123456");
         manufacturerId = web3.fromAscii("Ford Motor Company");
         maintainerId1 = web3.fromAscii("Service Centre 1");
         maintainerId2 = web3.fromAscii("Service Centre 2");
+
+        transferKey = "Shhhhhhh";
+        transferKeyHash = web3.sha3(web3.toHex(transferKey), {encoding:"hex"});
 
         vehicleRegistryOwner = accounts[0];
         manufacturerRegistryOwner = accounts[1];
@@ -106,9 +112,8 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
             await maintainerRegistry.registerMember(maintainerId1, {from: maintainerRegistryOwner, value: maintainerRegistryFee});
             maintainerNumber1 = await maintainerRegistry.getMemberNumber(maintainerId1);
 
-            let secretKey = web3.sha3("TransferSecretKey");
-            await maintainerRegistry.transferMemberOwnership(maintainerNumber1, maintainerAddress1, secretKey, {from: maintainerRegistryOwner, value: maintainerRegistryFee});
-            await maintainerRegistry.acceptMemberOwnership(maintainerNumber1, secretKey, {from: maintainerAddress1});
+            await maintainerRegistry.transferMemberOwnership(maintainerNumber1, maintainerAddress1, transferKeyHash, {from: maintainerRegistryOwner, value: maintainerRegistryFee});
+            await maintainerRegistry.acceptMemberOwnership(maintainerNumber1, transferKey, {from: maintainerAddress1});
         });
 
         it("The maintainer is owned my the correct account", async function() {
@@ -125,9 +130,8 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
             await maintainerRegistry.registerMember(maintainerId2, {from: maintainerRegistryOwner, value: maintainerRegistryFee});
             maintainerNumber2 = await maintainerRegistry.getMemberNumber(maintainerId2);
 
-            let secretKey = web3.sha3("TransferSecretKey");
-            await maintainerRegistry.transferMemberOwnership(maintainerNumber2, maintainerAddress2, secretKey, {from: maintainerRegistryOwner, value: maintainerRegistryFee});
-            await maintainerRegistry.acceptMemberOwnership(maintainerNumber2, secretKey, {from: maintainerAddress2});
+            await maintainerRegistry.transferMemberOwnership(maintainerNumber2, maintainerAddress2, transferKeyHash, {from: maintainerRegistryOwner, value: maintainerRegistryFee});
+            await maintainerRegistry.acceptMemberOwnership(maintainerNumber2, transferKey, {from: maintainerAddress2});
         });
 
         it("The maintainer is owned my the correct account", async function() {
@@ -145,9 +149,8 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
             await manufacturerRegistry.registerMember(manufacturerId, {from: manufacturerRegistryOwner, value: manufacturerRegistryFee});
             manufacturerNumber = await manufacturerRegistry.getMemberNumber(manufacturerId);
 
-            let manufacturerTransferKey = web3.sha3("TransferSecretKey");
-            await manufacturerRegistry.transferMemberOwnership(manufacturerNumber, manufacturerAccount, manufacturerTransferKey, {from: manufacturerRegistryOwner, value: manufacturerRegistryFee});
-            await manufacturerRegistry.acceptMemberOwnership(manufacturerNumber, manufacturerTransferKey, {from: manufacturerAccount});
+            await manufacturerRegistry.transferMemberOwnership(manufacturerNumber, manufacturerAccount, transferKeyHash, {from: manufacturerRegistryOwner, value: manufacturerRegistryFee});
+            await manufacturerRegistry.acceptMemberOwnership(manufacturerNumber, transferKey, {from: manufacturerAccount});
         });
 
         it("The manufacturer is owned my the correct account", async function() {
@@ -252,9 +255,8 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
 
     describe("manufacturer transfers vin ownership to first customer", function () {
         before(async function () {
-            let secretKey = web3.sha3("TransferSecretKey");
-            await vehicleRegistry.transferMemberOwnership(vehicleNumber, firstOwnerAccount, secretKey, {from: manufacturerAccount, value: manufacturerRegistryFee});
-            await vehicleRegistry.acceptMemberOwnership(vehicleNumber, secretKey, {from: firstOwnerAccount});
+            await vehicleRegistry.transferMemberOwnership(vehicleNumber, firstOwnerAccount, transferKeyHash, {from: manufacturerAccount, value: manufacturerRegistryFee});
+            await vehicleRegistry.acceptMemberOwnership(vehicleNumber, transferKey, {from: firstOwnerAccount});
         });
 
         it("vehicle is registered to first customer", async function() {
@@ -336,9 +338,9 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
     
     describe("firstOwner transfers vin ownership to second", function () {
         before(async function () {
-            let secretKey = web3.sha3("TransferSecretKey");
-            await vehicleRegistry.transferMemberOwnership(vehicleNumber, secondOwnerAccount, secretKey, {from: firstOwnerAccount, value: manufacturerRegistryFee});
-            await vehicleRegistry.acceptMemberOwnership(vehicleNumber, secretKey, {from: secondOwnerAccount});
+
+            await vehicleRegistry.transferMemberOwnership(vehicleNumber, secondOwnerAccount, transferKeyHash, {from: firstOwnerAccount, value: manufacturerRegistryFee});
+            await vehicleRegistry.acceptMemberOwnership(vehicleNumber, transferKey, {from: secondOwnerAccount});
         });
 
         it("vehicle is registered to second customer", async function() {
