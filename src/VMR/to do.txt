@@ -17,6 +17,8 @@ uport integration
 ENS
 
 
+lock pragmas
+
 //register vehicle
 
 FLOWS TO MODEL

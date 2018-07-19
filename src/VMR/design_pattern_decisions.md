@@ -1,4 +1,22 @@
 
+VMR - Design Decisions
+======================
+
+# Emergency Stop
+
+# Contract Size
+
+# Loose Coupling
+
+# Upgradability
+
+# Ownership
+
+# Oracle
+
+
+pre-commit 
+
 ERC20Basic - TokenDestructable
 Wraps self destruct
 Returns all tokens to owner
