@@ -13,9 +13,7 @@ contracts
 =========
 vyper contract
 assembly
-
 uport integration
-
 ENS
 
 
@@ -27,13 +25,18 @@ Vehicle Registration
 Vehicle Ownership Transfer
 Maintenance Log
 
+USER STORIES FOR UI
+===================
+
 DESIGN DECISIONS
 
 DEPENDENCIES
 ============
 
-npm openzeppelin-solidity
-truffle install oraclize-api
+npm 
+    openzeppelin-solidity
+truffle install 
+    oraclize-api
 
 Ethereum Bridge - For oraclize
 powershell - run as admin!
