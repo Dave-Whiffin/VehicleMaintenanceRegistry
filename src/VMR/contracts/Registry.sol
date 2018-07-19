@@ -215,6 +215,15 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         _;
     }
 
+    /** @dev Modifier - Throws if not allowed to set attribute.
+      * @param _memberNumber the member number.
+      * @param _attributeNumber the attribute number
+     */
+    modifier allowedToSetAttribute(uint256 _memberNumber, uint256 _attributeNumber) {
+        _;
+    }    
+
+
     /** @dev Modifier paidMemberRegistrationFee - Throws if the msg.value is below the registration fee (Wei)
      */
     modifier paidMemberRegistrationFee() {
@@ -512,7 +521,9 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         whenNotPaused()
         memberNumberRegistered(_memberNumber)
         memberNumberOwner(_memberNumber)
-        attributeNumberExists(_memberNumber, _attributeNumber) {
+        attributeNumberExists(_memberNumber, _attributeNumber)
+        allowedToSetAttribute(_memberNumber, _attributeNumber)
+         {
 
         RegistryStorageLib.setAttribute(storageAddress, _memberNumber, _attributeNumber, _attributeType, _attributeValue);
         bytes32 attributeName = RegistryStorageLib.getAttributeName(storageAddress, _memberNumber, _attributeNumber);        

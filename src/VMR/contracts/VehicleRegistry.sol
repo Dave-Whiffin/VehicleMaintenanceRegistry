@@ -78,15 +78,15 @@ contract VehicleRegistry is Registry {
         _;
     }
 
-    /** @dev Modifier - throws if attribute name belonging to attribute is the manafacturer attribute name.
-      * @param _memberNumber the member number
+    /** @dev Modifier - (Override base in Registry) throws if attribute name belonging to attribute is the manafacturer attribute name.
+      * @param _memberNumber the member number.
       * @param _attributeNumber the attribute number
      */
-    modifier isNotManufacturerAttribute(uint256 _memberNumber, uint256 _attributeNumber) {
+    modifier allowedToSetAttribute(uint256 _memberNumber, uint256 _attributeNumber) {
         bytes32 name = RegistryStorageLib.getAttributeName(storageAddress, _memberNumber, _attributeNumber);
-        require(name != manufacturerAttributeName);
+        require(name != manufacturerAttributeName);        
         _;
-    }    
+    }     
 
     /** @dev Disabled - DOT NOT USE!! use registerVehicle instead.
       * Will throw if called.
@@ -94,7 +94,7 @@ contract VehicleRegistry is Registry {
     function registerMember(bytes32) 
         public payable
         returns (uint256) {
-        require(false, "Function disabled. use registerVehicle instead");
+        require(false);
         return 0;
     }    
 
