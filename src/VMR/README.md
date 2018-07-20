@@ -18,6 +18,11 @@ Instead of having a paper based log book which is stamped thoughout the life of 
 
 ## Typical Use Case 1
 Adding an entry to the maintenance log:
+
+Actors:
+ - Vehicle Owner
+ - Maintainer
+
 1. The vehicle owner authorises a maintainer to do work on the vehicle
 2. The maintainer logs what work they did (jobid, maintainer id, date, title, description)
     * The job id is something the maintainer should provide to the customer off chain.
@@ -46,12 +51,15 @@ Assumptions:
 * The vehicle owner will be one of the auto generated ganache-cli addresses.
 
 # Registries
-There are registries for maintainers, manufacturers and vehicles.  These are important as the maintenance log has dependencies on them. Their related contracts are fully tested. However the primary focus of the Dapp is the vehicle maintenance log.  The other registries will be populated with static data in order for the Dapp to run.  Separate Dapps could be built for each registry.
+There are registries for maintainers, manufacturers and vehicles.  These are important as the maintenance log has dependencies on them. Their related contracts are fully tested. However the primary focus of the Dapp is the vehicle maintenance log which is not focussed on the process of membership and transferral.  The other registries will be populated with static data in order for the Dapp to run.  Separate Dapps could be built for each registry or using a combination of them for different use cases.
 
 # Primary Solidity Contracts
 
 ## Eternal Storage
-All the primary contracts store their state data in a seperate Eternal Storage contract.  This ensures contracts which use this storage can be upgraded easier and that extensible data can be stored without corruption.  Primarily the eternal storage contract is just a series of key value mappings for specific types which is easy to test and unlikely to require an upgrade. 
+All the primary contracts store their state data in a seperate Eternal Storage contract.  This ensures contracts which use this storage can be upgraded easier and that extensible data can be stored without corruption.  Primarily the eternal storage contract is just a series of key value mappings for specific types which is easy to test and unlikely to require an upgrade. It is deliberately limited in scope in order to verify that it works and limit the chance of bugs.
+
+Thanks to this article for providing the basis of this contract.
+[Rocket Pool article on Medium](https://medium.com/rocket-pool/upgradable-solidity-contract-design-54789205276d)
 
 Getters and Setters are available for:
 * address
@@ -141,9 +149,12 @@ Member Id is the VIN (vehicle identification number).
 
 For VMR it provides a trustworthy source of vehicle verification and ownership as it implements IRegistryLookup.  This allows the maintenance log to ensure the caller is the owner of the vehicle by calling the vehicle registry.
 
+## Fee Checker
+This is an oracle source of fees relied upon by the registries.  A seperate instance would be expected to support each registry.  It can be set to auto update using oraclize.
+
 # Fees
 
-Each registry charges a fee for every new registration and every transfer.  This rewards the owner of the registry.
+Each registry charges a fee for every new registration and every transfer.  This rewards the owner of the registry.  In the case of manufacturer and maintainer registries the owner is only rewarded for transfer.  The owner is the only one allowed to add members and therefore they would have to pay the fee if one was set but ultimately the balance on the contract is owned by them anyway so they do not lose out.
 
 There is no fee associated with the maintenance log.
 
@@ -155,11 +166,14 @@ This party deploys the registry and becomes the owner.  All new manufacturers ca
 The ownership of a specific manufacturer can be transferred by the ManuAuth to another account and that account would need to accept ownership before the ownership actually changes.
 
 ### Maintainer Registry Owner (MaintAuth)
-This party deploys the registry and becomes the owner.  All new maintainers can only be added by this party and are initially owned by the MaintAuth.  It is likely that some human intervention and checks take place before a member is added to the registry and this is why initial membership is restricted to the MaintAuth.
+This party deploys the registry and becomes the owner.  All new maintainers can only be added by this party and are initially owned by this party.  It is likely that some human intervention and checks take place before a member is added to the registry and this is why initial membership is restricted to this party.
 
-The ownership of a specific maintainer can be transferred by the MaintAuth to another account and that account would need to accept ownership before the ownership actually changes.
+The ownership of a specific maintainer can be transferred by this party to another account and that account would need to accept ownership before the ownership actually changes.
 
 ### Vehicle Registry Owner
+This party deploys the registry and becomes the owner. Unlike the other registries, this party has not got permission to add members automatically.  Only registered and enabled manufacturer owner can add vehicles for that manufacturer.
+
+The ownership of a specific vehicle can be transferred by the current owner to another account and that account would need to accept ownership before the ownership actually changes.
 
 Incorporating:
 * Manufacturer Registry

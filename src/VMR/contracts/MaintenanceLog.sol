@@ -18,6 +18,9 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     address public storageAddress;
     address public vehicleRegistryAddress;
     address public maintainerRegistryAddress;
+
+    IRegistryLookup private vehicleRegistry;
+    IRegistryLookup private maintainerRegistry;
     
     event WorkAuthorisationAdded(bytes32 indexed maintainerId);
     event WorkAuthorisationRemoved(bytes32 indexed maintainerId);
@@ -37,14 +40,18 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         require(_vehicleRegistryAddress.isContract());
         require(_maintainerRegistryAddress.isContract());
 
+        vehicleRegistryAddress = _vehicleRegistryAddress;            
+        vehicleRegistry = IRegistryLookup(vehicleRegistryAddress);        
+        maintainerRegistryAddress = _maintainerRegistryAddress;
+        maintainerRegistry = IRegistryLookup(maintainerRegistryAddress);
+
         require(
-            IRegistryLookup(_vehicleRegistryAddress).isMemberRegisteredAndEnabled(_VIN));
+            vehicleRegistry.isMemberRegisteredAndEnabled(_VIN));
         require(
-            IRegistryLookup(_vehicleRegistryAddress).getMemberOwner(_VIN) == msg.sender);
+            vehicleRegistry.getMemberOwner(_VIN) == msg.sender);
+
 
         storageAddress = _storageAddress;
-        vehicleRegistryAddress = _vehicleRegistryAddress;            
-        maintainerRegistryAddress = _maintainerRegistryAddress;
         vin = _VIN;
     }
 
@@ -53,7 +60,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
    */
     modifier onlyVehicleOwner() {
         require(
-            IRegistryLookup(vehicleRegistryAddress).getMemberOwner(vin) == msg.sender);
+            vehicleRegistry.getMemberOwner(vin) == msg.sender);
         _;
     }
 
@@ -296,11 +303,9 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         private view
         returns (bool) {
 
-        IRegistryLookup maintainerLookup = IRegistryLookup(maintainerRegistryAddress);
-
         return
             MaintenanceLogStorageLib.isAuthorised(storageAddress, _maintainerId) &&
-            maintainerLookup.isMemberRegisteredAndEnabled(_maintainerId) &&
-            _maintainerAddress == maintainerLookup.getMemberOwner(_maintainerId);
+            maintainerRegistry.isMemberRegisteredAndEnabled(_maintainerId) &&
+            _maintainerAddress == maintainerRegistry.getMemberOwner(_maintainerId);
     }    
 }
