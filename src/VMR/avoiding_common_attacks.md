@@ -1,6 +1,10 @@
 Module 9 Lesson 3
 
 # Favour Pull Over Push
+The VMR system doesn't batch distribute payments.  
+
+For ownership transfer it follows a transfer and claim/accept pattern.  The owner makes a transfer which sets a pending owner, the pending owner must then accept/claim the ownership.
+
 * Transfer of ownership in registry is transfer and accept model
 * To avoid the registry returning unlimited arrays
     * It assigns a number to each member
@@ -51,33 +55,34 @@ Prefer constructs/aliases such as selfdestruct (over suicide) and keccak256 (ove
 ## Timestamp Dependence
 
 
-King Of The Ether
-C1. Logic Bugs
+# Avoiding common attacks
+
+## Logic Bugs
 Simple programming mistakes can cause the contract to behave differently to its stated rules, especially on 'edge cases'.
 
-We have mitigated against this risk by:
+Mitigation
+* The contracts are heavily unit tested (100+ tests) with Solidity and Javascript tests.  
+* Testing ensures expected inputs produce expected outputs.
+* Testing ensures that bad inputs are rejected.
+* Testing ensures that stated rules are followed.
+* Solidity coding best practices are followed.
+* Employed simple rules.
+* Storing minimal data.
+* Employed a registry model which allows contracts to be upgraded (they would be long running contracts)
+* Not storing secret data on the block chain
 
-Running over forty on-chain functional tests against the contract - see our on-chain test report.
-Performing "fuzz testing" by generating random method calls and applying them to both the real Solidity contract and a Javascript simulation of intended behaviour, then looking for differences.
-Following Solidity coding standards and general coding best practices for safety-critical software.
-Avoiding overly complex rules (even at the cost of some functionality) or complicated implementation (even at the cost of some gas).
-Note that we have chosen not to include a mechanism for fixing bugs during the life of the contract due to concern that this mechanism would itself be a serious vulnerability.
 
-C2. Failed Sends
-An earlier version of King of the Ether suffered from failure to send compensation payments to wallet contracts created by older versions of the Mist Ethereum Wallet.
+## Failed Sends
+The system does not send at all.  The registries receive payment for registration and transfer.  This goes in to the balance on each registry contract.  There is no option to send it to another party.  There is a mechanism for killing the contracts and sending the balance back to the owner.  The contracts inherit TokenDestructable contract from open-zeppelin allowing tokens to be sent back to the owner when the contract is destructed.
 
-We have mitigated against this risk by:
-
-Including a reasonable amount of gas with each payment sent.
-If sending a compensation payment still fails, we detect this and ring-fence the funds for the recipient to withdraw.
-Running several functional tests for this scenario - see e.g. "Compensation payment failure detected when sending to a very expensive wallet contract" and "Successfully resend failed compensation payment" in our on-chain test report.
-C3. Recursive Calls
+## Reentry / Recursive Calls
 Famously, the original DAO contract exhibited unintended behaviour where a "recursive split" technique was used to move Ether worth over US$ 100 Million out of the DAO. This was possible because when a contract sends payment to another contract, the receiving contract's fallback function can call back into the sending contract, which can often produce behaviour the developer of the sending contract developer had not anticipated.
 
 We have mitigated against this risk by:
 
 Using a 'reentry' flag to prevent recursive calls to all external non-constant functions in the contract - see the "ReentryProtectorMixin" in our contract code.
 Running functional tests for this scenario - see e.g. "Recursive call attack (nested withdraw)" in our on-chain test report.
+
 C4. Integer Arithmetic Overflow
 Numbers in Solidity code silently "wrap-around" if they become too large. This can lead to surprising behaviour - e.g. a check like "if (amountOne + amountTwo < myBalance) {...}" can appear to be true if one of the amounts is large enough to cause over-flow.
 
@@ -85,6 +90,7 @@ We have mitigated against this risk by:
 
 Auditing every use of arithmetic operations involving user-supplied data.
 Checking pre-conditions before performing arithmetic where practical.
+
 C5. Poison Data
 Contracts that accept user input that is stored or exposed to other users are vulnerable to being supplied with unanticipated input that causes problems for the contract or for other users of the contract.
 

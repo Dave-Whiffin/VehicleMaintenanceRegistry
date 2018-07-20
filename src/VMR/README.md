@@ -14,28 +14,30 @@ Instead of having a paper based log book which is stamped thoughout the life of 
 * protection against fraudelent claims of work done to the vehicle
 * Small registration and transfer fees for the related registries
 
-# The Primary Dapp
+# The Primary dApp.
 
-## Typical Use Case 1
-Adding an entry to the maintenance log:
+## User Stories
 
 Actors:
  - Vehicle Owner
  - Maintainer
+ - Anyone
 
-1. The vehicle owner authorises a maintainer to do work on the vehicle
-2. The maintainer logs what work they did (jobid, maintainer id, date, title, description)
-    * The job id is something the maintainer should provide to the customer off chain.
-3. The maintainer adds proof docs to the logs (doc title and ipfs address)
-4. The vehicle owner checks the log entry and proof (via the jobId) and marks the log entry as verified
+### 1 - The Vehicle Owner Authorizes a maintainer to work on the vehicle
+The owner opens up the web app.  They type their vin.  The web app recognises that they own the vin and provides an option to authorise a maintainer.  They specify a known id for the maintainer and submit. The app confirms success.  The maintainer is now able to log work against the vehicle.
 
-## Typical Use Case 2
-Viewing Log History:
+### 2 - The Maintainer logs an entry in to the maintenance log
+The maintainer opens up the web app.  They type the vin and their maintainer id and the app recognises that they are authorised to log work for the vin.  The maintainer adds a job id, title, description and a document to the log.  It is expected that the maintainer would then pass the job id to the vehicle owner by other means (telephone, email etc).  The maintainer has added the log which the vehicle owner can then check and verify.
 
-Allow anyone to view the log history of a vehicle if they know the vin.
-* Supply the vin
-* All log records displayed sequentially (most recent first)
-* Option to view related docs for each log
+### 3 - The Vehicle Owner verifies the log entry
+The owner opens the web app and types their vin.  The app recognises they own the vin and provides an option to verify.  They type the job id (from the maintainer).  They view the details of the log entry and associated document.  They click "verify" which verifies the log entry.  This allows anyone to see that they authorised the work and verified it was done.
+
+### 4 - Anyone can view the maintenance log for a vehicle:
+Anyone opens the web app and types the vin.  The basic vehicle details are displayed including attributes.  Anyone can view the log history.  They are presented with each log entry and an option to view documents for each.  They can see whether or not a log was verified.
+
+### Caveats and Assumptions:
+* Manufacturer, Maintainer and Vehicle registry will be pre populated with static data.
+* The vehicle owner will be one of the auto generated ganache-cli addresses.
 
 Notes (for UI implementation):
 * Get the maintenance log address from the vehicle registry.
@@ -45,10 +47,6 @@ Notes (for UI implementation):
         * Get the log count and iterate the number to retrieve each log
         * The docs for each log are also sequentially numbered and can be iterated in the same way
     * The log number can be retrieved from a known log entry id.
-
-Assumptions:
-* Manufacturer, Maintainer and Vehicle registry will be pre populated with static data.
-* The vehicle owner will be one of the auto generated ganache-cli addresses.
 
 # Registries
 There are registries for maintainers, manufacturers and vehicles.  These are important as the maintenance log has dependencies on them. Their related contracts are fully tested. However the primary focus of the Dapp is the vehicle maintenance log which is not focussed on the process of membership and transferral.  The other registries will be populated with static data in order for the Dapp to run.  Separate Dapps could be built for each registry or using a combination of them for different use cases.
@@ -69,8 +67,8 @@ Getters and Setters are available for:
 * string
 
 ### Permissions
-Whilst getStorageInitialised returns false - only the owner can change data (call functions).
-When it returns true - only the contract address can change data (call set functions);
+Whilst the storageInitialised flag is false - only the owner can change data (call set functions).
+When it is true - only the contract address can change data (call set functions);
 
 Binding the storage to a contract address:
 * The owner of eternal storage:
@@ -82,6 +80,8 @@ Binding the storage to a contract address:
     * Calls setContractAddress(<addres of contract>)
 
 ## Maintenance Log
+A maintenance log contract holds the complete maintenance history for a specific vehicle.
+
 The first owner of a vehicle (the manufacturer) is expected to deploy a maintenance log contract and record it in the vehicle registry so that it can be seen by anybody with an interest in the vehicle.  This log is expected to live as long as the vehicle does. However, it can be upgraded if necessary.  This is because it's data is stored in a seperate eternal storage contract and it's address can be updated in the vehicle registry.
 
 The log is tied to a specific VIN on construction.
@@ -105,9 +105,11 @@ Data / State Storage
 * Data manipulation and querying is done via the MaintenanceLogStoragLib.
 
 ## Registry
-This is a base contract but one which provides the majority of registry functionality to contracts inheriting from it.
+This is a contract which provides the core registry functionality.  It's not an abstract contract, it can be used on it's own.  For VMR it provides a base contract for Maintainer, Manufacturer and Vehicle registry contracts.
 
-It implements the IRegistyLookup which a loosely coupled option for other contracts to read from the registry.
+It implements the IRegistyLookup which provides a loosely coupled option for other contracts to read from a registry.
+
+The contract imposes a fee for each registration or transfer. On construction the registry is passed the address of a contract implementing IFeeChecker.  This contract is responsible for returning the fee amount. 
 
 Each member of the registry 
 * is registered with a user defined but unique reference (bytes32)
@@ -140,7 +142,7 @@ New members can only be added by the manufacturer registry contract owner.
 A registry of vehicles.  Only registered manufacturers can register new vehicles.  Manufacturers can transfer ownership to the purchaser later.
 
 ### registerVehicle (registerMember is disabled and will throw)
-The Registry.registerMember is overridden and disabled, registerVehicle should be used instead.  This accepts a VIN and the manufacturer id.  The manufacturer id is stored as an attribute against the vehicle which can not be changed.  The sender must be the owner of the manufacturer.
+The function Registry.registerMember is overridden and disabled. The function registerVehicle should be used instead.  This accepts a VIN and the manufacturer id.  The manufacturer id is stored as an attribute against the vehicle which can not be changed.  The sender must be the owner of the manufacturer.  Only manufacturers can register cars.
 
 ### set and get maintenance Log Address
 The maintenance log address can be stored by the vehicle owner in the vehicle registry.  This allows anyone to discover it.  It also allows the vehicle owner to upgrade the maintenance log contract and change the address in the future.
@@ -150,7 +152,7 @@ Member Id is the VIN (vehicle identification number).
 For VMR it provides a trustworthy source of vehicle verification and ownership as it implements IRegistryLookup.  This allows the maintenance log to ensure the caller is the owner of the vehicle by calling the vehicle registry.
 
 ## Fee Checker
-This is an oracle source of fees relied upon by the registries.  A seperate instance would be expected to support each registry.  It can be set to auto update using oraclize.
+This is an oracle source of fees relied upon by the registries.  A seperate instance would be expected to support each registry.  It can be set to auto update using oraclize.  It supports looking up a single fee via an oraclize URL query.  For simplicity the registries use the same lookup for both registration and transfer fees.  However the registries could be changed to have a separate instance of the fee checker for each fee they need to monitor.
 
 # Fees
 
@@ -171,12 +173,15 @@ This party deploys the registry and becomes the owner.  All new maintainers can 
 The ownership of a specific maintainer can be transferred by this party to another account and that account would need to accept ownership before the ownership actually changes.
 
 ### Vehicle Registry Owner
-This party deploys the registry and becomes the owner. Unlike the other registries, this party has not got permission to add members automatically.  Only registered and enabled manufacturer owner can add vehicles for that manufacturer.
+This party deploys the registry and becomes the owner. Unlike the other registries, this party has not got permission to add members automatically.  Only registered and enabled manufacturer owners can add vehicles for that manufacturer.
 
 The ownership of a specific vehicle can be transferred by the current owner to another account and that account would need to accept ownership before the ownership actually changes.
 
-Incorporating:
-* Manufacturer Registry
-* Maintainer Registry (garages, mechanics, engineers etc)
-* Auto updating oracle based registration and transfer fee checker
-* Vehicle Registry
+# Mock Contracts For Testing
+The following contracts were created to allow dependant contracts to be tested with mocked dependencies.
+
+## MockRegistryLookup
+Implements IRegistryLookup.
+
+## MockFeeChecker
+Implements IFeeChecker.
