@@ -27,6 +27,8 @@ contract VehicleRegistry is Registry {
     /** @dev the address of the manufacturer registry contract (IRegistryLookup). */
     address public manufacturerRegistryAddress;
 
+    IRegistryLookup private manufacturerRegistry;
+
     /** @dev The Constructor
       * @param _storageAddress the address of the eternal storage contract where the registry data will be stored.
       * @param _feeLookupAddress the address of the contract implementing IFeeLookup for returning registration transfer fees.
@@ -41,6 +43,7 @@ contract VehicleRegistry is Registry {
         manufacturerAttributeType = "id";
         maintenanceLogAttributeName = "maintenanceLog";
         maintenanceLogAttributeType = "address";
+        manufacturerRegistry = IRegistryLookup(manufacturerRegistryAddress);
     }
 
 //modifiers
@@ -49,7 +52,7 @@ contract VehicleRegistry is Registry {
     */
     modifier registeredAndEnabledManufacturer (bytes32 _manufacturerId) {
         require(
-            IRegistryLookup(manufacturerRegistryAddress).isMemberRegisteredAndEnabled(_manufacturerId));
+            manufacturerRegistry.isMemberRegisteredAndEnabled(_manufacturerId));
         _;
     }
 
@@ -58,7 +61,7 @@ contract VehicleRegistry is Registry {
     */
     modifier senderIsManufacturerOwner (bytes32 _manufacturerId) {
         require(
-            IRegistryLookup(manufacturerRegistryAddress).getMemberOwner(_manufacturerId) == msg.sender);
+            manufacturerRegistry.getMemberOwner(_manufacturerId) == msg.sender);
         _;
     }
 
