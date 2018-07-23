@@ -228,6 +228,13 @@ library RegistryStorageLib {
         return attribute;
     }
 
+    function getAttributeValues(address _storageAccount, uint256 _memberNumber, uint256 _attributeNumber) 
+        public view
+        returns (uint256 attributeNumber, bytes32 attributeName, bytes32 attributeType, bytes32 attributeValue) {
+        Attribute memory attribute = getAttribute(_storageAccount, _memberNumber, _attributeNumber);
+        return (attribute.attributeNumber, attribute.name, attribute.attributeType, attribute.value);            
+    }
+
     /** @dev Returns the attribute number belonging to an attribute name for a member.
       * @param _storageAccount the address of the eternal storage contract.
       * @param _memberNumber the registry storage allocated member number.
@@ -291,6 +298,18 @@ library RegistryStorageLib {
             _memberNumber > 0 && _memberNumber <= getMemberTotalCount(_storageAccount) && getMemberOwner(_storageAccount, _memberNumber) != 0;
     }     
 
+    function memberNumberExistsEnabledAndSenderIsOwner(address _storageAccount, uint256 _memberNumber, address _sender) 
+        public view 
+        returns (bool) {
+
+        if(!memberNumberExists(_storageAccount, _memberNumber)) {
+            return false;
+        }
+
+        Member memory m = getMember(_storageAccount, _memberNumber);
+        return m.enabled && m.owner == _sender;
+    }
+
     /** @dev Returns a Member struct for a member (internal because it returns a struct).
       * @param _storageAccount the address of the eternal storage contract.
       * @param _memberNumber the registry storage allocated member number.
@@ -305,6 +324,29 @@ library RegistryStorageLib {
             created: getMemberCreated(_storageAccount, _memberNumber)}
         );            
         return m;
+    }    
+
+    /** @dev Returns a Member struct for a member (internal because it returns a struct).
+      * @param _storageAccount the address of the eternal storage contract.
+      * @param _memberId the member Id
+    */
+    function getMember(address _storageAccount, bytes32 _memberId)
+        internal view returns (Member) {
+
+        uint256 memberNumber = getMemberNumber(_storageAccount, _memberId);
+        return getMember(_storageAccount, memberNumber);
+    }        
+
+    function getMemberValues(address _storageAccount, uint256 _memberNumber) 
+        public view
+        returns (uint256 memberNumber, bytes32 memberId, address owner, bool enabled, uint256 created) {
+        
+        RegistryStorageLib.Member memory member = getMember(_storageAccount, _memberNumber);
+        memberNumber = member.memberNumber;
+        memberId = member.memberId;
+        owner = member.owner;
+        enabled = member.enabled;
+        created = member.created;
     }    
 
     /** @dev Returns the member number belonging to the member Id.
@@ -451,5 +493,10 @@ library RegistryStorageLib {
         EternalStorage(_storageAccount).setBytes32Value(
             keccak256(abi.encodePacked(_memberNumber, "transferKeyHash")), _keyHash);
     }    
+
+    function setMemberTransferDetails(address _storageAccount, uint256 _memberNumber, address _pendingOwner, bytes32 _keyHash) public {
+        setMemberPendingOwner(_storageAccount, _memberNumber, _pendingOwner);  
+        setMemberTransferKeyHash(_storageAccount, _memberNumber, _keyHash);  
+    }
 
 }

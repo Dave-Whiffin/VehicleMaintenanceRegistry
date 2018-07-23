@@ -29,8 +29,8 @@ contract('MaintainerRegistry', function (accounts) {
             assert.isFalse(result);
         });
 
-        it("getMemberOwner throws", async function() {
-            await assertRevert(registry.getMemberOwner(maintainerId));
+        it("getMemberOwner returns empty address when id does not exist", async function() {
+            assert.equal(0, await registry.getMemberOwner(maintainerId));
         });        
 
       });

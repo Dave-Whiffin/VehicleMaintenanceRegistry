@@ -29,8 +29,8 @@ contract('ManufacturerRegistry', function (accounts) {
             assert.isFalse(result);
         });
 
-        it("getMemberOwner throws", async function() {
-            await assertRevert(registry.getMemberOwner(manufacturerId));
+        it("getMemberOwner returns empty address when id does not exist", async function() {
+            assert.equal(0, await registry.getMemberOwner(manufacturerId));
         });        
 
       });

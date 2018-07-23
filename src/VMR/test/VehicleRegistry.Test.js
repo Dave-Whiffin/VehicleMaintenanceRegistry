@@ -36,8 +36,8 @@ contract('VehicleRegistry', function (accounts) {
         assert.isFalse(await registry.isMemberRegisteredAndEnabled(vin));
     });
 
-    it("getMemberOwner throws", async function() {
-        await assertRevert(registry.getMemberOwner(vin));
+    it("getMemberOwner returns 0 when member is not registered", async function() {
+        assert.equal(0, await registry.getMemberOwner(vin));
     });    
 
     it("Base function 'Registry.registerMember' is disabled and will throw if called", async function() {

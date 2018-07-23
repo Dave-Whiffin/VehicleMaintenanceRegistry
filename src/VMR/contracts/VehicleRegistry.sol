@@ -14,6 +14,7 @@ contract VehicleRegistry is Registry {
 
     using ByteUtilsLib for bytes32;
     using AddressUtils for address;
+    using RegistryStorageLib for address;
 
 
     /** @dev the attribute name used for the maintenance log. */
@@ -86,7 +87,7 @@ contract VehicleRegistry is Registry {
       * @param _attributeNumber the attribute number
      */
     modifier allowedToSetAttribute(uint256 _memberNumber, uint256 _attributeNumber) {
-        bytes32 name = RegistryStorageLib.getAttributeName(storageAddress, _memberNumber, _attributeNumber);
+        bytes32 name = storageAddress.getAttributeName(_memberNumber, _attributeNumber);
         require(name != manufacturerAttributeName);        
         _;
     }     
@@ -124,9 +125,9 @@ contract VehicleRegistry is Registry {
         returns (uint256) {
 
         emit LogInfo("Begin registerVehicle");
-        uint256 memberNumber = RegistryStorageLib.storeMember(storageAddress, _vin, msg.sender);
-        RegistryStorageLib.storeMemberAttribute
-        (storageAddress, memberNumber, manufacturerAttributeName, manufacturerAttributeType, _manufacturerId);
+        uint256 memberNumber = storageAddress.storeMember(_vin, msg.sender);
+        storageAddress.storeMemberAttribute
+            (memberNumber, manufacturerAttributeName, manufacturerAttributeType, _manufacturerId);
         emit MemberRegistered(memberNumber, _vin);
         emit LogInfo("End registerVehicle");
         return memberNumber;
@@ -144,25 +145,36 @@ contract VehicleRegistry is Registry {
     function setMaintenanceLogAddress(uint256 _memberNumber, address _address) 
         public payable 
         whenNotPaused()
-        memberNumberRegistered(_memberNumber)
-        memberNumberEnabled(_memberNumber)
-        memberNumberOwner(_memberNumber)
+        memberNumberRegisteredEnabledAndOwnedBySender(_memberNumber)
         isContractAddress(_address) {
 
-        RegistryStorageLib.storeOrSetAttribute(
-            storageAddress, _memberNumber, maintenanceLogAttributeName, maintenanceLogAttributeType, bytes32(_address));
+        storageAddress.storeOrSetAttribute(
+            _memberNumber, maintenanceLogAttributeName, maintenanceLogAttributeType, bytes32(_address));
     }
 
     /** @dev Returns the address of the maintenance log contract (if it is present)
-      * Throws if member is not registered
       * @param _memberNumber the member number
      */
     function getMaintenanceLogAddress(uint256 _memberNumber) 
         public view 
-        memberNumberRegistered(_memberNumber)
         returns (address) {
         RegistryStorageLib.Attribute memory attribute = 
-            RegistryStorageLib.getAttribute(storageAddress, _memberNumber, maintenanceLogAttributeName);
+            storageAddress.getAttribute(_memberNumber, maintenanceLogAttributeName);
         return address(attribute.value);
     }
+
+    /** @dev Sets the address of the Manufacturer Registry contract (IRegistryLookup). 
+      * Must be called by owner and contract is paused.
+      * Requires a different addres to the current address.  
+      * @param _manufacturerRegistryAddress the address of the manufacturer registry contract.     */
+
+    function setManufacturerRegistryAddress(address _manufacturerRegistryAddress) 
+        onlyOwner()
+        applyContractAddressRules(manufacturerRegistryAddress, _manufacturerRegistryAddress)
+        public
+         {
+        manufacturerRegistryAddress = _manufacturerRegistryAddress;
+    }        
+
+    
 }

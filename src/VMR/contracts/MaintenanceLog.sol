@@ -288,6 +288,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     function claimOwnership() 
         onlyPendingOwner() 
         onlyVehicleOwner()
+        whenNotPaused() 
         public {
         Claimable.claimOwnership();
         MaintenanceLogStorageLib.removeAllAuthorisations(storageAddress);
@@ -308,4 +309,40 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
             maintainerRegistry.isMemberRegisteredAndEnabled(_maintainerId) &&
             _maintainerAddress == maintainerRegistry.getMemberOwner(_maintainerId);
     }    
+
+    /**
+     * @dev Sets the address of the eternal storage contract
+     * Only to be called by owner and when paused
+     */
+    function setStorageAddress(address _storageAddress) 
+        onlyOwner()
+        whenPaused()
+        public {
+        require(_storageAddress.isContract());
+        storageAddress = _storageAddress;
+    }
+
+    /**
+     * @dev Sets the address of the vehicle registry address
+     * Only to be called by owner and when paused
+     */
+    function setVehicleRegistryAddress(address _vehicleRegistryAddress) 
+        onlyOwner()
+        whenPaused()
+        public {
+        require(_vehicleRegistryAddress.isContract());
+        vehicleRegistryAddress = _vehicleRegistryAddress;
+    }
+
+    /**
+     * @dev Sets the address of the maintainer registry address
+     * Only to be called by owner and when paused
+     */
+    function setMaintainerRegistryAddress(address _maintainerRegistryAddress) 
+        onlyOwner()
+        whenPaused()
+        public {
+        require(_maintainerRegistryAddress.isContract());
+        maintainerRegistryAddress = _maintainerRegistryAddress;
+    }        
 }

@@ -23,6 +23,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
 
     using ByteUtilsLib for bytes32;
     using AddressUtils for address;
+    using RegistryStorageLib for address;
     
     /** @dev Event LogInfo.
       * @param message a message.
@@ -90,7 +91,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _memberId the user specified member id.
      */
     modifier memberIdRegistered(bytes32 _memberId) {
-        require(RegistryStorageLib.memberNumberExists(storageAddress, getMemberNum(_memberId)));
+        require(storageAddress.getMember(_memberId).memberNumber > 0);
         _;
     }
 
@@ -98,7 +99,12 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _memberNumber the member number.
     */
     modifier memberNumberRegistered(uint256 _memberNumber) {
-        require(RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber));
+        require(storageAddress.memberNumberExists(_memberNumber));
+        _;
+    }
+
+    modifier memberNumberRegisteredEnabledAndOwnedBySender(uint256 _memberNumber) {
+        require(storageAddress.memberNumberExistsEnabledAndSenderIsOwner(_memberNumber, msg.sender));
         _;
     }
 
@@ -106,7 +112,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _memberId the member id.
      */
     modifier memberIdEnabled(bytes32 _memberId) {
-        require(RegistryStorageLib.getMemberEnabled(storageAddress, getMemberNum(_memberId)));
+        require(storageAddress.getMember(_memberId).enabled);
         _;
     }
 
@@ -114,7 +120,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _memberNumber the member number.
      */
     modifier memberNumberEnabled(uint256 _memberNumber) {
-        require(RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber));
+        require(storageAddress.getMemberEnabled(_memberNumber));
         _;
     }    
 
@@ -122,7 +128,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _memberId the member id.
     */
     modifier memberIdDisabled(bytes32 _memberId) {
-        require(!RegistryStorageLib.getMemberEnabled(storageAddress, getMemberNum(_memberId)));
+        require(!storageAddress.getMember(_memberId).enabled);
         _;
     }    
 
@@ -130,7 +136,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _memberNumber the member number.
     */
     modifier memberNumberDisabled(uint256 _memberNumber) {
-        require(!RegistryStorageLib.getMemberEnabled(storageAddress, _memberNumber));
+        require(!storageAddress.getMemberEnabled(_memberNumber));
         _;
     }          
 
@@ -138,7 +144,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _memberId the member id.
     */
     modifier memberIdNotRegistered(bytes32 _memberId) {
-        require(!RegistryStorageLib.memberNumberExists(storageAddress, getMemberNum(_memberId)));
+        require(storageAddress.getMember(_memberId).memberNumber == 0);
         _;
     }
 
@@ -146,7 +152,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _memberNumber the member number.
     */
     modifier memberNumberNotRegistered(uint256 _memberNumber) {
-        require(!RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber));
+        require(!storageAddress.memberNumberExists(_memberNumber));
         _;
     }    
 
@@ -155,7 +161,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
      */
     modifier memberIdOwner(bytes32 _memberId) {
         require(
-            RegistryStorageLib.getMemberOwner(storageAddress, getMemberNum(_memberId)) == msg.sender);
+            storageAddress.getMember(_memberId).owner == msg.sender);
         _;
     }
 
@@ -164,7 +170,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
      */
     modifier memberNumberOwner(uint256 _memberNumber) {
         require(
-            RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber) == msg.sender);
+            storageAddress.getMemberOwner(_memberNumber) == msg.sender);
         _;
     }    
 
@@ -173,7 +179,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
      */
     modifier pendingMemberNumberOwner(uint256 _memberNumber) {
         require(
-            RegistryStorageLib.getMemberPendingOwner(storageAddress, _memberNumber) == msg.sender);
+            storageAddress.getMemberPendingOwner(_memberNumber) == msg.sender);
         _;
     }        
 
@@ -182,7 +188,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _key the secret (not the hash, the actual value).
      */
     modifier memberMumberTransferKeyMatches(uint256 _memberNumber, string _key) {
-        bytes32 storedKeyHash = RegistryStorageLib.getMemberTransferKeyHash(storageAddress, _memberNumber);
+        bytes32 storedKeyHash = storageAddress.getMemberTransferKeyHash(_memberNumber);
         bytes32 keyHash = keccak256(abi.encodePacked(_key));
         require(storedKeyHash == keyHash);
         _;        
@@ -193,7 +199,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _attribName the attribute name
      */
     modifier attributeNameDoesNotExist(uint256 _memberNumber, bytes32 _attribName) {
-        require(RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attribName) == 0);
+        require(storageAddress.getAttributeNumber(_memberNumber, _attribName) == 0);
         _;
     }
 
@@ -202,7 +208,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _attribName the attribute name
      */
     modifier attributeNameExists(uint256 _memberNumber, bytes32 _attribName) {
-        require(RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attribName) > 0);
+        require(storageAddress.getAttributeNumber(_memberNumber, _attribName) > 0);
         _;
     }   
 
@@ -211,7 +217,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       * @param _attributeNumber the attribute number
      */
     modifier attributeNumberExists(uint256 _memberNumber, uint256 _attributeNumber) {
-        require(RegistryStorageLib.attributeNumberExists(storageAddress, _memberNumber, _attributeNumber));
+        require(storageAddress.attributeNumberExists(_memberNumber, _attributeNumber));
         _;
     }
 
@@ -253,23 +259,11 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         return _address == owner;
     }
 
-    /** @dev Sets the address of the IFeeLookup contract. Must be called by owner and contract is paused.
-      * Requires a different addres to the current address.  
-      * @param _feeLookupAddress the address of the IFeeLookup contract.     */
-    function setFeeLookupAddress(address _feeLookupAddress) 
-        public
-        onlyOwner() 
-        whenPaused()
-         {
-        require(_feeLookupAddress != feeLookupAddress);
-        feeLookupAddress = _feeLookupAddress;
-    }
-
     /** @dev Returns the total count of members in the registry.  */
     function getMemberTotalCount() 
         public view 
         returns (uint256) {
-        return RegistryStorageLib.getMemberTotalCount(storageAddress);
+        return storageAddress.getMemberTotalCount();
     }
 
     /** @dev Returns true if the member is registered. 
@@ -278,40 +272,24 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     function isMemberRegistered(uint256 _memberNumber) 
         public view 
         returns (bool) {
-        return RegistryStorageLib.memberNumberExists(storageAddress, _memberNumber);
+        return storageAddress.memberNumberExists(_memberNumber);
     } 
 
-    /** @dev Returns the member number for a given member id.  Throws if member id is not registered.
+    /** @dev Returns the member number for a given member id.
       * @param _memberId the member id. */
     function getMemberNumber(bytes32 _memberId) 
         public view 
-        memberIdRegistered(_memberId)
         returns (uint256) {
-        return getMemberNum(_memberId);
+        return  storageAddress.getMemberNumber(_memberId);
     }
 
-    /** @dev Returns the member details for a given member.  Throws if the member does not exist.
+    /** @dev Returns the member details for a given member. 
       * @param _memberNumber the member number.
      */
     function getMember(uint256 _memberNumber) 
         public view
-        memberNumberRegistered(_memberNumber)
         returns (uint256 memberNumber, bytes32 memberId, address owner, bool enabled, uint256 created) {
-        
-        RegistryStorageLib.Member memory member = getMemberInternal(_memberNumber);
-        memberNumber = member.memberNumber;
-        memberId = member.memberId;
-        owner = member.owner;
-        enabled = member.enabled;
-        created = member.created;
-    }
-
-    /** @dev A Internal function to get the member struct for a member.
-      * @param _memberNumber the member number. */
-    function getMemberInternal(uint256 _memberNumber)
-        internal view returns (RegistryStorageLib.Member memory) {
-        RegistryStorageLib.Member memory m = RegistryStorageLib.getMember(storageAddress, _memberNumber);
-        return m;
+        return storageAddress.getMemberValues(_memberNumber);
     }
 
     /** @dev IRegistryLookup implementation.  Returns the owner address for a given member.
@@ -319,11 +297,8 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
       */
     function getMemberOwner(bytes32 _memberId)
         external view
-        memberIdRegistered(_memberId)
         returns (address) {
-        uint256 memberNumber = getMemberNumber(_memberId);
-        RegistryStorageLib.Member memory member = getMemberInternal(memberNumber);
-        return member.owner;
+        return storageAddress.getMember(_memberId).owner;
     }
 
     /** @dev IRegistryLookup implementation.  Returns true if the member is registered and enabled.
@@ -332,53 +307,37 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     function isMemberRegisteredAndEnabled(bytes32 _memberId)
         external view
         returns (bool) {
-        uint256 memberNumber = getMemberNum(_memberId);
-        if(memberNumber == 0) {
-            return false;
-        }
-        RegistryStorageLib.Member memory member = getMemberInternal(memberNumber);
-        return member.enabled;
+        return storageAddress.getMember(_memberId).enabled;
     }    
  
     /** @dev Returns the total attribute count for a given member.
-    Throws if member does not exist.
       * @param _memberNumber the member number.
      */
     function getMemberAttributeTotalCount(uint256 _memberNumber) 
         public view
-        memberNumberRegistered(_memberNumber)
         returns (uint256) {
-        return RegistryStorageLib.getAttributeTotalCount(storageAddress, _memberNumber);
+        return storageAddress.getAttributeTotalCount(_memberNumber);
     }
 
     /** @dev Returns the attribute number relating to an attribute name for a member.
-      * Throws when member is not registered.
-      * Throws when attribute name does not exist.
       @param _memberNumber the member number
       @param _attributeName the attribute name
      */
     function getMemberAttributeNumber(uint256 _memberNumber, bytes32 _attributeName) 
         public view
-        memberNumberRegistered(_memberNumber)
-        attributeNameExists(_memberNumber, _attributeName)
         returns (uint256) {
-        return RegistryStorageLib.getAttributeNumber(storageAddress, _memberNumber, _attributeName);
+        return storageAddress.getAttributeNumber(_memberNumber, _attributeName);
     }    
 
     /** @dev Returns the attribute for a given member and attribute number.
-      * Throws when member is not registered.
-      * Throws when attribute number does not exist.
       @param _memberNumber the member number
       @param _attributeNumber the attribute name
      */
     function getMemberAttribute(uint256 _memberNumber, uint256 _attributeNumber) 
-        memberNumberRegistered(_memberNumber)
-        attributeNumberExists(_memberNumber, _attributeNumber)    
         public view returns 
         (uint256 attributeNumber, bytes32 attributeName, bytes32 attributeType, bytes32 attributeValue) 
         {
-        RegistryStorageLib.Attribute memory attribute = RegistryStorageLib.getAttribute(storageAddress, _memberNumber, _attributeNumber);
-        return (attribute.attributeNumber, attribute.name, attribute.attributeType, attribute.value);
+        return storageAddress.getAttributeValues(_memberNumber, _attributeNumber);
     }
 
     /** @dev Adds a new member to the registry.
@@ -396,7 +355,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         senderAllowedToRegisterMember()
         paidMemberRegistrationFee()
         returns (uint256) {
-        uint256 memberNumber = RegistryStorageLib.storeMember(storageAddress, _memberId, msg.sender);
+        uint256 memberNumber = storageAddress.storeMember(_memberId, msg.sender);
         
         emit MemberRegistered(memberNumber, _memberId);
         return memberNumber;
@@ -416,7 +375,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         memberNumberRegistered(_memberNumber)
         memberNumberDisabled(_memberNumber)
         {     
-        RegistryStorageLib.setMemberEnabled(storageAddress, _memberNumber, true);    
+        storageAddress.setMemberEnabled(_memberNumber, true);    
         emit MemberEnabled(_memberNumber);
     }        
 
@@ -434,7 +393,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         memberNumberRegistered(_memberNumber)
         memberNumberEnabled(_memberNumber)
          {
-        RegistryStorageLib.setMemberEnabled(storageAddress, _memberNumber, false);    
+        storageAddress.setMemberEnabled(_memberNumber, false);    
         emit MemberDisabled(_memberNumber);
     }
 
@@ -450,13 +409,11 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     function transferMemberOwnership(uint256 _memberNumber, address _newOwner, bytes32 _keyHash) 
         public payable 
         whenNotPaused()
-        memberNumberRegistered(_memberNumber)
-        memberNumberOwner(_memberNumber)
+        memberNumberRegisteredEnabledAndOwnedBySender(_memberNumber)
         paidMemberTransferFee()
         { 
-        address currentOwner = RegistryStorageLib.getMemberOwner(storageAddress, _memberNumber);  
-        RegistryStorageLib.setMemberPendingOwner(storageAddress, _memberNumber, _newOwner);  
-        RegistryStorageLib.setMemberTransferKeyHash(storageAddress, _memberNumber, _keyHash);  
+        address currentOwner = storageAddress.getMemberOwner(_memberNumber);  
+        storageAddress.setMemberTransferDetails(_memberNumber, _newOwner, _keyHash);  
         emit MemberOwnershipTransferRequest(_memberNumber, currentOwner, _newOwner);
     }
 
@@ -475,7 +432,7 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         pendingMemberNumberOwner(_memberNumber)
         memberMumberTransferKeyMatches(_memberNumber, _key)
          {  
-        RegistryStorageLib.setMemberOwner(storageAddress, _memberNumber, msg.sender);
+        storageAddress.setMemberOwner(_memberNumber, msg.sender);
         emit MemberOwnershipTransferAccepted(_memberNumber, msg.sender);
     }     
 
@@ -496,12 +453,11 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     function addMemberAttribute(uint256 _memberNumber, bytes32 _attributeName, bytes32 _attributeType, bytes32 _attributeValue) 
         public payable 
         whenNotPaused()
-        memberNumberRegistered(_memberNumber)        
-        memberNumberOwner(_memberNumber)
+        memberNumberRegisteredEnabledAndOwnedBySender(_memberNumber)
         attributeNameDoesNotExist(_memberNumber, _attributeName)
         returns (uint256) {
-        uint256 attributeNumber = RegistryStorageLib.storeMemberAttribute(
-            storageAddress, _memberNumber, _attributeName, _attributeType, _attributeValue);
+        uint256 attributeNumber = storageAddress.storeMemberAttribute(
+            _memberNumber, _attributeName, _attributeType, _attributeValue);
         emit MemberAttributeChanged(_memberNumber, attributeNumber, _attributeName, _attributeType, _attributeValue);
         return attributeNumber;
     } 
@@ -519,24 +475,41 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
     function setMemberAttribute(uint256 _memberNumber, uint256 _attributeNumber, bytes32 _attributeType, bytes32 _attributeValue) 
         public payable 
         whenNotPaused()
-        memberNumberRegistered(_memberNumber)
-        memberNumberOwner(_memberNumber)
+        memberNumberRegisteredEnabledAndOwnedBySender(_memberNumber)
         attributeNumberExists(_memberNumber, _attributeNumber)
         allowedToSetAttribute(_memberNumber, _attributeNumber)
          {
 
-        RegistryStorageLib.setAttribute(storageAddress, _memberNumber, _attributeNumber, _attributeType, _attributeValue);
-        bytes32 attributeName = RegistryStorageLib.getAttributeName(storageAddress, _memberNumber, _attributeNumber);        
+        storageAddress.setAttribute(_memberNumber, _attributeNumber, _attributeType, _attributeValue);
+        bytes32 attributeName = storageAddress.getAttributeName(_memberNumber, _attributeNumber);        
         emit MemberAttributeChanged(_memberNumber, _attributeNumber, attributeName, _attributeType, _attributeValue);
     }      
+    
 
-    /** @dev Internal method which returns the member number from the given member id.
-      * Does not throw if member does not exist (which the public or external getters do) 
-      * @param _memberId the member id
-      */
-    function getMemberNum(bytes32 _memberId) 
-        internal view 
-        returns (uint256) {
-        return RegistryStorageLib.getMemberNumber(storageAddress, _memberId);  
-    }    
+    modifier applyContractAddressRules(address currentAddress, address _newAddress) {
+        require(currentAddress != _newAddress && _newAddress.isContract());
+        _;
+    } 
+
+    /**
+     * @dev Sets the address of the eternal storage contract
+     * Only to be called by owner and when paused
+     */
+    function setStorageAddress(address _storageAddress) 
+        onlyOwner()
+        applyContractAddressRules(storageAddress, _storageAddress)
+        public {
+        storageAddress = _storageAddress;
+    } 
+
+    /** @dev Sets the address of the IFeeLookup contract. Must be called by owner and contract is paused.
+      * Requires a different addres to the current address.  
+      * @param _feeLookupAddress the address of the IFeeLookup contract.     */
+    function setFeeLookupAddress(address _feeLookupAddress) 
+        onlyOwner()
+        applyContractAddressRules(feeLookupAddress, _feeLookupAddress)
+        public
+         {
+        feeLookupAddress = _feeLookupAddress;
+    }         
 }

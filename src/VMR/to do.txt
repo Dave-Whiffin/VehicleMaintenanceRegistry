@@ -49,7 +49,8 @@ git clone https://github.com/oraclize/ethereum-bridge.git
 cd ethereum-bridge
 npm install
 
---run in windows command prompt - doesn't work in powershell
+--run in windows command prompt as admin - doesn't work in powershell
+--ensure the mnemomic is the one below
 ethereum-bridge -H localhost:8545 -a 1
 (deploy contracts using the account 1 found on the localhost:8545 node)
 
@@ -59,12 +60,9 @@ Generate a new local address:
 RUNNING Tests
 =============
 //start ganache with known mnemonic below
-ganache-cli --mnemonic "VMR Tests" --accounts 50
-
 ganache-cli --mnemonic "baby marble measure police ball portion piece town topple guitar inspire enroll" --accounts 50
 
 //start ethereum-bridge (FeeLookup tests depend on oraclize)
-//IMPORTANT!  don't use windows powershell - use cmd
+//IMPORTANT! USE CMD (RUN AS ADMIN) - NOT POWERSHELL
 ethereum-bridge --dev -H localhost:8545 --broadcast --new
 
-//OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
