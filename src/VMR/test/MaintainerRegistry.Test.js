@@ -12,7 +12,7 @@ contract('MaintainerRegistry', function (accounts) {
     let registryOwner;
     let maintainerId;
 
-    beforeEach(async function () {
+    before(async function () {
         maintainerId = web3.toAscii("Vehicle Service One LTD");
         registryFeeChecker = await MockFeeChecker.new(0);
         eternalStorage = await EternalStorage.new();
@@ -40,7 +40,7 @@ contract('MaintainerRegistry', function (accounts) {
         let maintainerOwner;
         let memberNumber;
 
-        beforeEach(async function () {
+        before(async function () {
             await registry.registerMember(maintainerId);
             maintainerOwner = registryOwner;
             memberNumber = await registry.getMemberNumber(maintainerId);
@@ -58,7 +58,7 @@ contract('MaintainerRegistry', function (accounts) {
 
         describe("when the maintainer is disabled", function() {
 
-            beforeEach(async function () {
+            before(async function () {
                 await registry.disableMember(memberNumber);
               });
     

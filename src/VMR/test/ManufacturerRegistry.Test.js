@@ -12,7 +12,7 @@ contract('ManufacturerRegistry', function (accounts) {
     let registryOwner;
     let manufacturerId;
 
-    beforeEach(async function () {
+    before(async function () {
         manufacturerId = web3.toAscii("Ford");
         registryFeeChecker = await MockFeeChecker.new(0);
         eternalStorage = await EternalStorage.new();
@@ -40,7 +40,7 @@ contract('ManufacturerRegistry', function (accounts) {
         let manufacturerOwner;
         let memberNumber;
 
-        beforeEach(async function () {
+        before(async function () {
             await registry.registerMember(manufacturerId);
             manufacturerOwner = registryOwner;
             memberNumber = await registry.getMemberNumber(manufacturerId);
@@ -58,7 +58,7 @@ contract('ManufacturerRegistry', function (accounts) {
 
         describe("when the manufacturer is disabled", function() {
 
-            beforeEach(async function () {
+            before(async function () {
                 await registry.disableMember(memberNumber);
               });
     
