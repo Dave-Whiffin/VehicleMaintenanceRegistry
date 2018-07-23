@@ -93,22 +93,13 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(function(instance) {
       vehicleRegistry = instance;
-      return manufacturerStorage.setContractAddress(manufacturerRegistry.address, {from: manufacturerRegistryOwner});
+      return manufacturerStorage.bindToContract(manufacturerRegistry.address, {from: manufacturerRegistryOwner});
     })
     .then(function(result) {
-      return manufacturerStorage.setStorageInitialised(true, {from: manufacturerRegistryOwner});
+      return maintainerStorage.bindToContract(maintainerRegistry.address, {from: maintainerRegistryOwner});
     })
     .then(function(result) {
-      return maintainerStorage.setContractAddress(maintainerRegistry.address, {from: maintainerRegistryOwner});
-    })
-    .then(function(result) {
-      return maintainerStorage.setStorageInitialised(true, {from: maintainerRegistryOwner});
-    }) 
-    .then(function(result) {
-      return vehicleStorage.setContractAddress(vehicleRegistry.address, {from: vehicleRegistryOwner});
-    })
-    .then(function(result) {
-      return vehicleStorage.setStorageInitialised(true, {from: vehicleRegistryOwner});
+      return vehicleStorage.bindToContract(vehicleRegistry.address, {from: vehicleRegistryOwner});
     })
     .then(function(result){
       return manufacturerRegistry.registerMember("Ford", {from: manufacturerRegistryOwner});

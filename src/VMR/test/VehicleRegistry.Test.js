@@ -27,8 +27,7 @@ contract('VehicleRegistry', function (accounts) {
         logInfoEventWatcher = registry.LogInfo();
         memberRegisteredEventWatcher = registry.MemberRegistered();
         registryOwner = await registry.owner.call();
-        await eternalStorage.setContractAddress(registry.address);
-        await eternalStorage.setStorageInitialised(true);
+        await eternalStorage.bindToContract(registry.address);
         await manufacturerRegistry.setMock(manufacturerId, registryOwner, true);
       });
 

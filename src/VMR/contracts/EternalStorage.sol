@@ -28,10 +28,25 @@ contract EternalStorage is Claimable {
         _;
     }    
 
+    /** @dev Binds the eternal storage contract to a specific calling contract
+     * @param _contractAddress the contract address to attach to
+     */
+    function bindToContract(address _contractAddress) onlyOwner() public {
+        setContractAddress(_contractAddress);
+        setStorageInitialised(true);
+    }
+
+    /** @dev Un-Binds the eternal storage contract from the calling contract - returning control to the owner
+     */
+    function unBindFromContract() onlyOwner() public {
+        setContractAddress(address(0));
+        setStorageInitialised(false);
+    }    
+
     /** @dev Binds the eternal storage to a specific contract.
       * @param _address the contract address to attach to
       */
-    function setContractAddress(address _address) onlyOwner() public {
+    function setContractAddress(address _address) onlyOwner() private {
         AddressStorage[keccak256("contract.address")] = _address;
     }
 
@@ -44,7 +59,7 @@ contract EternalStorage is Claimable {
     /** @dev Setting the storage as initialized prevents anyone but the contract address calling setters.
       * @param _initialised A bool flag to indicate whether or not the storage should be initialised.
       */
-    function setStorageInitialised(bool _initialised) onlyOwner() public {
+    function setStorageInitialised(bool _initialised) private {
         BooleanStorage[keccak256("contract.storage.initialised")] = _initialised;
     }
 

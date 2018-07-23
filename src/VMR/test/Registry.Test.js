@@ -36,8 +36,7 @@ contract('Registry', function (accounts) {
     registry = await Registry.new(eternalStorage.address, registryFeeChecker.address);
     registryAddress = registry;
     registryOwner = await registry.owner.call();
-    await eternalStorage.setContractAddress(registryAddress.address);
-    await eternalStorage.setStorageInitialised(true);
+    await eternalStorage.bindToContract(registryAddress.address);
   });
 
   it('should have an owner', async function () {

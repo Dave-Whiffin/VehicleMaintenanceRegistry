@@ -89,18 +89,15 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
         
         manufacturerStorage = await EternalStorage.new({from: manufacturerRegistryOwner});
         manufacturerRegistry = await ManufacturerRegistry.new(manufacturerStorage.address, manufacturerRegistryFeeChecker.address, {from: manufacturerRegistryOwner});
-        await manufacturerStorage.setContractAddress(manufacturerRegistry.address, {from: manufacturerRegistryOwner});
-        await manufacturerStorage.setStorageInitialised(true, {from: manufacturerRegistryOwner});
+        await manufacturerStorage.bindToContract(manufacturerRegistry.address, {from: manufacturerRegistryOwner});
 
         vehicleRegistryStorage = await EternalStorage.new({from: vehicleRegistryOwner});
         vehicleRegistry = await VehicleRegistry.new(vehicleRegistryStorage.address, vehicleRegistryFeeChecker.address, manufacturerRegistry.address, {from: vehicleRegistryOwner});
-        await vehicleRegistryStorage.setContractAddress(vehicleRegistry.address, {from: vehicleRegistryOwner});
-        await vehicleRegistryStorage.setStorageInitialised(true, {from: vehicleRegistryOwner});        
+        await vehicleRegistryStorage.bindToContract(vehicleRegistry.address, {from: vehicleRegistryOwner});
 
         maintainerStorage = await EternalStorage.new({from: maintainerRegistryOwner});
         maintainerRegistry = await MaintainerRegistry.new(maintainerStorage.address, maintainerRegistryFeeChecker.address, {from: maintainerRegistryOwner});
-        await maintainerStorage.setContractAddress(maintainerRegistry.address, {from: maintainerRegistryOwner});
-        await maintainerStorage.setStorageInitialised(true, {from: maintainerRegistryOwner});                
+        await maintainerStorage.bindToContract(maintainerRegistry.address, {from: maintainerRegistryOwner});
       });
 
       it("the vehicle registry is referencing the expected manufacturer registry", async function () {
@@ -177,8 +174,7 @@ contract('MaintenanceLog Vehicle Lifecycle', function (accounts) {
         before(async function () {
             maintenanceLogStorage = await EternalStorage.new({from: manufacturerAccount});
             maintenanceLog = await MaintenanceLog.new(maintenanceLogStorage.address, vehicleRegistry.address, maintainerRegistry.address, vin, {from: manufacturerAccount});
-            await maintenanceLogStorage.setContractAddress(maintenanceLog.address, {from: manufacturerAccount});
-            await maintenanceLogStorage.setStorageInitialised(true, {from: manufacturerAccount});
+            await maintenanceLogStorage.bindToContract(maintenanceLog.address, {from: manufacturerAccount});
         });
 
         it("log exists with correct vin", async function() {

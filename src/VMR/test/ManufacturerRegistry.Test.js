@@ -18,8 +18,7 @@ contract('ManufacturerRegistry', function (accounts) {
         eternalStorage = await EternalStorage.new();
         registry = await ManufacturerRegistry.new(eternalStorage.address, registryFeeChecker.address);
         registryOwner = await registry.owner.call();
-        await eternalStorage.setContractAddress(registry.address);
-        await eternalStorage.setStorageInitialised(true);
+        await eternalStorage.bindToContract(registry.address);
       });
 
       describe("when no manufacturers are registered", function() {

@@ -18,8 +18,7 @@ contract('MaintainerRegistry', function (accounts) {
         eternalStorage = await EternalStorage.new();
         registry = await MaintainerRegistry.new(eternalStorage.address, registryFeeChecker.address);
         registryOwner = await registry.owner.call();
-        await eternalStorage.setContractAddress(registry.address);
-        await eternalStorage.setStorageInitialised(true);
+        await eternalStorage.bindToContract(registry.address);
       });
 
       describe("when no maintainers are registered", function() {

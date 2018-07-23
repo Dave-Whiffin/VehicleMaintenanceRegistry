@@ -52,18 +52,9 @@ contract('EternalStorage', function (accounts) {
     const owner = await eternalStorage.owner.call();
 
     assert.isTrue(owner !== other);
-    await assertRevert(eternalStorage.setContractAddress(other, { from: other }));
-    await eternalStorage.setContractAddress(other, { from: owner });
+    await assertRevert(eternalStorage.bindToContract(other, { from: other }));
+    await eternalStorage.bindToContract(other, { from: owner });
   });  
-
-  it('only owners can set storage initialised', async function () {
-    const other = accounts[2];
-    const owner = await eternalStorage.owner.call();
-
-    assert.isTrue(owner !== other);
-    await assertRevert(eternalStorage.setStorageInitialised(true, { from: other }));
-    await eternalStorage.setStorageInitialised(true, { from: owner });
-  });    
 
   describe('when storage is not initialised', function () {
     let owner;
@@ -76,8 +67,7 @@ contract('EternalStorage', function (accounts) {
       owner = await eternalStorage.owner.call();
       rogueAddress = accounts[2];
       contractAddress = accounts[1];
-      await eternalStorage.setContractAddress(contractAddress);
-      await eternalStorage.setStorageInitialised(false);
+      await eternalStorage.unBindFromContract({from: owner});
     });
 
     it('the owner can call setters', async function () {
@@ -117,8 +107,7 @@ contract('EternalStorage', function (accounts) {
       owner = await eternalStorage.owner.call();
       contractAddress = accounts[1];
       rogueAddress = accounts[2];
-      await eternalStorage.setContractAddress(contractAddress);
-      await eternalStorage.setStorageInitialised(true);
+      await eternalStorage.bindToContract(contractAddress, {from: owner});
     });
 
     it('the contract address can call setters', async function () {

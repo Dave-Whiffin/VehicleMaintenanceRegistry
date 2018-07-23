@@ -9,21 +9,23 @@ contract EmptyContract {
 
 contract TestEternalStorage {
 
-    function testGetAndSetContractAddress() public {
+    function testBindAndUnbindToContract() public {
         EternalStorage eternalStorage = new EternalStorage();
         EmptyContract emptyContract = new EmptyContract();
         Assert.equal(eternalStorage.getContractAddress(), address(0x0), "The un-initialised contract address should be 0");
-        eternalStorage.setContractAddress(address(emptyContract));
+        eternalStorage.bindToContract(address(emptyContract));
+
         Assert.equal(eternalStorage.getContractAddress(), address(emptyContract), 
             "The contract address should equal the empty contract address.");
-    }  
+        Assert.isTrue(eternalStorage.getStorageInitialised(),  
+            "Storage should be initialised after binding to a contract.");   
 
-    function testGetAndSetStorageInitialised() public {
-        EternalStorage eternalStorage = new EternalStorage();
-        Assert.equal(eternalStorage.getStorageInitialised(), false, "The un-initialised value should be false");
-        eternalStorage.setStorageInitialised(true);
-        Assert.equal(eternalStorage.getStorageInitialised(), true, "The storage initialised should be true");
-    }
+        eternalStorage.unBindFromContract();
+        Assert.equal(address(0x0), eternalStorage.getContractAddress(),  
+            "The contract address should be 0 after unbinding.");            
+        Assert.isFalse(eternalStorage.getStorageInitialised(),  
+            "Storage should not be initialised after unbinding from a contract.");                        
+    }  
 
     function testGetAndSetUint256() public {
         EternalStorage eternalStorage = new EternalStorage();

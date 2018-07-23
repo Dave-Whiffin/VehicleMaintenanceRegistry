@@ -66,8 +66,7 @@ contract('MaintenanceLog', function (accounts) {
 
         before(async function () {
             maintenanceLog = await MaintenanceLog.new(eternalStorage.address, mockVehicleRegistry.address, mockMaintainerRegistry.address, vin, {from: manufacturerAccount});
-            await eternalStorage.setContractAddress(maintenanceLog.address, {from: manufacturerAccount});
-            await eternalStorage.setStorageInitialised(true, {from: manufacturerAccount});
+            await eternalStorage.bindToContract(maintenanceLog.address, {from: manufacturerAccount});
           });
     
         it("the initial owner of the log is the owner of the vehicle", async function() {
