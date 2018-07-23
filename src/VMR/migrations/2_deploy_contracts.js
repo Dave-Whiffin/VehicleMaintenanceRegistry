@@ -134,10 +134,7 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(function(instance){
       maintenanceLog = instance;
-      return maintenanceLogStorage.setContractAddress(maintenanceLog.address, {from: ford});
-    })
-    .then(function(result){
-      return maintenanceLogStorage.setStorageInitialised(true, {from: ford});
+      return maintenanceLogStorage.bindToContract(maintenanceLog.address, {from: ford});
     })
     .then(function(result){
       return vehicleRegistry.setMaintenanceLogAddress(1, maintenanceLog.address, {from: ford});
