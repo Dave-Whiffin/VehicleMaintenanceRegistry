@@ -60,6 +60,9 @@ RUNNING Tests
 =============
 //start ganache with known mnemonic below
 ganache-cli --mnemonic "VMR Tests" --accounts 50
+
+ganache-cli --mnemonic "baby marble measure police ball portion piece town topple guitar inspire enroll" --accounts 50
+
 //start ethereum-bridge (FeeLookup tests depend on oraclize)
 //IMPORTANT!  don't use windows powershell - use cmd
 ethereum-bridge --dev -H localhost:8545 --broadcast --new

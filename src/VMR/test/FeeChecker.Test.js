@@ -10,13 +10,17 @@ contract('FeeChecker', function (accounts) {
     let feeChangedEvent;
     let autoRefresh;
     let oraclizeQueryUrl;
+    let addressResolver;
 
     before(async function(){
+        //the resolver address below is dependant on ganache being started with the mnemonic below
+        //ganache-cli --mnemonic "baby marble measure police ball portion piece town topple guitar inspire enroll" --accounts 50
+        addressResolver = 0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475;
         oraclizeQueryUrl = "json(https://www.dropbox.com/s/8hjew52p5b5p1tt/sample-fees.json?dl=1).prices.registration.wei";
         autoRefresh = false;
         initialFee = 1;
         refreshSeconds = 5;
-        feeChecker = await FeeChecker.new(oraclizeQueryUrl, refreshSeconds, initialFee, autoRefresh);
+        feeChecker = await FeeChecker.new(oraclizeQueryUrl, refreshSeconds, initialFee, autoRefresh, addressResolver);
         newOraclizeQueryEvent = feeChecker.NewOraclizeQuery();
         feeChangedEvent = feeChecker.FeeChanged();
     });

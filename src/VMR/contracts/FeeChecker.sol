@@ -35,16 +35,15 @@ contract FeeChecker is usingOraclize, IFeeLookup, Pausable, Claimable {
       * @param _initialFeeInWei the initial fee to return prior to oraclize updating
       * @param _autoRefresh dicates if the contract should auto refresh on construction or wait for updateFee to be called
       */
-    constructor (string _query, uint _refreshSeconds, uint256 _initialFeeInWei, bool _autoRefresh) public {
+    constructor (string _query, uint _refreshSeconds, uint256 _initialFeeInWei, bool _autoRefresh, address _addressResolver) public {
         query = _query;
         refreshSeconds = _refreshSeconds;
         feeInWei = _initialFeeInWei;
         autoRefresh = _autoRefresh;
 
         //from ethereum-bridge
-        //ensure that the mnemonic used to start ganache is
-        //ganache-cli --mnemonic "VMR Tests --accounts 50"
-        OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
+        //ensure that the mnemonic used to start ganache is consistent with mnemonic as it was when the bridge was instantiated
+        OAR = OraclizeAddrResolverI(_addressResolver);
 
         emit NewOraclizeQuery(query);
 

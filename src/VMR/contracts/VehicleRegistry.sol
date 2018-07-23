@@ -28,7 +28,6 @@ contract VehicleRegistry is Registry {
     address public manufacturerRegistryAddress;
 
     IRegistryLookup private manufacturerRegistry;
-    RegistryStorageLib private storageLib;
 
     /** @dev The Constructor
       * @param _storageAddress the address of the eternal storage contract where the registry data will be stored.
@@ -45,7 +44,6 @@ contract VehicleRegistry is Registry {
         maintenanceLogAttributeName = "maintenanceLog";
         maintenanceLogAttributeType = "address";
         manufacturerRegistry = IRegistryLookup(manufacturerRegistryAddress);
-        storageLib = RegistryStorageLib;
     }
 
 //modifiers
@@ -88,7 +86,7 @@ contract VehicleRegistry is Registry {
       * @param _attributeNumber the attribute number
      */
     modifier allowedToSetAttribute(uint256 _memberNumber, uint256 _attributeNumber) {
-        bytes32 name = storageLib.getAttributeName(storageAddress, _memberNumber, _attributeNumber);
+        bytes32 name = RegistryStorageLib.getAttributeName(storageAddress, _memberNumber, _attributeNumber);
         require(name != manufacturerAttributeName);        
         _;
     }     
