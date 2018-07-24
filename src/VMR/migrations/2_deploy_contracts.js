@@ -93,6 +93,7 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(function(instance) {
       vehicleRegistry = instance;
+      console.log("Vehicle Registry Address: " + vehicleRegistry.address);
       return manufacturerStorage.bindToContract(manufacturerRegistry.address, {from: manufacturerRegistryOwner});
     })
     .then(function(result) {
