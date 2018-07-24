@@ -14,14 +14,19 @@ MaintenanceLog = {
   logAddress: null,
   maintenanceLog: null,
   vin: null,
+  contractOwner: 0,
+  currentAccount: 0,
 
   init: function() {
     MaintenanceLog.logAddress = getParameterByName("address");
 
     console.log("maintenance log address: " + MaintenanceLog.logAddress);
 
-    ContractFactory.init(function() {
+    ContractFactory.init(async function() {
+      MaintenanceLog.currentAccount = await web3.eth.accounts[0];
       MaintenanceLog.maintenanceLog = ContractFactory.getMaintenanceLogContract(MaintenanceLog.logAddress);      
+      MaintenanceLog.vin = web3.toUtf8(await MaintenanceLog.maintenanceLog.vin.call());
+      MaintenanceLog.contractOwner = await MaintenanceLog.maintenanceLog.owner.call();
       MaintenanceLog.bindEvents();
       return MaintenanceLog.viewMaintenanceLog();
     });
@@ -29,6 +34,31 @@ MaintenanceLog = {
 
   bindEvents: function() {
     //$(document).on('click', '.btn-view-maintenance-log', App.viewMaintenanceLog);
+  },
+
+  viewDocs: async function(log) {
+
+    let logNumber = parseInt(log[0]);
+    var maintenanceLogRow = $('#maintenanceLogRow');
+    var logDocTemplate  = $('#maintenanceLogDocTemplate');
+    var docContainer = maintenanceLogRow.find('.log-doc-panel[data-id=' + logNumber + ']');
+
+    console.log("retrieving doc count for log #" + logNumber);
+
+    var docCount = await MaintenanceLog.maintenanceLog.getDocCount(logNumber);
+
+    console.log("Log#:" + logNumber + " DocCount:" + docCount);
+
+    for(var i = 1; i <= docCount; i++) {
+        var doc = await MaintenanceLog.maintenanceLog.getDoc(logNumber, i);
+
+        logDocTemplate.find(".log-doc-number").text(doc[0]);
+        logDocTemplate.find(".log-doc-title").text(doc[1]);
+        logDocTemplate.find(".log-doc-ipfs-address").text(doc[2]);
+
+        docContainer.append(logDocTemplate.html());
+    }
+
   },
 
   viewLogEntry: function(log) {
@@ -58,49 +88,29 @@ MaintenanceLog = {
     maintenanceLogTemplate.find('.maintenance-log-verifier').text(verifier);
     maintenanceLogTemplate.find('.maintenance-log-verification-date').text(verificationDate);
     maintenanceLogTemplate.find('.log-doc-panel').attr('data-id', logNumber);
+    maintenanceLogTemplate.find('.btn-verify-maintenance-log').attr('data-id', logNumber);
+
+    if(verified || MaintenanceLog.currentAccount != MaintenanceLog.contractOwner) {
+      maintenanceLogTemplate.find('.btn-verify-maintenance-log').attr('disabled', true);
+    }
 
     maintenanceLogRow.append(maintenanceLogTemplate.html());
 
-    MaintenanceLog.maintenanceLog.getDocCount(logNumber)
-    .then(function(docCount){
-
-      for(var i = 1; i <= docCount; i++) {
-          MaintenanceLog.maintenanceLog.getDoc(logNumber, i)
-          .then(function (doc){
-
-            var logDocTemplate  = $('maintenanceLogDocTemplate');
-            var docContainer = maintenanceLogRow.find('.log-doc-panel[data-id=' + logNumber + ']');
-
-            console.log(doc);
-            logDocTemplate.find(".log-doc-number").text(doc[0]);
-            logDocTemplate.find(".log-doc-title").text(doc[1]);
-            logDocTemplate.find(".log-doc-ipfs-address").text(doc[2]);
-
-            docContainer.append(logDocTemplate.html());
-          });
-      }
-
-    });
+    MaintenanceLog.viewDocs(log);
   },
 
-  viewMaintenanceLog: function() {
+  viewMaintenanceLog: async function() {
 
-    MaintenanceLog.maintenanceLog.vin.call().then(function(val){
-      MaintenanceLog.vin = web3.toUtf8(val);
+    $(".maintenance-log-vin").text(MaintenanceLog.vin);
+    $(".maintenance-log-address").text(MaintenanceLog.logAddress);
+    $(".maintenance-log-owner").text(MaintenanceLog.contractOwner);
 
-      $(".maintenance-log-vin").text(MaintenanceLog.vin);
-      $(".maintenance-log-address").text(MaintenanceLog.logAddress);
+    var totalCount = await MaintenanceLog.maintenanceLog.getLogCount();
 
-      MaintenanceLog.maintenanceLog.getLogCount().then(function(val){
-        let totalCount = val;
-
-        for(var i = 1; i <= totalCount; i++) {
-          MaintenanceLog.maintenanceLog.getLog(i).then(function(logEntry){
-              MaintenanceLog.viewLogEntry(logEntry);
-          });
-        }
-      });
-    });
+    for(var i = 1; i <= totalCount; i++) {
+      let log = await MaintenanceLog.maintenanceLog.getLog(i)
+      MaintenanceLog.viewLogEntry(log);
+    }
   }
 };
 
