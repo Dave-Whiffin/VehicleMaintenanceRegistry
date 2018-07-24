@@ -1,36 +1,13 @@
 App = {
-  web3Provider: null,
-  contracts: {},
-  vehicleRegistryInstance: null,
+
+  vehicleRegistry: null,
 
   init: function() {
-    return App.initWeb3();
-  },
-
-  initWeb3: function() {
-
-      // Is there an injected web3 instance?
-    if (typeof web3 !== 'undefined') {
-      App.web3Provider = web3.currentProvider;
-    } else {
-      // If no injected web3 instance is detected, fall back to Ganache
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
-    }
-    web3 = new Web3(App.web3Provider);
-    return App.initContract();
-  },
-
-  initContract: function() {
-    $.getJSON('VehicleRegistry.json', function(data) {
-      var vehicleRegistryArtifact = data;
-      App.contracts.VehicleRegistry = TruffleContract(vehicleRegistryArtifact);
-      App.contracts.VehicleRegistry.setProvider(App.web3Provider);
-
-      App.vehicleRegistryInstance = App.contracts.VehicleRegistry.at("0xe74ab82159a272bd1d9b42613e190d805fad957e");
+    ContractFactory.init(function() {
+      vehicleRegistry = ContractFactory.vehicleRegistryInstance;
+      App.bindEvents();
       return App.loadVehicles();
     });
-
-    return App.bindEvents();
   },
 
   bindEvents: function() {
@@ -43,7 +20,7 @@ App = {
     let vin = web3.toUtf8(vehicle[1]);
     let owner = vehicle[2];
 
-    App.vehicleRegistryInstance.getMemberAttribute(vehicleNumber, 1)
+    vehicleRegistry.getMemberAttribute(vehicleNumber, 1)
     .then(function(attrib) {
 
       var vehicleRow = $('#vehicleRow');
@@ -63,10 +40,10 @@ App = {
   },
 
   loadVehicles: function() {
-     App.vehicleRegistryInstance.getMemberTotalCount()
+    vehicleRegistry.getMemberTotalCount()
     .then(function(memberCount) {
       for (i = 1; i <= memberCount; i++) {
-        App.vehicleRegistryInstance.getMember(i).then(function(m){
+        vehicleRegistry.getMember(i).then(function(m){
           App.displayVehicle(m);
         });
       }
@@ -81,7 +58,7 @@ App = {
 
     var vehicleNumber = parseInt($(event.target).data('id'));
 
-    App.vehicleRegistryInstance.getMaintenanceLogAddress(vehicleNumber)
+    vehicleRegistry.getMaintenanceLogAddress(vehicleNumber)
     .then(function(logAddress){
 
       var maintenanceLogRow = $('#maintenanceLogRow');
