@@ -27,9 +27,12 @@ ContractFactory = {
       var vehicleRegistryArtifact = data;
       ContractFactory.contracts.VehicleRegistry = TruffleContract(vehicleRegistryArtifact);
       ContractFactory.contracts.VehicleRegistry.setProvider(ContractFactory.web3Provider);
-      ContractFactory.vehicleRegistryInstance = ContractFactory.contracts.VehicleRegistry.at("0xe74ab82159a272bd1d9b42613e190d805fad957e");
 
-      return ContractFactory.initMaintenanceLogContract();
+      ContractFactory.contracts.VehicleRegistry.deployed().then(function(instance)
+      {
+        ContractFactory.vehicleRegistryInstance = instance;  
+        ContractFactory.initMaintenanceLogContract();
+      });
     });
   }, 
 

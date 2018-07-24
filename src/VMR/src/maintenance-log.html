@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Vehicle Maintenance Log</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+          <h1 class="text-center">Vehicle Maintenance Log</h1>
+          <hr/>
+          <br/>
+          <strong>VIN</strong>: <span class="maintenance-log-vin">VIN</span><br/>
+          <strong>Contract Address</strong>: <span class="maintenance-log-address">address</span><br/>
+        </div>
+      </div>
+
+      <div id="maintenanceLogRow" class="row">
+        <!-- Vehicles LOAD HERE -->
+      </div>
+    </div>
+
+    <div id="maintenanceLogEntryTemplate" style="display: none;">
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="panel panel-default panel-pet">
+          <div class="panel-heading">
+            <h3 class="panel-title">Number</h3>
+          </div>
+          <div class="panel-body">
+              <strong>Id</strong>: <span class="maintenance-log-id">id</span><br/>
+              <strong>Maintainer Id</strong>: <span class="maintenance-log-maintainer-id">maintainer</span><br/>
+              <strong>Maintainer Address</strong>: <span class="maintenance-log-maintainer-address">maintainer address</span><br/>
+              <strong>Date</strong>: <span class="maintenance-log-date">date</span><br/>
+              <strong>Title</strong>: <span class="maintenance-log-title">title</span><br/>
+              <strong>Description</strong>: <span class="maintenance-log-description">description</span><br/>
+              <strong>Verified</strong>: <span class="maintenance-log-verified">verified</span><br/>
+              <strong>Verifier</strong>: <span class="maintenance-log-verifier">verifier</span><br/>
+              <strong>Verification Date</strong>: <span class="maintenance-log-verification-date">verification date</span><br/>
+
+              <div class="log-doc-panel" data-id="0">
+
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>  
+    
+    <div id="maintenanceLogDocTemplate" style="display:none;">
+        <strong>Doc Number</strong>: <span class="log-doc-number">number</span><br/>
+        <strong>Title</strong>: <span class="log-doc-title">title</span><br/>
+        <strong>IPFS Address</strong>: <span class="log-doc-ipfs-address">ipfs address</span><br/>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/web3.min.js"></script>
+    <script src="js/truffle-contract.js"></script>
+    <script src="js/contract-factory.js"></script>
+    <script src="js/maintenance-log.js"></script>
+  </body>
+</html>

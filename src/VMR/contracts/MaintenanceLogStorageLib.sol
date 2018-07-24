@@ -26,7 +26,7 @@ library MaintenanceLogStorageLib {
     struct Doc {
         uint256 docNumber;
         string title;
-        bytes32 ipfsAddress;
+        string ipfsAddress;
     }
 
     /** @dev Adds an entry to the log and increments the log count and relates id to log number.
@@ -185,7 +185,7 @@ library MaintenanceLogStorageLib {
       * @param _ipfsAddress The document IPFS address.
       * @return the document number.
       */ 
-    function storeLogDoc(address _storageAccount, uint256 _logNumber, string _title, bytes32 _ipfsAddress) 
+    function storeLogDoc(address _storageAccount, uint256 _logNumber, string _title, string _ipfsAddress) 
         public returns (uint256) {
         uint256 currentLogCount = getDocCount(_storageAccount, _logNumber);
         uint256 docNumber = currentLogCount + 1;
@@ -258,9 +258,9 @@ library MaintenanceLogStorageLib {
       * @param _docNumber The document number.
       * @param _ipfsAddress The document IPFS address.
       */ 
-    function setDocIpfsAddress(address _storageAccount, uint256 _logNumber, uint256 _docNumber, bytes32 _ipfsAddress)
+    function setDocIpfsAddress(address _storageAccount, uint256 _logNumber, uint256 _docNumber, string _ipfsAddress)
         private {
-        return EternalStorage(_storageAccount).setBytes32Value(
+        return EternalStorage(_storageAccount).setStringValue(
             keccak256(abi.encodePacked(_logNumber, _docNumber, "ipfsAddress")), _ipfsAddress);
     }   
 
@@ -283,8 +283,8 @@ library MaintenanceLogStorageLib {
       */ 
     function getDocIpfsAddress(address _storageAccount, uint256 _logNumber, uint256 _docNumber)
         public view
-        returns (bytes32) {
-        return EternalStorage(_storageAccount).getBytes32Value(
+        returns (string) {
+        return EternalStorage(_storageAccount).getStringValue(
             keccak256(abi.encodePacked(_logNumber, _docNumber, "ipfsAddress")));
     }           
 

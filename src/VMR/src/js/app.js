@@ -60,15 +60,10 @@ App = {
 
     vehicleRegistry.getMaintenanceLogAddress(vehicleNumber)
     .then(function(logAddress){
-
-      var maintenanceLogRow = $('#maintenanceLogRow');
-      var maintenanceLogTemplate = $('#maintenanceLogTemplate');
-      maintenanceLogTemplate.find('.panel-title').text(logAddress);
-      maintenanceLogRow.html(maintenanceLogTemplate.html());
-
+      window.location.href = "maintenance-log.html?address=" + logAddress;
     })
     .catch(function(err){
-
+      console.log(err);
     });
 
           /*

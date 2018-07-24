@@ -180,7 +180,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
       * @param _title The title for the doc.
       * @param _ipfsAddressForDoc The ipfs address for the doc.
       */    
-    function addDoc(uint256 _logNumber, string _title, bytes32 _ipfsAddressForDoc) 
+    function addDoc(uint256 _logNumber, string _title, string _ipfsAddressForDoc) 
         whenNotPaused() 
         isNotEmpty(_title)
         logNumberExists(_logNumber)
@@ -275,7 +275,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     function getDoc(uint256 _logNumber, uint256 _docNumber) 
         logNumberExists(_logNumber)
         docNumberExists(_logNumber, _docNumber)
-        external view returns (uint256 docNumber, string title, bytes32 ipfsAddress) {
+        external view returns (uint256 docNumber, string title, string ipfsAddress) {
         MaintenanceLogStorageLib.Doc memory doc = MaintenanceLogStorageLib.getDoc(storageAddress, _logNumber, _docNumber);
         docNumber = doc.docNumber;
         title = doc.title;

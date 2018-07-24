@@ -89,9 +89,15 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(function(instance){
       manufacturerRegistry = instance;
-      return VehicleRegistry.new(vehicleStorage.address, feeLookup.address, manufacturerRegistry.address, {from: vehicleRegistryOwner});
+      //use deployer - we want our app to use the deployed address for the vehicle registry.
+      //this is a workaround until ENS is implemented which will abstract the implementation of the contract from the name
+      return deployer.deploy(VehicleRegistry, 
+        vehicleStorage.address, feeLookup.address, manufacturerRegistry.address, {from: vehicleRegistryOwner});
     })
-    .then(function(instance) {
+    .then(function(){
+      return VehicleRegistry.deployed();
+    })
+    .then(function(instance){
       vehicleRegistry = instance;
       console.log("Vehicle Registry Address: " + vehicleRegistry.address);
       return manufacturerStorage.bindToContract(manufacturerRegistry.address, {from: manufacturerRegistryOwner});
@@ -139,6 +145,38 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(function(result){
       return vehicleRegistry.setMaintenanceLogAddress(1, maintenanceLog.address, {from: ford});
-    });        
+    })
+    .then(function(){
+      console.log("Adding work authorisation to Ford Service Centre");
+      return maintenanceLog.addWorkAuthorisation(web3.fromAscii("Ford Service Centre"), {from : ford});
+    })
+    .then(function() {
+      console.log("Adding maintenance log entry");
+      let date = Math.round(new Date().getTime() / 1000);
+      return maintenanceLog.add(
+       web3.fromAscii("FSC.Service1"), 
+       web3.fromAscii("Ford Service Centre"), 
+       date, 
+       "Factory Exit Check", 
+       "Checks to ensure vehicle is fit for sale", {from: fordServiceCentre});
+    })
+    .then(function() {
+      console.log("Adding maintenance log doc");      
+      return maintenanceLog.addDoc(1, "Service 1 Certificate PDF", "Qmeh4xZ3wT1HiPp5pWtby2CWVescFmzwFk9KCqJeT3F1yM", {from: fordServiceCentre});
+    })
+    .then(function() {
+      console.log("Adding maintenance log entry");
+      let date = Math.round(new Date().getTime() / 1000);
+      return maintenanceLog.add(
+       web3.fromAscii("FSC.Service2"), 
+       web3.fromAscii("Ford Service Centre"), 
+       date, 
+       "Delivery Check", 
+       "Post Delivery Check List", {from: fordServiceCentre});
+    })
+    .then(function() {
+      console.log("Adding maintenance log doc");
+      return maintenanceLog.addDoc(2, "Service 2 Certificate PDF", "Qmcq1AVPSg2rP7JKV6SHKwTwWZAvhMZTYBAVX7sJJozdMV", {from: fordServiceCentre});
+    });   
   }
 };
