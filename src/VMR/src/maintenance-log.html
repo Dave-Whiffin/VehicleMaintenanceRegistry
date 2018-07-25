@@ -24,9 +24,19 @@
           <h1 class="text-center">Vehicle Maintenance Log</h1>
           <hr/>
           <br/>
+          <h2>Contract Details</h2>
           <strong>VIN</strong>: <span class="maintenance-log-vin">VIN</span><br/>
           <strong>Contract Address</strong>: <span class="maintenance-log-address">address</span><br/>
           <strong>Owner</strong>: <span class="maintenance-log-owner">owner</span><br/>
+          <div>
+              <h2>Add Log Entry (authorised maintainers only)</h2>
+              <strong>Maintainer Id:</strong>: <input id="new-log-entry-maintainer-id" /> <br />
+              <strong>Id:</strong> (must be unique): <input id="new-log-entry-id" /> <br />
+              <strong>Title:</strong>: <input id="new-log-entry-title" /><br />
+              <strong>Description:</strong>: <input id="new-log-entry-description" /><br />
+              <button class="btn btn-default" id="btn-add-log-entry" type="button">Add</button>
+              <br />
+          </div>          
         </div>
       </div>
 
@@ -36,7 +46,7 @@
     </div>
 
     <div id="maintenanceLogEntryTemplate" style="display: none;">
-      <div class="col-sm-6 col-md-4 col-lg-3">
+      <div class="col-sm-4 col-md-4 col-lg-3 maintenance-log-entry-panel" data-id="">
         <div class="panel panel-default panel-pet">
           <div class="panel-heading">
             <h3 class="panel-title">Number</h3>
@@ -72,6 +82,7 @@
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>

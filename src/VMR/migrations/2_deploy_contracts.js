@@ -165,6 +165,10 @@ module.exports = function(deployer, network, accounts) {
       return maintenanceLog.addDoc(1, "Service 1 Certificate PDF", "Qmeh4xZ3wT1HiPp5pWtby2CWVescFmzwFk9KCqJeT3F1yM", {from: fordServiceCentre});
     })
     .then(function() {
+      console.log("Verifying log entry");
+      return maintenanceLog.verify(1, {from: ford});
+    })
+    .then(function() {
       console.log("Adding maintenance log entry");
       let date = Math.round(new Date().getTime() / 1000);
       return maintenanceLog.add(
