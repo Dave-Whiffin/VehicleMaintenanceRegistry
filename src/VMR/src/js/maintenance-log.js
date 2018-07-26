@@ -311,6 +311,19 @@ MaintenanceLog = {
     });
   },
 
+  wrapMaintainer: function(val) {
+    return {
+      number: attr[0],
+      id: web3.toUtf8(attr[1]),
+      authorsed: attr[2]
+    };
+  },
+
+  getWrappedMaintainer: async function(maintainerNumber) {
+    var raw = await MaintenanceLog.contract.getMaintainer(maintainerNumber);
+    return MaintenanceLog.wrapMaintainer(raw);
+  },  
+
   getWrappedLog: async function(logNumber) {
     return MaintenanceLog.wrapLog(await MaintenanceLog.contract.getLog(logNumber));
   },
