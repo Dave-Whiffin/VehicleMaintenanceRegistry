@@ -227,29 +227,40 @@ MaintenanceLog = {
 
     let log;
 
-    let valid = await MaintenanceLog.validateAddDoc(logNumber, title, ipfsAddress, function(error, validatedLog) {
-      if(error != null) {
-        console.log(error);
-        alert(error);
-        button.html(buttonText);
-        button.removeAttr("disabled");
-      } else {
-        log = validatedLog;
-      }
-    });
+    if(!await MaintenanceLog.validateAddDoc(logNumber, title, ipfsAddress, function(error, validatedLog) {
+        if(error != null) {
+          console.log(error);
+          alert(error);
+        } else {
+          log = validatedLog;
+        }
+      })
+    ) 
+    {
+      button.html(buttonText);
+      button.removeAttr("disabled");      
+      return;
+    } 
 
-    if(!valid) {
+    button.html("submitting");
+    let txHash;
+    try
+    {
+      txHash = await MaintenanceLog.contract.addDoc(log.logNumber, title, ipfsAddress);
+      button.html("submitted");
+      button.removeAttr("disabled");
+
+      setTimeout(function() {
+        button.html(buttonText);
+      }, 1000);
+
+    }
+    catch(error) {
+      console.log(error);
+      button.html(buttonText);
+      button.removeAttr("disabled");
       return;
     }
-    
-    button.html("submitting");
-    let txHash = await MaintenanceLog.contract.addDoc(log.logNumber, title, ipfsAddress);
-    button.removeAttr("disabled");
-    button.html("submitted");
-
-    setTimeout(function() {
-      button.html(buttonText);
-    }, 1000);
 
     await web3.eth.getTransactionReceipt(txHash.tx, async function(error, result) {
       if(error != null) {
@@ -284,21 +295,19 @@ MaintenanceLog = {
     verifyButton.attr('disabled', 'disabled');
     verifyButton.html('Verification submitted');
 
-    web3.eth.getTransactionReceipt(receipt.tx, async function(err, result) {
+    await web3.eth.getTransactionReceipt(receipt.tx, async function(err, result) {
       if(err != null) {
         console.log(err);
       }
-      else{
+      else {
         console.log("verify response. status: " + result.status);
-        var log = await MaintenanceLog.getWrappedLog(logNumber);
+        console.log("log number: " + logNumber);
 
-        panel.find('.maintenance-log-verified').text(log.verified);
-        panel.find('.maintenance-log-verifier').text(log.verifier);
-        panel.find('.maintenance-log-verification-date').text(log.verificationDate); 
-
-        if(log.verified) {
-          verifyButton.html('Verified');
-        }
+        var log = await MaintenanceLog.getWrappedLog(logNumber);  
+        console.log(log);
+        console.log("verified: " + log.verified);
+        console.log("rebinding log entry to panel");
+        MaintenanceLog.bindEntryToPanel(log, panel);
       }
     });
   },
@@ -345,39 +354,64 @@ MaintenanceLog = {
       description : log[6],
       verified : log[7],
       verifier : log[8],
-      verificationDate : log[9]
+      verificationDate : log[9],
+
+      formattedVerificationDate: function() {
+        if(this.verificationDate > 0) {
+          return new Date(parseInt(this.verificationDate) * 1000) .toString();
+        }
+        return "";
+      },
+
+      formattedVerifier: function() {
+        if(this.verifier == 0) {
+          return "";
+        }
+        return this.verifier;
+      }
     }
+  },
+
+  bindEntryToPanel: function(log, panel) {
+    panel.attr("data-id", log.logNumber);
+    panel.find(".maintenance-log-entry-panel").attr("data-id", log.logNumber);
+    panel.find('.panel-title').text(log.logNumber);
+    panel.find('.maintenance-log-id').text(log.logId);
+    panel.find('.maintenance-log-maintainer-id').text(log.maintainerId);
+    panel.find('.maintenance-log-maintainer-address').text(log.maintainerAddress);
+    panel.find('.maintenance-log-date').text(log.properDate);
+    panel.find('.maintenance-log-title').text(log.title);
+    panel.find('.maintenance-log-description').text(log.description);
+    panel.find('.maintenance-log-verified').text(log.verified);
+    panel.find('.maintenance-log-verifier').text(log.formattedVerifier());
+    panel.find('.maintenance-log-verification-date').text(log.formattedVerificationDate());
+    panel.find('.log-doc-panel').attr('data-id', log.logNumber);
+    panel.find('.add-doc-button').attr('data-id', log.logNumber);
+    panel.find('.btn-verify-maintenance-log').attr('data-id', log.logNumber);
+
+    if(log.verified || !MaintenanceLog.currentUserIsContractOwner) {
+      panel.find('.btn-verify-maintenance-log').hide();
+    }
+    else{
+      panel.find('.btn-verify-maintenance-log').show();
+    }
+
+    if(log.verified) {
+      panel.find('.add-doc-button').hide();
+    } else{
+      panel.find('.add-doc-button').show();
+    }
+
   },
 
   bindEntry: function(log) {
     var maintenanceLogRow = $('#maintenanceLogRow');
     var maintenanceLogTemplate = $('#maintenanceLogEntryTemplate');
 
-    maintenanceLogTemplate.find(".maintenance-log-entry-panel").attr("data-id", log.logNumber);
-    maintenanceLogTemplate.find('.panel-title').text(log.logNumber);
-    maintenanceLogTemplate.find('.maintenance-log-id').text(log.logId);
-    maintenanceLogTemplate.find('.maintenance-log-maintainer-id').text(log.maintainerId);
-    maintenanceLogTemplate.find('.maintenance-log-maintainer-address').text(log.maintainerAddress);
-    maintenanceLogTemplate.find('.maintenance-log-date').text(log.properDate);
-    maintenanceLogTemplate.find('.maintenance-log-title').text(log.title);
-    maintenanceLogTemplate.find('.maintenance-log-description').text(log.description);
-    maintenanceLogTemplate.find('.maintenance-log-verified').text(log.verified);
-    maintenanceLogTemplate.find('.maintenance-log-verifier').text(log.verifier);
-    maintenanceLogTemplate.find('.maintenance-log-verification-date').text(log.verificationDate);
-    maintenanceLogTemplate.find('.log-doc-panel').attr('data-id', log.logNumber);
-    maintenanceLogTemplate.find('.add-doc-button').attr('data-id', log.logNumber);
-    maintenanceLogTemplate.find('.btn-verify-maintenance-log').attr('data-id', log.logNumber);
-
-    if(log.verified || !MaintenanceLog.currentUserIsContractOwner) {
-      maintenanceLogTemplate.find('.btn-verify-maintenance-log').attr('disabled', 'disabled');
-    }
-    else{
-      maintenanceLogTemplate.find('.btn-verify-maintenance-log').removeAttr('disabled');
-    }
-
+    MaintenanceLog.bindEntryToPanel(log, maintenanceLogTemplate);
     maintenanceLogRow.append(maintenanceLogTemplate.html());
-
     MaintenanceLog.getAndBindDocs(log.logNumber);
+
   },
 
   getAndBindEntries: async function() {

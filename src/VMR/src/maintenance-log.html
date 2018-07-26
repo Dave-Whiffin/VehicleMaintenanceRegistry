@@ -20,7 +20,7 @@
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12 col-sm-push-0">
           <h1 class="text-center">Vehicle Maintenance Log</h1>
           <hr/>
           <br/>
@@ -55,7 +55,7 @@
       </div>    
 
     <div id="maintenanceLogEntryTemplate" style="display: none;">
-      <div class="col-sm-8 col-md-4 col-lg-3 add-doc-panel" data-id="">
+      <div class="col-sm-6 col-md-4 col-lg-6 maintenance-log-entry-panel" data-id="">
         <div class="panel panel-default panel-pet">
           <div class="panel-heading">
             <h3 class="panel-title">Number</h3>
@@ -70,13 +70,12 @@
               <strong>Verified</strong>: <span class="maintenance-log-verified">verified</span><br/>
               <strong>Verifier</strong>: <span class="maintenance-log-verifier">verifier</span><br/>
               <strong>Verification Date</strong>: <span class="maintenance-log-verification-date">verification date</span><br/>
-
-              <button class="add-doc-button" data-id="">add doc</button>
               <div class="log-doc-panel" data-id="0">
 
               </div>
           </div>
           <div class="panel-body">
+              <button class="add-doc-button btn btn-default" data-id="">add doc</button>
               <button class="btn btn-default btn-verify-maintenance-log" type="button" data-id="0">Verify</button>
           </div>
         </div>
