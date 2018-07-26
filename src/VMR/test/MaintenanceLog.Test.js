@@ -148,6 +148,17 @@ contract('MaintenanceLog', function (accounts) {
                 await maintenanceLog.addWorkAuthorisation(maintainerId1);
             });
 
+            it("the count of maintainers rises", async function() {
+                assert.equal(1, await maintenanceLog.getMaintainerCount());
+            });
+
+            it("the maintainer can be returned by maintainer number", async function() {
+                let maintainer = await maintenanceLog.getMaintainer(1);
+                assert.equal(1, maintainer[0]);
+                assert.equal(web3.toUtf8(maintainerId1), web3.toUtf8(maintainer[1]));
+                assert.isTrue(maintainer[2]);
+            });            
+
             it("shows authorised maintainer as authorised", async function() {
                 assert.isTrue(await maintenanceLog.isAuthorised(maintainerId1));
             });
@@ -168,7 +179,16 @@ contract('MaintenanceLog', function (accounts) {
 
                 it("shows as unauthorised", async function() {
                     assert.isFalse(await maintenanceLog.isAuthorised(maintainerId1));
-                });                            
+                });
+                
+                it("the count of maintainers stays the same", async function() {
+                    assert.equal(1, await maintenanceLog.getMaintainerCount());
+                });
+    
+                it("getMaintainer shows they are unauthorised", async function() {
+                    let maintainer = await maintenanceLog.getMaintainer(1);
+                    assert.isFalse(maintainer[2]);
+                });                  
             });            
 
             describe("When work is logged against vehicle by maintainer", async function() {

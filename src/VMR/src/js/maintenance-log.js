@@ -48,8 +48,7 @@ MaintenanceLog = {
 
       MaintenanceLog.currentAccount = web3.eth.accounts[0];
       MaintenanceLog.contract = ContractFactory.getMaintenanceLogContract(MaintenanceLog.logAddress);      
-      let maintainerRegistryAddress = await MaintenanceLog.contract.maintainerRegistryAddress.call();
-      MaintenanceLog.maintainerRegistry = ContractFactory.getMaintainerRegistryContract(maintainerRegistryAddress);
+      MaintenanceLog.maintainerRegistry = ContractFactory.getMaintainerRegistryContract();
       MaintenanceLog.vin = web3.toUtf8(await MaintenanceLog.contract.vin.call());
       MaintenanceLog.contractOwner = await MaintenanceLog.contract.owner.call();
       MaintenanceLog.currentUserIsContractOwner = MaintenanceLog.currentAccount == MaintenanceLog.contractOwner;

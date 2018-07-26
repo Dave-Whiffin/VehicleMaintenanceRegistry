@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Vehicle Maintenance Registry</title>
+    <title>Vehicle Maintenance Log</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -20,39 +20,44 @@
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <h1 class="text-center">Registered Vehicles</h1>
+        <div class="col-xs-12 col-sm-12 col-sm-push-0">
+          <h1 class="text-center">Vehicle</h1>
           <hr/>
           <br/>
-        </div>
-      </div>
-
-      <div id="vehicleRow" class="row">
-        <!-- Vehicles LOAD HERE -->
-      </div>
-
-      <div id="maintenanceLogRow" class="row">
-        <!-- view maintenance log here -->
+          <h2>Details</h2>
+          <strong>Vehicle Number</strong>: <span class="vehicle-number">0</span><br/>
+          <strong>VIN</strong>: <span class="vehicle-vin">VIN</span><br/>
+          <strong>Owner</strong>: <span class="vehicle-owner">owner</span><br/>
+          <div>
+              <button class="btn btn-default" id="btn-view-maintenance-log" type="button">Maintenance Log</button><br />
+          </div>          
       </div>
     </div>
 
-    <div id="vehicleTemplate" style="display: none;">
-      <div class="col-sm-6 col-md-4 col-lg-3">
+    <div>Attributes</div>
+
+    <div id="vehicleAttributeRow" class="row">
+        <!-- Vehicles LOAD HERE -->
+  </div>    
+
+    <div id="vehicleAttributeTemplate" style="display: none;">
+      <div class="col-sm-6 col-md-4 col-lg-6 vehicle-attribute-panel" data-id="">
         <div class="panel panel-default panel-pet">
           <div class="panel-heading">
-            <h3 class="panel-title">Vehicle Number</h3>
+            <h3 class="panel-title">Number</h3>
           </div>
           <div class="panel-body">
-            <strong>VIN</strong>: <span class="vehicle-vin">VIN</span><br/>
-            <strong>Owner</strong>: <span class="vehicle-owner">Owner</span><br/>
-            <strong>Manufacturer</strong>: <span class="vehicle-manufacturer"></span><br/>
-            <button class="btn btn-default btn-view-maintenance-log" type="button" data-id="0">maintenance Log</button>
-            <button class="btn btn-default btn-view-vehicle-details" type="button" data-id="0">vehicle details</button>
+              <strong>Attribute Number</strong>: <span class="attribute-number">0</span><br/>  
+              <strong>Name</strong>: <span class="attribute-name">id</span><br/>
+              <strong>Type</strong>: <span class="attribute-type">type</span><br/>
+              <strong>Value</strong>: <span class="attribute-value">value</span><br/>
+          </div>
+          <div class="panel-body">
           </div>
         </div>
       </div>
-    </div>
-
+    </div>  
+    
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -60,6 +65,6 @@
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
     <script src="js/contract-factory.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/vehicle.js"></script>
   </body>
 </html>

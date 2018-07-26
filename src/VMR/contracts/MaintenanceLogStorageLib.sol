@@ -29,6 +29,13 @@ library MaintenanceLogStorageLib {
         string ipfsAddress;
     }
 
+    /** Struct defining the values stored against a vehicle maintainer */
+    struct Maintainer {
+        uint256 maintainerNumber;
+        bytes32 maintainerId;
+        bool authorised;
+    }
+
     /** @dev Adds an entry to the log and increments the log count and relates id to log number.
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _maintainerId The maintainer Id logging the work.
@@ -89,6 +96,36 @@ library MaintenanceLogStorageLib {
             (keccak256(abi.encodePacked("maintainerCount")));        
     }
 
+    /** @dev Gets a Maintainer struct relating to the maintainer number
+     * @param _storageAccount the address of the EternalStorage contract
+     * @param _maintainerNumber the storage allocated maintainer number
+     * @return the Maintainer struct
+     */
+    function getMaintainerStruct(address _storageAccount, uint256 _maintainerNumber) 
+        internal view 
+        returns (Maintainer memory) {
+        bytes32 maintainerId = getMappedMaintainerId(_storageAccount, _maintainerNumber);
+
+        return Maintainer({
+            maintainerNumber: _maintainerNumber,
+            maintainerId : maintainerId,
+            authorised : isAuthorised(_storageAccount, maintainerId)
+        });
+    }
+
+    /** @dev Gets a Maintainer struct relating to the maintainer number
+     * @param _storageAccount the address of the EternalStorage contract
+     * @param _maintainerNumber the storage allocated maintainer number
+     * @return the values for a maintainer
+     */
+    function getMaintainerValues(address _storageAccount, uint256 _maintainerNumber) 
+        public view returns (uint256 maintainerNumber, bytes32 maintainerId, bool authorised) {
+        Maintainer memory m = getMaintainerStruct(_storageAccount, _maintainerNumber);
+        maintainerNumber = m.maintainerNumber;
+        maintainerId = m.maintainerId;
+        authorised = m.authorised;
+    }
+
     /** @dev Set the current maintainer count (private).
       * @param _storageAccount The address of the EternalStorage contract.
       * @param _count The count of maintainers.
@@ -116,7 +153,28 @@ library MaintenanceLogStorageLib {
     function setMaintainerNumber(address _storageAccount, bytes32 _maintainerId, uint256 _maintainerNumber) private {
         EternalStorage(_storageAccount).setUint256Value
             (keccak256(abi.encodePacked("maintainerNumber", _maintainerId)), _maintainerNumber);          
-    }   
+    }  
+
+    /** @dev Sets a mapping from a maintainer number to an id
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _maintainerNumber The maintainer number.
+       * @param _maintainerId The maintainer id.
+      */ 
+    function setMappedMaintainerId(address _storageAccount, uint256 _maintainerNumber, bytes32 _maintainerId) private {
+        EternalStorage(_storageAccount).setBytes32Value
+            (keccak256(abi.encodePacked("mappedMaintainerId", _maintainerNumber)), _maintainerId);          
+    }  
+
+    /** @dev Gets the maintainer id from the maintainer number mapping
+      * @param _storageAccount The address of the EternalStorage contract.
+      * @param _maintainerNumber The maintainer number.
+      */ 
+    function getMappedMaintainerId(address _storageAccount, uint256 _maintainerNumber) public view
+        returns(bytes32)
+     {
+        return EternalStorage(_storageAccount).getBytes32Value
+            (keccak256(abi.encodePacked("mappedMaintainerId", _maintainerNumber)));          
+    }           
 
     /** @dev Adds a maintainer to the list of authorised maintainers - or sets it if authorised if it already exists.
       * @param _storageAccount The address of the EternalStorage contract.
@@ -129,6 +187,7 @@ library MaintenanceLogStorageLib {
         if(maintainerNumber == 0) {
             uint256 currentCount = getMaintainerCount(_storageAccount);
             maintainerNumber = currentCount + 1;
+            setMappedMaintainerId(_storageAccount, maintainerNumber, _maintainerId);
             setMaintainerNumber(_storageAccount, _maintainerId, maintainerNumber);
             setMaintainerCount(_storageAccount, maintainerNumber);
         }

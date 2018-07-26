@@ -13,6 +13,7 @@ import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
 
     using AddressUtils for address;
+    using MaintenanceLogStorageLib for address;
 
     bytes32 public vin;
     address public storageAddress;
@@ -76,7 +77,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
    * @dev Modifier throws if sender is not the owner relating to the maintainer on the log or the maintainer is not authorised
    */
     modifier isMaintainerAuthorisedForLogNumber(uint256 _logNumber) {
-        MaintenanceLogStorageLib.Log memory log = MaintenanceLogStorageLib.getLog(storageAddress, _logNumber);
+        MaintenanceLogStorageLib.Log memory log = storageAddress.getLog(_logNumber);
         require(isAuthorisedAndSenderAllowed(log.maintainerId, msg.sender));
         _;
     }    
@@ -86,7 +87,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
    */
     modifier logExists(bytes32 _logId) {
         require(
-            MaintenanceLogStorageLib.getLogNumber(storageAddress, _logId) > 0);
+            storageAddress.getLogNumber(_logId) > 0);
         _;
     }
 
@@ -95,7 +96,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
    */
     modifier logNumberExists(uint256 _logNumber) {
         require(
-            _logNumber > 0 && _logNumber <= MaintenanceLogStorageLib.getCount(storageAddress)
+            _logNumber > 0 && _logNumber <= storageAddress.getCount()
         );
         _;
     }
@@ -105,7 +106,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
    */
     modifier docNumberExists(uint256 _logNumber, uint _docNumber) {
         require(
-            _docNumber > 0 && _docNumber <= MaintenanceLogStorageLib.getDocCount(storageAddress, _logNumber)
+            _docNumber > 0 && _docNumber <= storageAddress.getDocCount(_logNumber)
         );
         _;
     }    
@@ -114,7 +115,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
    * @dev Modifier throws if the log is verified
    */
     modifier logIsNotVerified(uint256 _logNumber) {
-        require(MaintenanceLogStorageLib.getVerified(storageAddress, _logNumber) == false);
+        require(storageAddress.getVerified(_logNumber) == false);
         _;
     }
 
@@ -133,7 +134,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     function isAuthorised(bytes32 _maintainerId) 
         public view 
         returns (bool) {
-        return MaintenanceLogStorageLib.isAuthorised(storageAddress, _maintainerId);
+        return storageAddress.isAuthorised(_maintainerId);
     }
 
     /** @dev Authorise a maintainer to add logs.
@@ -144,7 +145,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         onlyVehicleOwner()        
         external payable
          {
-        MaintenanceLogStorageLib.addAuthorisation(storageAddress, _maintainerId);
+        storageAddress.addAuthorisation(_maintainerId);
         emit WorkAuthorisationAdded(_maintainerId);
     }
 
@@ -156,7 +157,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         onlyVehicleOwner()        
         external payable
          {
-        MaintenanceLogStorageLib.removeAuthorisation(storageAddress, _maintainerId);
+        storageAddress.removeAuthorisation(_maintainerId);
         emit WorkAuthorisationRemoved(_maintainerId);
     }    
    
@@ -171,7 +172,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         whenNotPaused() 
         isMaintainerAuthorised(_maintainerId) 
         external payable {
-        uint256 logNumber = MaintenanceLogStorageLib.storeLog(storageAddress, _maintainerId, msg.sender, _logId, _date, _title, _description);
+        uint256 logNumber = storageAddress.storeLog(_maintainerId, msg.sender, _logId, _date, _title, _description);
         emit LogAdded(logNumber, _maintainerId);
     }
 
@@ -187,7 +188,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         logIsNotVerified(_logNumber)
         isMaintainerAuthorisedForLogNumber(_logNumber)        
         external payable {
-        uint256 docNumber = MaintenanceLogStorageLib.storeLogDoc(storageAddress, _logNumber, _title, _ipfsAddressForDoc);
+        uint256 docNumber = storageAddress.storeLogDoc(_logNumber, _title, _ipfsAddressForDoc);
         emit DocAdded(_logNumber, docNumber);
     }
 
@@ -199,14 +200,14 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         onlyVehicleOwner() 
         logNumberExists(_logNumber) 
         external payable {
-        MaintenanceLogStorageLib.storeVerification(storageAddress, _logNumber, msg.sender, now);
+        storageAddress.storeVerification(_logNumber, msg.sender, now);
         emit LogVerified(_logNumber);
     }
 
     /** @dev Returns the count of log entries
       */ 
     function getLogCount() external view returns (uint256) {
-        return MaintenanceLogStorageLib.getCount(storageAddress);
+        return storageAddress.getCount();
     }
 
     /** @dev Returns the log number for the a given logId
@@ -217,7 +218,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         logExists(_logId)
         external view 
         returns (uint256) {
-        return MaintenanceLogStorageLib.getLogNumber(storageAddress, _logId);
+        return storageAddress.getLogNumber(_logId);
     }
 
     /** @dev Returns a specific log entry
@@ -241,7 +242,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     address maintainerAddress, uint256 date, string title, string description, 
     bool verified, address verifier, uint256 verificationDate) {
 
-        MaintenanceLogStorageLib.Log memory log = MaintenanceLogStorageLib.getLog(storageAddress, _logNumber);
+        MaintenanceLogStorageLib.Log memory log = storageAddress.getLog(_logNumber);
 
         logNumber = log.logNumber;
         id = log.id;
@@ -262,7 +263,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
     function getDocCount(uint256 _logNumber) 
         logNumberExists(_logNumber)
         external view returns (uint256) {
-        return MaintenanceLogStorageLib.getDocCount(storageAddress, _logNumber);
+        return storageAddress.getDocCount(_logNumber);
     }
 
     /** @dev Returns a specific doc relating to a log
@@ -276,7 +277,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         logNumberExists(_logNumber)
         docNumberExists(_logNumber, _docNumber)
         external view returns (uint256 docNumber, string title, string ipfsAddress) {
-        MaintenanceLogStorageLib.Doc memory doc = MaintenanceLogStorageLib.getDoc(storageAddress, _logNumber, _docNumber);
+        MaintenanceLogStorageLib.Doc memory doc = storageAddress.getDoc(_logNumber, _docNumber);
         docNumber = doc.docNumber;
         title = doc.title;
         ipfsAddress = doc.ipfsAddress;
@@ -291,7 +292,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         whenNotPaused() 
         public {
         Claimable.claimOwnership();
-        MaintenanceLogStorageLib.removeAllAuthorisations(storageAddress);
+        storageAddress.removeAllAuthorisations();
     }    
 
   /**
@@ -305,7 +306,7 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         returns (bool) {
 
         return
-            MaintenanceLogStorageLib.isAuthorised(storageAddress, _maintainerId) &&
+            storageAddress.isAuthorised(_maintainerId) &&
             maintainerRegistry.isMemberRegisteredAndEnabled(_maintainerId) &&
             _maintainerAddress == maintainerRegistry.getMemberOwner(_maintainerId);
     }    
@@ -345,4 +346,21 @@ contract MaintenanceLog is TokenDestructible, Claimable, Pausable {
         require(_maintainerRegistryAddress.isContract());
         maintainerRegistryAddress = _maintainerRegistryAddress;
     }        
+
+    /**
+      * @dev Returns the number of maintainer who have ever been linked to this log  
+    */
+    function getMaintainerCount() public view returns(uint256) {
+        return storageAddress.getMaintainerCount();
+    }
+
+    /**
+    * @dev Returns the values stored against a maintainer who is or has been linked to this log
+    * @param _maintainerNumber the log allocated maintainer number
+     */
+    function getMaintainer(uint256 _maintainerNumber) 
+        public view 
+        returns (uint256 maintainerNumber, bytes32 maintainerId, bool authorised) {
+        return storageAddress.getMaintainerValues(_maintainerNumber);
+    }
 }

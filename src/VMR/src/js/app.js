@@ -1,17 +1,22 @@
 App = {
 
+  eventsBound : false,
   vehicleRegistry: null,
 
   init: function() {
     ContractFactory.init(function() {
-      vehicleRegistry = ContractFactory.vehicleRegistryInstance;
+      App.vehicleRegistry = ContractFactory.vehicleRegistryInstance;
       App.bindEvents();
       return App.loadVehicles();
     });
   },
 
   bindEvents: function() {
-    $(document).on('click', '.btn-view-maintenance-log', App.viewMaintenanceLog);
+    if(!App.eventsBound) {
+      $(document).on('click', '.btn-view-maintenance-log', App.viewMaintenanceLog);
+      $(document).on('click', '.btn-view-vehicle-details', App.viewVehicleDetails);
+      App.eventsBound = true;
+    }
   },
 
   displayVehicle: function(vehicle) {
@@ -20,7 +25,7 @@ App = {
     let vin = web3.toUtf8(vehicle[1]);
     let owner = vehicle[2];
 
-    vehicleRegistry.getMemberAttribute(vehicleNumber, 1)
+    App.vehicleRegistry.getMemberAttribute(vehicleNumber, 1)
     .then(function(attrib) {
 
       var vehicleRow = $('#vehicleRow');
@@ -33,72 +38,42 @@ App = {
       vehicleTemplate.find('.vehicle-owner').text(owner);
       vehicleTemplate.find('.vehicle-manufacturer').text(manufacturer);
       vehicleTemplate.find('.btn-view-maintenance-log').attr('data-id', vehicleNumber);
+      vehicleTemplate.find('.btn-view-maintenance-log').attr('data-vin', vin);
+      vehicleTemplate.find('.btn-view-vehicle-details').attr('data-id', vehicleNumber);
+      vehicleTemplate.find('.btn-view-vehicle-details').attr('data-vin', vin);      
   
       vehicleRow.append(vehicleTemplate.html());
       console.log("Member Number: " + vehicleNumber + " id: " + vin + " owner: " + owner);
     });
   },
 
-  loadVehicles: function() {
-    vehicleRegistry.getMemberTotalCount()
-    .then(function(memberCount) {
-      for (i = 1; i <= memberCount; i++) {
-        vehicleRegistry.getMember(i).then(function(m){
-          App.displayVehicle(m);
-        });
-      }
-    })
-    .catch(function(err) {
-      console.log(err.message);
-    });
+  loadVehicles: async function() {
+    let memberCount = await App.vehicleRegistry.getMemberTotalCount();
+    for (i = 1; i <= memberCount; i++) {
+      let vehicle = await App.vehicleRegistry.getMember(i);
+      App.displayVehicle(vehicle);
+    }
   },
 
-  viewMaintenanceLog: function(event) {
+  viewMaintenanceLog: async function(event) {
     event.preventDefault();
-
     var vehicleNumber = parseInt($(event.target).data('id'));
+    let logAddress = await App.vehicleRegistry.getMaintenanceLogAddress(vehicleNumber);
+    window.location.href = "maintenance-log.html?address=" + logAddress;
+  },
 
-    vehicleRegistry.getMaintenanceLogAddress(vehicleNumber)
-    .then(function(logAddress){
-      window.location.href = "maintenance-log.html?address=" + logAddress;
-    })
-    .catch(function(err){
-      console.log(err);
-    });
-
-          /*
-      if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
-        $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
-        */
-
-        /*
-    var adoptionInstance;
-
-    web3.eth.getAccounts(function(error, accounts) {
-      if (error) {
-        console.log(error);
-      }
-
-      var account = accounts[0];
-
-      App.contracts.Adoption.deployed().then(function(instance) {
-        adoptionInstance = instance;
-
-    // Execute adopt as a transaction by sending account
-    return adoptionInstance.adopt(petId, {from: account});
-    })
-    .then(function(result) {
-      return App.markAdopted();
-    })
-    .catch(function(err) {
-      console.log(err.message);
-    });
-    */    
-  }
+  viewVehicleDetails: async function(event) {
+    event.preventDefault();
+    let vin = $(event.target).data('vin');
+    window.location.href = "vehicle.html?vin=" + vin;
+  }  
 };
 
 $(function() {
   $(window).load(function() {
     App.init();
+    ContractFactory.currentAddressChanged = function() {
+      App.init();
+    };
   });
 });

@@ -2,6 +2,8 @@ ContractFactory = {
   web3Provider: null,
   contracts: {},
   vehicleRegistryInstance: null,
+  manufacturerRegistryInstance: null,
+  maintainerRegistryInstance: null,
   initialised: null,
   currentAddress: null,
   currentAddressChanged : function() {},
@@ -41,50 +43,76 @@ ContractFactory = {
 
     ContractFactory.beginPollingForAccountChange();
 
-    return ContractFactory.initVehicleRegistryContract();
+    let completionCount = 0;
+
+    var completionCallback = function() {
+      completionCount ++;
+      if(completionCount == 4)   {
+        ContractFactory.initialised();
+      }
+    };
+
+    ContractFactory.initManufacturerRegistryContract(completionCallback);
+    ContractFactory.initMaintainerRegistryContract(completionCallback);
+    ContractFactory.initVehicleRegistryContract(completionCallback);
+    ContractFactory.initMaintenanceLogContract(completionCallback);
   },
 
-  initVehicleRegistryContract: function() {
-    $.getJSON('VehicleRegistry.json', function(data) {
-      var vehicleRegistryArtifact = data;
-      ContractFactory.contracts.VehicleRegistry = TruffleContract(vehicleRegistryArtifact);
-      ContractFactory.contracts.VehicleRegistry.setProvider(ContractFactory.web3Provider);
-
-      ContractFactory.contracts.VehicleRegistry.deployed().then(function(instance)
+  initManufacturerRegistryContract: function(completionCallBack) {
+    $.getJSON('ManufacturerRegistry.json', function(artifact) {
+      ContractFactory.contracts.ManufacturerRegistry = TruffleContract(artifact);
+      ContractFactory.contracts.ManufacturerRegistry.setProvider(ContractFactory.web3Provider);
+      ContractFactory.contracts.ManufacturerRegistry.deployed().then(function(instance)
       {
-        ContractFactory.vehicleRegistryInstance = instance;  
-        ContractFactory.initMaintenanceLogContract();
+        ContractFactory.manufacturerRegistryInstance = instance;  
+        completionCallBack();
       });
     });
   }, 
 
-  initMaintenanceLogContract: function() {
-    $.getJSON('MaintenanceLog.json', function(data) {
-      var maintenanceLogArtifact = data;
-      ContractFactory.contracts.MaintenanceLog = TruffleContract(maintenanceLogArtifact);
-      ContractFactory.contracts.MaintenanceLog.setProvider(ContractFactory.web3Provider);
+  initMaintainerRegistryContract: function(completionCallBack) {
+    $.getJSON('MaintainerRegistry.json', function(artifact) {
+      ContractFactory.contracts.MaintainerRegistry = TruffleContract(artifact);
+      ContractFactory.contracts.MaintainerRegistry.setProvider(ContractFactory.web3Provider);
+      ContractFactory.contracts.MaintainerRegistry.deployed().then(function(instance)
+      {
+        ContractFactory.maintainerRegistryInstance = instance;  
+        completionCallBack();
+      });
+    });
+  }, 
 
-      ContractFactory.initMaintainerRegistryContract();
+  initVehicleRegistryContract: function(completionCallBack) {
+    $.getJSON('VehicleRegistry.json', function(artifact) {
+      ContractFactory.contracts.VehicleRegistry = TruffleContract(artifact);
+      ContractFactory.contracts.VehicleRegistry.setProvider(ContractFactory.web3Provider);
+      ContractFactory.contracts.VehicleRegistry.deployed().then(function(instance)
+      {
+        ContractFactory.vehicleRegistryInstance = instance;  
+        completionCallBack();
+      });
+    });
+  }, 
+
+  initMaintenanceLogContract: function(completionCallBack) {
+    $.getJSON('MaintenanceLog.json', function(artifact) {
+      ContractFactory.contracts.MaintenanceLog = TruffleContract(artifact);
+      ContractFactory.contracts.MaintenanceLog.setProvider(ContractFactory.web3Provider);
+      completionCallBack();
     });
   },  
   
-  initMaintainerRegistryContract: function() {
-    $.getJSON('MaintainerRegistry.json', function(data) {
-      var artifact = data;
-      ContractFactory.contracts.MaintainerRegistry = TruffleContract(artifact);
-      ContractFactory.contracts.MaintainerRegistry.setProvider(ContractFactory.web3Provider);
-
-      ContractFactory.initialised();
-    });
-  },    
-
+  
   getMaintenanceLogContract: function(contractAddress) {
       return ContractFactory.contracts.MaintenanceLog.at(contractAddress);
   },
 
-  getMaintainerRegistryContract: function(contractAddress) {
-    return ContractFactory.contracts.MaintainerRegistry.at(contractAddress);
-  }
+  getMaintainerRegistryContract: function() {
+    return ContractFactory.contracts.maintainerRegistryInstance;
+  },
 
+  getManufacturerRegistryContract: function() {
+    return ContractFactory.contracts.manufacturerRegistryInstance;
+  }  
 };
 

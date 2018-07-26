@@ -81,16 +81,20 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(function(instance) {
       vehicleStorage = instance;
-      return MaintainerRegistry.new(maintainerStorage.address, feeLookup.address, {from: maintainerRegistryOwner});
+      return deployer.deploy(MaintainerRegistry, maintainerStorage.address, feeLookup.address, {from: maintainerRegistryOwner});
+    })
+    .then(function() {
+      return MaintainerRegistry.deployed();
     })
     .then(function(instance){
       maintainerRegistry = instance;
-      return ManufacturerRegistry.new(manufacturerStorage.address, feeLookup.address, {from: manufacturerRegistryOwner});
+      return deployer.deploy(ManufacturerRegistry, manufacturerStorage.address, feeLookup.address, {from: manufacturerRegistryOwner});
+    })
+    .then(function(){
+      return ManufacturerRegistry.deployed();
     })
     .then(function(instance){
       manufacturerRegistry = instance;
-      //use deployer - we want our app to use the deployed address for the vehicle registry.
-      //this is a workaround until ENS is implemented which will abstract the implementation of the contract from the name
       return deployer.deploy(VehicleRegistry, 
         vehicleStorage.address, feeLookup.address, manufacturerRegistry.address, {from: vehicleRegistryOwner});
     })
