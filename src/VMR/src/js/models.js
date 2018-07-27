@@ -8,11 +8,11 @@ function VehicleModel(vehicleValArray) {
     self.createdDate = new Date(parseInt(self.created) * 1000);
   }
 
-function MaintainerViewModel() {
+function MaintainerViewModel(values) {
     var self = this;
-    self.number =  0,
-    self.id =  "",
-    self.authorised = false
+    self.number = parseInt(values[0]);
+    self.id =  web3.toUtf8(values[1]);
+    self.authorised = values[2];
   }
   
 function VehicleAttributeModel(values) {
@@ -27,4 +27,39 @@ function VehicleAttributeModel(values) {
     self.type = web3.toUtf8(values[2]);
     self.value = values[3];
     self.displayValue = getDisplayValue(self.type, self.value);
-  }  
+}  
+
+function MaintenanceLogEntryModel(values) {
+    var self = this;
+
+    self.logNumber = parseInt(values[0]);
+    self.id = web3.toUtf8(values[1]);
+    self.maintainerId = web3.toUtf8(values[2]);
+    self.maintainerAddress = values[3];
+    self.date = parseInt(values[4]);
+    self.properDate = new Date(parseInt(values[4]) * 1000);
+    self.title = values[5];
+    self.description = values[6];
+
+    self.verified = ko.observable(values[7]);
+    self.verifier = ko.observable(values[8]);
+    self.verificationDate = ko.observable(values[9]);
+
+    self.formattedVerificationDate = ko.computed(function() {
+        return self.verificationDate() > 0 ? 
+            new Date(parseInt(this.verificationDate()) * 1000).toString() : "";
+    }, self);
+
+    self.formattedVerifier = ko.computed(function() {
+        return self.verifier() == 0 ? "" : self.verifier();
+    }, self);
+
+    self.docs = ko.observableArray([]);
+}
+
+function MaintenanceLogDocModel(values) {
+    var self = this;
+    self.documentNumber = parseInt(values[0]);
+    self.title = values[1];
+    self.ipfsAddress = values[2];
+}

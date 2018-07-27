@@ -25,25 +25,24 @@
           <hr/>
           <br/>
           <h2>Contract Details</h2>
-          <strong>VIN</strong>: <span class="maintenance-log-vin">VIN</span><br/>
-          <strong>Contract Address</strong>: <span class="maintenance-log-address">address</span><br/>
-          <strong>Owner</strong>: <span class="maintenance-log-owner">owner</span><br/>
-          <strong>Log Entries</strong>: <span class="maintenance-log-entry-count">0</span><br/>
-          <div>
+          <strong>VIN</strong>: <span data-bind="html: vin">VIN</span><br/>
+          <strong>Contract Address</strong>: <span data-bind="html: logAddress">address</span><br/>
+          <strong>Owner</strong>: <span data-bind="html: contractOwner">owner</span><br/>
+          <div data-bind="with: newLogEntry">
               <h2>Add Log Entry (authorised maintainers only)</h2>
-              <strong>Maintainer Id:</strong>: <input id="new-log-entry-maintainer-id" /> <br />
-              <strong>Id:</strong> (must be unique): <input id="new-log-entry-id" /> <br />
-              <strong>Title:</strong>: <input id="new-log-entry-title" /><br />
-              <strong>Description:</strong>: <input id="new-log-entry-description" /><br />
-              <button class="btn btn-default" id="btn-add-log-entry" type="button">Add</button>
+              <strong>Maintainer Id:</strong>: <input data-bind="value: maintainerId" /> <br />
+              <strong>Id:</strong> (must be unique): <input data-bind="value: id" /> <br />
+              <strong>Title:</strong>: <input data-bind="value: title" /><br />
+              <strong>Description:</strong>: <input data-bind="value: description" /><br />
+              <button class="btn btn-default" type="button" data-bind="click: $root.addLogEntry">Add</button>
               <br />
           </div>          
-          <div id="add-log-doc-panel">
+          <div data-bind="with: newDoc">
             <h2>Add Doc to Log Entry</h2>
-            <strong>Log Number:</strong>: <input id="new-log-doc-log-number" /><br />
-            <strong>Title:</strong>: <input id="new-log-doc-title" /><br />
-            <strong>IPFS Address:</strong>: <input id="new-log-doc-ipfs-address" /><br />
-            <button class="btn btn-default" id="btn-add-log-doc" type="button">Add</button>
+            <strong>Log Number:</strong>: <input data-bind="value: $root.currentLogEntry.logNumber" /><br />
+            <strong>Title:</strong>: <input data-bind="value: title" /><br />
+            <strong>IPFS Address:</strong>: <input data-bind="value: ipfsAddress" /><br />
+            <button class="btn btn-default" type="button" data-bind="click: $root.addDoc" >Add</button>
             <br />
             <br />
         </div>
@@ -51,65 +50,86 @@
     </div>
 
     <div><h3>Maintainers</h3></div>
-    <div id="maintainerRow" class="row">
-
+    <div class="row">
+        <table class="table">
+            <thead><tr>
+                <th scope="col">Number</th>
+                <th scope="col">Id</th>
+                <th scope="col">Authorised</th>
+                <th scope="col"></th>
+            </tr></thead>
+          <tbody data-bind="foreach: maintainers">
+              <tr>
+                  <th scope="row" data-bind="text: number"></th>
+                  <td data-bind="text: id"></td>
+                  <td data-bind="text: authorised"></td>
+                  <td>TODO: de-authorise</td>
+              </tr>    
+          </tbody>
+        </table>
     </div>
     <br />
 
     <div><h3>Log Entries</h3></div>
-    <div id="maintenanceLogRow" class="row">
-        <!-- Vehicles LOAD HERE -->
+    <div class="row">
+        <table class="table">
+            <thead><tr>
+                <th scope="col">Number</th>
+                <th scope="col">Id</th>
+                <th scope="col">Manufacturer Id</th>
+                <th scope="col">Manufacturer Address</th>
+                <th scope="col">Date</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Verified</th>
+                <th scope="col">Verifier</th>
+                <th scope="col">Verification Date</th>
+                <th scope="col">
+                </th>
+            </tr></thead>
+          <tbody data-bind="foreach: logEntries">
+              <tr>
+                  <th scope="row" data-bind="text: logNumber"></th>
+                  <td data-bind="text: id"></td>
+                  <td data-bind="text: maintainerId"></td>
+                  <td data-bind="text: maintainerAddress"></td>
+                  <td data-bind="text: properDate"></td>
+                  <td data-bind="text: title"></td>
+                  <td data-bind="text: description"></td>
+                  <td data-bind="text: verified"></td>
+                  <td data-bind="text: formattedVerifier"></td>
+                  <td data-bind="text: formattedVerificationDate"></td>
+                  <td>
+                    <div data-bind="if: $root.canVerify($data)">
+                      <button data-bind="click: $root.verify">Verify</button>
+                    </div>
+                  </td>
+              </tr>    
+                <td></td>
+                <td colspan="10">
+                    <h4>Docs</h4>
+                    <div data-bind="foreach: docs">
+                        <div>
+                          <strong>Title: </strong>: <span data-bind="html: title"></span><br />
+                          <strong>Ipfs: </strong>: <span data-bind="html: ipfsAddress"></span>
+                        </div>
+                    </div>
+                </td>
+              <tr>
+          </tbody>
+        </table>
     </div>    
 
-    <div id="maintenanceLogEntryTemplate" style="display: none;">
-      <div class="col-sm-6 col-md-4 col-lg-6 maintenance-log-entry-panel" data-id="">
-        <div class="panel panel-default panel-pet">
-          <div class="panel-heading">
-            <h3 class="panel-title">Number</h3>
-          </div>
-          <div class="panel-body">
-              <strong>Id</strong>: <span class="maintenance-log-id">id</span><br/>
-              <strong>Maintainer Id</strong>: <span class="maintenance-log-maintainer-id">maintainer</span><br/>
-              <strong>Maintainer Address</strong>: <span class="maintenance-log-maintainer-address">maintainer address</span><br/>
-              <strong>Date</strong>: <span class="maintenance-log-date">date</span><br/>
-              <strong>Title</strong>: <span class="maintenance-log-title">title</span><br/>
-              <strong>Description</strong>: <span class="maintenance-log-description">description</span><br/>
-              <strong>Verified</strong>: <span class="maintenance-log-verified">verified</span><br/>
-              <strong>Verifier</strong>: <span class="maintenance-log-verifier">verifier</span><br/>
-              <strong>Verification Date</strong>: <span class="maintenance-log-verification-date">verification date</span><br/>
-              <div class="log-doc-panel" data-id="0">
-
-              </div>
-          </div>
-          <div class="panel-body">
-              <button class="add-doc-button btn btn-default" data-id="">add doc</button>
-              <button class="btn btn-default btn-verify-maintenance-log" type="button" data-id="0">Verify</button>
-          </div>
-        </div>
-      </div>
-    </div>  
-    
-    <div id="maintenanceLogDocTemplate" style="display:none;">
-        <strong>Doc Number</strong>: <span class="log-doc-number">number</span><br/>
-        <strong>Title</strong>: <span class="log-doc-title">title</span><br/>
-        <strong>IPFS Address</strong>: <span class="log-doc-ipfs-address">ipfs address</span><br/>
-    </div>
-
-    <div id="maintainerTemplate">
-        <div class="panel-body">
-            <strong>Number</strong>: <span class="maintainer-number">0</span><br/>  
-            <strong>Id</strong>: <span class="maintainer-id">id</span><br/>
-            <strong>Authorised</strong>: <span class="maintainer-authorised">false</span><br/>
-        </div>
-    </div>    
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script>
+    <!-- <script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script> -->
+    <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
+    <script src="js/models.js"></script>
     <script src="js/contract-factory.js"></script>
     <script src="js/maintenance-log.js"></script>
   </body>
