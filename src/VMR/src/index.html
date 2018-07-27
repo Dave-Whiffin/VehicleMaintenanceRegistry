@@ -20,41 +20,39 @@
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
           <h1 class="text-center">Registered Vehicles</h1>
-          <hr/>
-          <br/>
-        </div>
       </div>
 
-      <div id="vehicleRow" class="row">
-        <!-- Vehicles LOAD HERE -->
-      </div>
+      <div class="row">
 
-      <div id="maintenanceLogRow" class="row">
-        <!-- view maintenance log here -->
-      </div>
+      <table class="table">
+          <thead><tr>
+              <th scope="col">Number</th>
+              <th scope="col">VIN</th>
+              <th scope="col">Owner</th>
+              <th scope="col">Enabled</th>
+              <th scope="col">Created Date</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+          </tr></thead>
+          <!-- Todo: Generate table body -->
+        <tbody data-bind="foreach: vehicles">
+            <tr>
+                <th scope="row" data-bind="text: vehicleNumber"></th>
+                <td data-bind="text: vin"></td>
+                <td data-bind="text: owner"></td>
+                <td data-bind="text: enabled"></td>
+                <td data-bind="text: createdDate"></td>
+                <td><button class="btn btn-default" type="button" data-bind="click: $root.goToMaintenanceLog" data-id="0">maintenance Log</button></td>
+                <td><button class="btn btn-default" type="button" data-bind="click: $root.goToDetails" data-id="0">vehicle details</button></td>
+            </tr>    
+        </tbody>
+      </table>
+
     </div>
-
-    <div id="vehicleTemplate" style="display: none;">
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="panel panel-default panel-pet">
-          <div class="panel-heading">
-            <h3 class="panel-title">Vehicle Number</h3>
-          </div>
-          <div class="panel-body">
-            <strong>VIN</strong>: <span class="vehicle-vin">VIN</span><br/>
-            <strong>Owner</strong>: <span class="vehicle-owner">Owner</span><br/>
-            <strong>Manufacturer</strong>: <span class="vehicle-manufacturer"></span><br/>
-            <button class="btn btn-default btn-view-maintenance-log" type="button" data-id="0">maintenance Log</button>
-            <button class="btn btn-default btn-view-vehicle-details" type="button" data-id="0">vehicle details</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>

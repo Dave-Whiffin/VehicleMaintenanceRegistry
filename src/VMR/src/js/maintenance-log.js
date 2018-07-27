@@ -53,7 +53,10 @@ MaintenanceLog = {
       MaintenanceLog.contractOwner = await MaintenanceLog.contract.owner.call();
       MaintenanceLog.currentUserIsContractOwner = MaintenanceLog.currentAccount == MaintenanceLog.contractOwner;
       MaintenanceLog.bindEvents();
-      return MaintenanceLog.getAndBindEntries();
+
+        
+      MaintenanceLog.getAndBindEntries();
+      MaintenanceLog.getAndBindMaintainers();
     });
   },
 
@@ -313,9 +316,9 @@ MaintenanceLog = {
 
   wrapMaintainer: function(val) {
     return {
-      number: attr[0],
-      id: web3.toUtf8(attr[1]),
-      authorsed: attr[2]
+      number: val[0],
+      id: web3.toUtf8(val[1]),
+      authorised: val[2]
     };
   },
 
@@ -416,6 +419,14 @@ MaintenanceLog = {
 
   },
 
+  bindMaintainerToPanel: function(maintainer, panel) {
+    panel.attr("data-id", maintainer.number);
+    panel.find(".maintainer-number").attr("data-id", maintainer.number);
+    panel.find('.maintainer-number').text(maintainer.number);
+    panel.find('.maintainer-id').text(maintainer.id);
+    panel.find('.maintainer-authorised').text(maintainer.authorised);
+  },  
+
   bindEntry: function(log) {
     var maintenanceLogRow = $('#maintenanceLogRow');
     var maintenanceLogTemplate = $('#maintenanceLogEntryTemplate');
@@ -425,6 +436,14 @@ MaintenanceLog = {
     MaintenanceLog.getAndBindDocs(log.logNumber);
 
   },
+
+  bindMaintainer: function(maintainer) {
+    var maintainerRow = $('#maintainerRow');
+    var maintainerTemplate = $('#maintainerTemplate');
+
+    MaintenanceLog.bindMaintainerToPanel(maintainer, maintainerTemplate);
+    maintainerRow.append(maintainerTemplate.html());
+  },  
 
   getAndBindEntries: async function() {
 
@@ -440,7 +459,19 @@ MaintenanceLog = {
       let log = await MaintenanceLog.getWrappedLog(i);
       MaintenanceLog.bindEntry(log);
     }
-  }
+  },
+
+  getAndBindMaintainers: async function() {
+
+    $("#maintainerRow").empty();
+
+    var totalCount = await MaintenanceLog.contract.getMaintainerCount();
+
+    for(var i = 1; i <= totalCount; i++) {
+      let maintainer = await MaintenanceLog.getWrappedMaintainer(i);
+      MaintenanceLog.bindMaintainer(maintainer);
+    }
+  }  
 };
 
 $(function() {

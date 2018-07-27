@@ -15,6 +15,29 @@ function lengthInUtf8Bytes(str) {
   return str.length + (m ? m.length : 0);
 }
 
+function VehicleViewModel() {
+  var self = this;
+  self.vehicleNumber = 0,
+  self.vin = "",
+  self.owner = "",
+  self.maintainers = [],
+  self.attributes = []
+}
+
+function MaintainerViewModel() {
+  var self = this;
+  self.number =  0,
+  self.id =  "",
+  self.authorised = false
+}
+
+function AttributeViewModel() {
+  var self = this;
+  self.number = 0,
+  self.id = "",
+  self.type = "",
+  self.value = ""
+}
 
 VehicleController = {
 
