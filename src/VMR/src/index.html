@@ -33,9 +33,7 @@
               <th scope="col">Enabled</th>
               <th scope="col">Created Date</th>
               <th scope="col"></th>
-              <th scope="col"></th>
           </tr></thead>
-          <!-- Todo: Generate table body -->
         <tbody data-bind="foreach: vehicles">
             <tr>
                 <th scope="row" data-bind="text: vehicleNumber"></th>
@@ -43,7 +41,6 @@
                 <td data-bind="text: owner"></td>
                 <td data-bind="text: enabled"></td>
                 <td data-bind="text: createdDate"></td>
-                <td><button class="btn btn-default" type="button" data-bind="click: $root.goToMaintenanceLog" data-id="0">maintenance Log</button></td>
                 <td><button class="btn btn-default" type="button" data-bind="click: $root.goToDetails" data-id="0">vehicle details</button></td>
             </tr>    
         </tbody>
@@ -57,6 +54,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
+    <script src="js/models.js"></script>
     <script src="js/contract-factory.js"></script>
     <script src="js/app.js"></script>
   </body>

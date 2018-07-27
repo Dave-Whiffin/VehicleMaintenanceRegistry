@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Vehicle Maintenance Log</title>
+    <title>Vehicle Details</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -19,51 +19,56 @@
   </head>
   <body>
     <div class="container">
-      <div class="row">
+      <div class="row" data-bind="with: vehicle">
         <div class="col-xs-12 col-sm-12 col-sm-push-0">
-          <h1 class="text-center">Vehicle</h1>
+          <h1 class="text-center">Vehicle Details</h1>
           <hr/>
           <br/>
-          <h2>Details</h2>
-          <strong>Vehicle Number</strong>: <span class="vehicle-number">0</span><br/>
-          <strong>VIN</strong>: <span class="vehicle-vin">VIN</span><br/>
-          <strong>Owner</strong>: <span class="vehicle-owner">owner</span><br/>
-          <div>
-              <button class="btn btn-default" id="btn-view-maintenance-log" type="button">Maintenance Log</button><br />
-          </div>          
+          <strong>Vehicle Number</strong>: <span data-bind="html: vehicleNumber"></span><br/>
+          <strong>VIN</strong>: <span data-bind="html: vin"></span><br/>
+          <strong>Owner</strong>: <span data-bind="html: owner">owner</span><br/>
+          <strong>Enabled</strong>: <span data-bind="html: enabled"></span><br/>
+          <strong>Created</strong>: <span data-bind="html: createdDate"></span><br/>
       </div>
     </div>
 
-    <div>Attributes</div>
+    <div class="row">
+        <div>
+            <button class="btn btn-default" type="button" data-bind="click: $root.goToMaintenanceLog">Maintenance Log</button><br />
+        </div>          
+    </div>
 
-    <div id="vehicleAttributeRow" class="row">
-        <!-- Vehicles LOAD HERE -->
-    </div>    
+    <h2>Attributes</h2>
 
-    <div id="vehicleAttributeTemplate" style="display: none;">
-      <div class="col-sm-6 col-md-4 col-lg-6 vehicle-attribute-panel" data-id="">
-        <div class="panel panel-default panel-pet">
-          <div class="panel-heading">
-            <h3 class="panel-title">Number</h3>
-          </div>
-          <div class="panel-body">
-              <strong>Attribute Number</strong>: <span class="attribute-number">0</span><br/>  
-              <strong>Name</strong>: <span class="attribute-name">id</span><br/>
-              <strong>Type</strong>: <span class="attribute-type">type</span><br/>
-              <strong>Value</strong>: <span class="attribute-value">value</span><br/>
-          </div>
-          <div class="panel-body">
-          </div>
-        </div>
+    <div class="row">
+
+        <table class="table">
+            <thead><tr>
+                <th scope="col">Number</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Value</th>
+            </tr></thead>
+          <tbody data-bind="foreach: vehicleAttributes">
+              <tr>
+                  <th scope="row" data-bind="text: number"></th>
+                  <td data-bind="text: name"></td>
+                  <td data-bind="text: type"></td>
+                  <td data-bind="text: displayValue"></td>
+              </tr>    
+          </tbody>
+        </table>
+  
       </div>
-    </div>  
     
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
+    <script src="js/models.js"></script>
     <script src="js/contract-factory.js"></script>
     <script src="js/vehicle.js"></script>
   </body>
