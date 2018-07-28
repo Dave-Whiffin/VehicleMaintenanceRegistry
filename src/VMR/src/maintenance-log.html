@@ -26,37 +26,23 @@
 
           <div class="status-panel">
             <div data-bind="if: errorText">
-              <span class="error" data-bind="html: errorText"></span>
+              <div data-bind="html: errorText" class="alert alert-danger"></div>
             </div>
             <div data-bind="if: infoText">
-                <span class="info" data-bind="html: infoText"></span>
-              </div>
+              <div data-bind="html: infoText" class="alert alert-info"></div>
+            </div>
+            <div data-bind="if: successText">
+                <div data-bind="html: successText" class="alert alert-success"></div>
+              </div>            
           </div>
-          
+
           <br/>
 
           <h2>Contract Details</h2>
           <strong>VIN</strong>: <span data-bind="html: vin">VIN</span><br/>
           <strong>Contract Address</strong>: <span data-bind="html: logAddress">address</span><br/>
           <strong>Owner</strong>: <span data-bind="html: contractOwner">owner</span><br/>
-          <div data-bind="with: newLogEntry">
-              <h2>Add Log Entry (authorised maintainers only)</h2>
-              <strong>Maintainer Id:</strong>: <input data-bind="value: maintainerId" /> <br />
-              <strong>Id:</strong> (must be unique): <input data-bind="value: id" /> <br />
-              <strong>Title:</strong>: <input data-bind="value: title" /><br />
-              <strong>Description:</strong>: <input data-bind="value: description" /><br />
-              <button class="btn btn-default" type="button" data-bind="click: $root.addLogEntry">Add</button>
-              <br />
-          </div>          
-          <div data-bind="with: newDoc">
-            <h2>Add Doc to Log Entry</h2>
-            <strong>Log Number:</strong>: <input data-bind="value: $root.currentLogEntry.logNumber" /><br />
-            <strong>Title:</strong>: <input data-bind="value: title" /><br />
-            <strong>IPFS Address:</strong>: <input data-bind="value: ipfsAddress" /><br />
-            <button class="btn btn-default" type="button" data-bind="click: $root.addDoc" >Add</button>
-            <br />
-            <br />
-        </div>
+        
       </div>
     </div>
 
@@ -112,23 +98,57 @@
                   <td data-bind="text: formattedVerificationDate"></td>
                   <td>
                     <div data-bind="if: $root.canVerify($data)">
-                      <button data-bind="click: $root.verify">Verify</button>
+                      <button data-bind="enable: allowChanges, click: $root.verify">Verify</button>
                     </div>
                   </td>
               </tr>    
+              <tr data-bind="if: docs().length > 0">
                 <td></td>
                 <td colspan="10">
-                    <h4>Docs</h4>
+                  <div>
+                    <h4>Documents</h4>
                     <div data-bind="foreach: docs">
                         <div>
-                          <strong>Title: </strong>: <span data-bind="html: title"></span><br />
-                          <strong>Ipfs: </strong>: <span data-bind="html: ipfsAddress"></span>
+                          <span data-bind="html: title"></span> - <span data-bind="html: ipfsAddress"></span>
                         </div>
                     </div>
+                  </div>
                 </td>
               <tr>
           </tbody>
         </table>
+
+        <div class="status-panel">
+            <div data-bind="if: errorText">
+              <div data-bind="html: errorText" class="alert alert-danger"></div>
+            </div>
+            <div data-bind="if: infoText">
+              <div data-bind="html: infoText" class="alert alert-info"></div>
+            </div>
+            <div data-bind="if: successText">
+                <div data-bind="html: successText" class="alert alert-success"></div>
+              </div>            
+        </div>
+
+        <div class="row">
+            <div data-bind="with: newLogEntry">
+                <h2>Add Log Entry (authorised maintainers only)</h2>
+                <strong>Maintainer Id:</strong>: <input data-bind="value: maintainerId" /> <br />
+                <strong>Id:</strong> (must be unique): <input data-bind="value: id" /> <br />
+                <strong>Title:</strong>: <input data-bind="value: title" /><br />
+                <strong>Description:</strong>: <input data-bind="value: description" /><br />
+                <button class="btn btn-default" type="button" data-bind="click: $root.addLogEntry, enable: enable">Add</button>
+                <br />
+            </div>  
+            <div data-bind="with: newDoc">
+                <h2>Add Doc to Log Entry</h2>
+                <strong>Log Number:</strong>: <input data-bind="value: logNumber" /><br />
+                <strong>Title:</strong>: <input data-bind="value: title" /><br />
+                <strong>IPFS Address:</strong>: <input data-bind="value: ipfsAddress" /><br />
+                <button class="btn btn-default" type="button" data-bind="click: $root.addDoc" >Add</button>
+                <br />          
+            </div>
+          </div>
     </div>    
 
 

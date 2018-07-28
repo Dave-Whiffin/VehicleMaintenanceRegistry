@@ -20,6 +20,7 @@ function NewLogEntryModel() {
   self.maintainerId = ko.observable("");
   self.title = ko.observable("");
   self.description = ko.observable("");
+  self.enable = ko.observable(true);
 
   self.reset  = function() {
     self.id("");
@@ -44,17 +45,34 @@ function NewLogEntryModel() {
 
 function NewDocModel() {
   var self = this;
+  self.logNumber  = ko.observable(0);
   self.title = ko.observable("");
   self.ipfsAddress = ko.observable("");
+
+  self.reset = function() {
+    self.title("");
+    self.ipfsAddress("");
+  };
 
   self.isIpfsValid = function() {
       return lengthInUtf8Bytes(self.ipfsAddress()) === 46;
   };
 
   self.isValid = function(errorCallBack) {
-    if(self.title() == "" || self.isIpfsValid()) {
-        errorCallBack("either title or ipfs address is invalid");
+
+    if(self.logNumber() < 1) {
+      errorCallBack("invalid log number");
+      return false;
     }
+
+    if(self.title() == "") {
+        errorCallBack("document title can not be empty");
+        return false;
+    }
+    if(!self.isIpfsValid()) {
+      errorCallBack("not a valid ipfs address");
+      return false;
+  }    
     return true;
   }
 }
@@ -68,13 +86,14 @@ function MaintenanceLogViewModel() {
   self.newDoc = new NewDocModel();
   self.errorText = ko.observable("");
   self.infoText = ko.observable("");
-  self.currentLogEntry = {logNumber: 0};
+  self.successText = ko.observable("");
   self.vin = ko.observable("")
   self.contractOwner = ko.observable("");
   self.logAddress = ko.observable("");
   
   self.init = function() {
 
+    self.clearStatus();
     self.showInfo("initialising");
     self.logAddress(getParameterByName("address"));
     console.log("maintenance log address: " + self.logAddress());
@@ -150,28 +169,38 @@ function MaintenanceLogViewModel() {
 
   self.verify = async function(logEntry) {
 
-    self.showInfo("submitting verification");
-    console.log("calling verify for log entry: " + logEntry.logNumber);
-    let tx = await self.maintenanceLogContract.verify(logEntry.logNumber);
-    self.showInfo("verify tx received " + tx.txt);
-    console.log("verify tx: " + tx.tx);
-    
-    await web3.eth.getTransactionReceipt(tx.tx, async function(err, result) {
+    try{
+      self.clearStatus();
+      logEntry.allowChanges(false);
+      self.showInfo("submitting verification");
+      console.log("calling verify for log entry: " + logEntry.logNumber);
+      let tx = await self.maintenanceLogContract.verify(logEntry.logNumber);
+      self.showSuccess("verify tx received " + tx.txt);
+      console.log("verify tx: " + tx.tx);
+      
+      await web3.eth.getTransactionReceipt(tx.tx, async function(err, result) {
 
-      self.showInfo("verify transaction receipt received");
+        self.showSuccess("verify transaction receipt received");
 
-      if(err != null) {
-        self.showError(err);
-        console.log(err);
-        return;
-      }
+        if(err != null) {
+          self.showError(err);
+          console.log(err);
+          return;
+        }
 
-      console.log("setTimeout to get new values for logEntry");
-      setTimeout(async function() {
-        self.updateLogEntry(logEntry);
-      }, 3000);
+        console.log("setTimeout to get new values for logEntry");
+        setTimeout(async function() {
+          self.updateLogEntry(logEntry);
+        }, 3000);
 
-    });
+      });
+    }
+    catch(err) {
+      self.showError(err);
+    }
+    finally {
+      logEntry.allowChanges(true);
+    }
   };
 
   self.showError = function(error) {
@@ -196,60 +225,93 @@ function MaintenanceLogViewModel() {
     self.infoText("");
   };  
 
+  self.showSuccess = function(msg) {
+    self.successText(msg);
+    setTimeout(() => self.successText(""), 3000);
+  };
+
+  self.clearSuccess = function() {
+    self.successText("");
+  };
+
+  self.clearStatus = function() {
+    self.clearSuccess();
+    self.clearError();
+    self.clearInfo();
+  };
+
   self.addLogEntry = async function() {
 
-    if(!self.newLogEntry.isValid(function(error) {
-        self.showError(error);
-      })) return;
-    
-    let id = web3.fromUtf8(self.newLogEntry.id());
-    let maintainerId = web3.fromUtf8(self.newLogEntry.maintainerId());
-    let title = self.newLogEntry.title();
-    let description = self.newLogEntry.description();
+    self.newLogEntry.enable(false);
+    self.clearStatus();
 
-    let isAuthorisedMaintainer = await self.maintenanceLogContract.isAuthorised(maintainerId);
-
-    if(!isAuthorisedMaintainer){
-      self.showError(maintainerId +  " is not an authorised maintainer");
-      return;
-    }
-
-    try{
-        await self.maintenanceLogContract.getLogNumber(id);
-        self.showError("id already exists - it must be unique"); 
-        return;
-    }
-    catch(Err) {
-      //it's ok - this is normal
-      //the contract throws when the id does not exist
-    }
-
-    let isRegisteredAndEnabled = await self.maintainerRegistry.isMemberRegisteredAndEnabled(maintainerId);
-    if(!isRegisteredAndEnabled) {
-      self.showError(maintainerId + " is not registered or not enabled in the maintainer regsistry");
-      return;
-    }
-
-    let maintainerOwner = await self.maintainerRegistry.getMemberOwner(maintainerId);
-    if(self.currentAccount != maintainerOwner) {
-      self.showError("only the owner of the maintainer is allowed to log an entry");
-      return;
-    };
-
-    let date = Math.round(new Date().getTime() / 1000);
-    let tx = await self.maintenanceLogContract.add(id, maintainerId, date, title, description);
-    
-    let receipt = await web3.eth.getTransactionReceipt(tx.tx, async function(error, result) {
-
-        if(error != null) {
+    try {
+      if(!self.newLogEntry.isValid(function(error) {
           self.showError(error);
+        })) return;
+      
+      let id = web3.fromUtf8(self.newLogEntry.id());
+      let maintainerId = web3.fromUtf8(self.newLogEntry.maintainerId());
+      let title = self.newLogEntry.title();
+      let description = self.newLogEntry.description();
+
+      self.showInfo("Ensuring maintainer is authorised");
+      let isAuthorisedMaintainer = await self.maintenanceLogContract.isAuthorised(maintainerId);
+
+      if(!isAuthorisedMaintainer){
+        self.showError(maintainerId +  " is not an authorised maintainer");
+        return;
+      }
+
+      try{
+          self.showInfo("Ensuring id is unique");
+          await self.maintenanceLogContract.getLogNumber(id);
+          self.showError("id already exists - it must be unique"); 
           return;
-        }
+      }
+      catch(Err) {
+        //it's ok - this is normal
+        //the contract throws when the id does not exist
+      }
 
-        console.log("transaction finished. status: " + result.status);
-        self.loadEntryById(id);
-    });
+      self.showInfo("Ensuring maintainer is registered and enabled");
+      let isRegisteredAndEnabled = await self.maintainerRegistry.isMemberRegisteredAndEnabled(maintainerId);
+      if(!isRegisteredAndEnabled) {
+        self.showError(maintainerId + " is not registered or not enabled in the maintainer regsistry");
+        return;
+      }
 
+      self.showInfo("Ensuring current user is linked to the maintainer");
+      let maintainerOwner = await self.maintainerRegistry.getMemberOwner(maintainerId);
+      if(self.currentAccount != maintainerOwner) {
+        self.showError("only the owner of the maintainer is allowed to log an entry");
+        return;
+      };
+
+      let date = Math.round(new Date().getTime() / 1000);
+      self.showInfo("Submitting Log Entry...");
+      let tx = await self.maintenanceLogContract.add(id, maintainerId, date, title, description);
+      self.showSuccess("Log entry submitted.  Waiting for receipt.");
+
+      await web3.eth.getTransactionReceipt(tx.tx, async function(error, result) {
+
+          if(error != null) {
+            self.showError(error);
+            return;
+          }
+
+          console.log("transaction finished. status: " + result.status);
+          self.showSuccess("Transaction receipt received. Log entry added");
+          self.loadEntryById(id);
+          self.newLogEntry.reset();
+      });
+    }
+    catch(err) {
+      self.showError(err);
+    }
+    finally {
+      self.newLogEntry.enable(true);
+    }
   };
 
   self.loadEntryById = async function(id) {
@@ -259,75 +321,102 @@ function MaintenanceLogViewModel() {
     self.logEntries.push(logEntry);
   };
 
+  self.getLogEntry = function(logNumber) {
+    for(var i = 0; i < self.logEntries().length; i ++) {
+      let entry = self.logEntries()[i];
+      if(entry.logNumber == logNumber) {
+        return entry;
+      }
+    }    
+    return null;
+  }
+
   self.validateAddDoc = async function(callBack) {
-      
-      if(self.currentLogEntry.verified()) {
+    
+      let currentLogEntry = self.getLogEntry(self.newDoc.logNumber());
+
+      if(currentLogEntry == null) {
+        callBack("log number was not found");
+        return false;        
+      }
+
+      if(currentLogEntry.verified()) {
         callBack("Denied - docs can not be added to verified log entries");
         return false;
       }
   
-      let isMaintainerAuthorised = await self.maintenanceLogContract.isAuthorised(self.currentLogEntry.maintainerId());
+      let isMaintainerAuthorised = await self.maintenanceLogContract.isAuthorised(currentLogEntry.maintainerId);
       if(!isMaintainerAuthorised)
       {
         callBack("The maintainer is not (or no longer) authorised.");
         return false;
       }
   
-      let maintainerOwner = await self.maintainerRegistry.getMemberOwner(self.currentLogEntry.maintainerId());
+      let maintainerOwner = await self.maintainerRegistry.getMemberOwner(currentLogEntry.maintainerId);
       
       if(self.currentAccount != maintainerOwner) {
         callBack("Denied - You are not the owner of the maintainer");
         return false;
       }
   
-      callBack(null, log);
       return true;
   };
 
   self.addDoc = async function() {
-    
-    self.clearError();
+    try {
+      self.clearStatus();
 
-    if(self.newDoc.isValid(function(error){
-      self.showError(error);
-    })){
-      return;
-    }
-      
-    let validated = await self.validateAddDoc(function(error) {
+      if(!self.newDoc.isValid(function(error){
+        self.showError(error);
+      })){
+        return;
+      }
+        
+      let validated = await self.validateAddDoc(function(error) {
+          if(error != null) {
+            console.log(error);
+            self.showError(error);
+          }
+        });
+
+      if(!validated) return;
+        
+      let txHash;
+      try
+      {
+        self.showInfo("Submitting add document transaction...");
+        txHash = await self.maintenanceLogContract.addDoc(self.newDoc.logNumber(), self.newDoc.title(), self.newDoc.ipfsAddress());  
+        self.showSuccess("Add document submission success, waiting on receipt.");
+      }
+      catch(error) {
+        console.log(error);
+        self.showError(error);
+        return;
+      }
+    
+      let log = self.getLogEntry(self.newDoc.logNumber());
+
+      self.newDoc.reset();
+
+      await web3.eth.getTransactionReceipt(txHash.tx, async function(error, result) {
+        self.showInfo("Transaction receipt received");
         if(error != null) {
-          console.log(error);
           self.showError(error);
         }
+        else {
+          setTimeout(async function() {
+            self.showInfo("reloading docs for log number: " + log.logNumber);
+            self.loadDocs(log);
+          }, 3000);
+        }
       });
-
-    if(!validated) return;
+    }
+    catch(err) {
+      self.showError(err);
+    }
+    finally {
       
-    let txHash;
-    try
-    {
-      txHash = await self.maintenanceLogContract.addDoc(self.currentLogEntry.logNumber(), self.newDoc.title(), self.newDoc.ipfsAddress());  
     }
-    catch(error) {
-      console.log(error);
-      self.showError(error);
-      return;
-    }
-  
-    let log = self.currentLogEntry();
-
-    self.newLogEntry.reset();
-
-    await web3.eth.getTransactionReceipt(txHash.tx, async function(error, result) {
-      if(error != null) {
-        console.log(error);
-      }
-      else {
-        console.log(result);
-        self.loadDocs(log);
-      }
-    });
-
   };    
 
   self.init();

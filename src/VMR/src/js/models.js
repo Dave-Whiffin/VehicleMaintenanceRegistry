@@ -56,6 +56,8 @@ function MaintenanceLogEntryModel(values) {
 
     self.docs = ko.observableArray([]);
 
+    self.allowChanges = ko.observable(true);
+
     self.merge = function(updatedLogValues) {
         let updatedLogEntry = new MaintenanceLogEntryModel(updatedLogValues);
         self.mergeFrom(updatedLogEntry);
