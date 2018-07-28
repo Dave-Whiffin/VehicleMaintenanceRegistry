@@ -98,7 +98,7 @@
                   <td data-bind="text: formattedVerificationDate"></td>
                   <td>
                     <div data-bind="if: $root.canVerify($data)">
-                      <button data-bind="enable: allowChanges, click: $root.verify">Verify</button>
+                      <button class="btn btn-default" data-bind="enable: allowChanges, click: $root.verify">Verify</button>
                     </div>
                   </td>
               </tr>    
@@ -145,7 +145,7 @@
                 <strong>Log Number:</strong>: <input data-bind="value: logNumber" /><br />
                 <strong>Title:</strong>: <input data-bind="value: title" /><br />
                 <strong>IPFS Address:</strong>: <input data-bind="value: ipfsAddress" /><br />
-                <button class="btn btn-default" type="button" data-bind="click: $root.addDoc" >Add</button>
+                <button class="btn btn-default" type="button" data-bind="enable: enable, click: $root.addDoc" >Add</button>
                 <br />          
             </div>
           </div>

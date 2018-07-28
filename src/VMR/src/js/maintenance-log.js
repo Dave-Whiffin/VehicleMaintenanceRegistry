@@ -48,6 +48,7 @@ function NewDocModel() {
   self.logNumber  = ko.observable(0);
   self.title = ko.observable("");
   self.ipfsAddress = ko.observable("");
+  self.enable = ko.observable(true);
 
   self.reset = function() {
     self.title("");
@@ -364,6 +365,7 @@ function MaintenanceLogViewModel() {
 
   self.addDoc = async function() {
     try {
+      self.newDoc.enable(false);
       self.clearStatus();
 
       if(!self.newDoc.isValid(function(error){
@@ -415,7 +417,7 @@ function MaintenanceLogViewModel() {
       self.showError(err);
     }
     finally {
-      
+      self.newDoc.enable(true);
     }
   };    
 
