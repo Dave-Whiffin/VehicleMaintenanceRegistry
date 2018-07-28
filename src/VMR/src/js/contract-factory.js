@@ -108,11 +108,11 @@ ContractFactory = {
   },
 
   getMaintainerRegistryContract: function() {
-    return ContractFactory.contracts.maintainerRegistryInstance;
+    return ContractFactory.maintainerRegistryInstance;
   },
 
   getManufacturerRegistryContract: function() {
-    return ContractFactory.contracts.manufacturerRegistryInstance;
+    return ContractFactory.manufacturerRegistryInstance;
   }  
 };
 
