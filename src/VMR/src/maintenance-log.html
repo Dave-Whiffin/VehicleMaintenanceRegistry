@@ -23,7 +23,18 @@
         <div class="col-xs-12 col-sm-12 col-sm-push-0">
           <h1 class="text-center">Vehicle Maintenance Log</h1>
           <hr/>
+
+          <div class="status-panel">
+            <div data-bind="if: errorText">
+              <span class="error" data-bind="html: errorText"></span>
+            </div>
+            <div data-bind="if: infoText">
+                <span class="info" data-bind="html: infoText"></span>
+              </div>
+          </div>
+          
           <br/>
+
           <h2>Contract Details</h2>
           <strong>VIN</strong>: <span data-bind="html: vin">VIN</span><br/>
           <strong>Contract Address</strong>: <span data-bind="html: logAddress">address</span><br/>

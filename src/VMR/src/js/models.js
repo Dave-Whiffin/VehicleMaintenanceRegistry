@@ -55,6 +55,24 @@ function MaintenanceLogEntryModel(values) {
     }, self);
 
     self.docs = ko.observableArray([]);
+
+    self.merge = function(updatedLogValues) {
+        let updatedLogEntry = new MaintenanceLogEntryModel(updatedLogValues);
+        self.mergeFrom(updatedLogEntry);
+    };
+
+    self.mergeFrom = function(logEntry) {
+        self.logNumber = logEntry.logNumber;
+        self.id = logEntry.id;
+        self.maintainerId = logEntry.maintainerId;
+        self.maintainerAddress = logEntry.maintainerAddress;
+        self.date = logEntry.date;
+        self.properDate = logEntry.properDate;
+        self.title = logEntry.title;
+        self.verified(logEntry.verified());
+        self.verifier(logEntry.verifier());
+        self.verificationDate(logEntry.verificationDate());
+    };
 }
 
 function MaintenanceLogDocModel(values) {

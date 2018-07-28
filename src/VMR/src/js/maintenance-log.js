@@ -66,14 +66,16 @@ function MaintenanceLogViewModel() {
   self.maintainers = ko.observableArray([]);
   self.newLogEntry = new NewLogEntryModel();
   self.newDoc = new NewDocModel();
-  self.error = ko.observable("");
+  self.errorText = ko.observable("");
+  self.infoText = ko.observable("");
   self.currentLogEntry = {logNumber: 0};
   self.vin = ko.observable("")
   self.contractOwner = ko.observable("");
   self.logAddress = ko.observable("");
-
+  
   self.init = function() {
 
+    self.showInfo("initialising");
     self.logAddress(getParameterByName("address"));
     console.log("maintenance log address: " + self.logAddress());
 
@@ -89,6 +91,7 @@ function MaintenanceLogViewModel() {
       self.loadEntries();
 
       ContractFactory.currentAddressChanged = function() {
+        self.showInfo("account changed - re-initialising");
         self.init();
       };
     });
@@ -99,6 +102,7 @@ function MaintenanceLogViewModel() {
   };
 
   self.loadEntries = async function() {
+    self.showInfo("loading log entries");
     self.logEntries([]);
 
     var totalCount = await self.maintenanceLogContract.getLogCount();
@@ -112,6 +116,7 @@ function MaintenanceLogViewModel() {
   };
 
   self.loadDocs = async function(logEntry) {
+    self.showInfo("loading docs for log entry " + logEntry.logNumber);
     logEntry.docs([]);
     var docCount = await self.maintenanceLogContract.getDocCount(logEntry.logNumber);
     for(var i = 1; i <= docCount; i++) {
@@ -122,6 +127,7 @@ function MaintenanceLogViewModel() {
   };
 
   self.loadMaintainers = async function() {
+    self.showInfo("loading maintainers");
     self.maintainers([]);
     var totalCount = await self.maintenanceLogContract.getMaintainerCount();
     for(var i = 1; i <= totalCount; i++) {
@@ -131,31 +137,62 @@ function MaintenanceLogViewModel() {
     }
   }
 
+  self.updateLogEntry = async function(logEntry) {
+    self.showInfo("updating log entry with latest values");
+    console.log("getting latest logEntry values");
+    let updatedLogValues = await self.maintenanceLogContract.getLog(logEntry.logNumber);
+    console.log("latest logEntry value array:" + updatedLogValues);
+    console.log("merging latest values with existing log entry");
+    logEntry.merge(updatedLogValues);
+    console.log("merge complete");
+    self.showInfo("update complete");
+  };
+
   self.verify = async function(logEntry) {
 
-    let receipt = await self.maintenanceLogContract.verify(logEntry.logNumber);
+    self.showInfo("submitting verification");
+    console.log("calling verify for log entry: " + logEntry.logNumber);
+    let tx = await self.maintenanceLogContract.verify(logEntry.logNumber);
+    self.showInfo("verify tx received " + tx.txt);
+    console.log("verify tx: " + tx.tx);
     
-    await web3.eth.getTransactionReceipt(receipt.tx, async function(err, result) {
+    await web3.eth.getTransactionReceipt(tx.tx, async function(err, result) {
+
+      self.showInfo("verify transaction receipt received");
+
       if(err != null) {
+        self.showError(err);
         console.log(err);
+        return;
       }
-      else {
-        let updatedLogValues = await self.maintenanceLogContract.getLog(logEntry.logNumber);
-        let updatedLogEntry = new MaintenanceLogEntryModel(updatedLogValues);
-        logEntry.verified(updatedLogEntry.verified());
-        logEntry.verifier(updatedLogEntry.verifier());
-        logEntry.verificationDate(updatedLogEntry.verificationDate());
-      }
+
+      console.log("setTimeout to get new values for logEntry");
+      setTimeout(async function() {
+        self.updateLogEntry(logEntry);
+      }, 3000);
+
     });
   };
 
   self.showError = function(error) {
-    self.error(error);
+    self.errorText(error);
   };
 
   self.clearError = function() {
-    self.error("");
+    self.errorText("");
   };
+
+  self.showInfo = function(info) {
+    self.infoText(info);
+
+    setTimeout(function() {
+      self.clearInfo();
+    }, 3000);
+  };
+
+  self.clearInfo = function() {
+    self.infoText("");
+  };  
 
   self.addLogEntry = async function() {
 
