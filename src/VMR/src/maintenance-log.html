@@ -24,19 +24,7 @@
           <h1 class="text-center">Vehicle Maintenance Log</h1>
           <hr/>
 
-          <div class="status-panel">
-            <div data-bind="if: errorText">
-              <div data-bind="html: errorText" class="alert alert-danger"></div>
-            </div>
-            <div data-bind="if: infoText">
-              <div data-bind="html: infoText" class="alert alert-info"></div>
-            </div>
-            <div data-bind="if: successText">
-                <div data-bind="html: successText" class="alert alert-success"></div>
-              </div>            
-          </div>
-
-          <br/>
+          <vmr-status-bar data-bind=""></vmr-status-bar>
 
           <h2>Contract Details</h2>
           <strong>VIN</strong>: <span data-bind="html: vin">VIN</span><br/>
@@ -60,11 +48,35 @@
                   <th scope="row" data-bind="text: number"></th>
                   <td data-bind="text: id"></td>
                   <td data-bind="text: authorised"></td>
-                  <td>TODO: de-authorise</td>
+                  <td>
+                    <div data-bind="if: $root.isContractOwner">
+
+                      <div data-bind="if: authorised">
+                        <button class="btn-primary" data-bind="click: $root.unAuthoriseMaintainer">Unauthorise</button>
+                      </div>
+                      <div data-bind="ifnot: authorised">
+                          <button class="btn-primary" data-bind="click: $root.authoriseMaintainer">Authorise</button>
+                      </div>                    
+                    
+                    </div>
+                  </td>
               </tr>    
           </tbody>
         </table>
     </div>
+
+    <div data-bind="if: isContractOwner">
+      <div data-bind="with: newMaintainer">
+      <h4>Add an authorised maintainer</h4>
+        <div class="formGroup">
+            <label for="new-maintainer-id">Id:</label>
+            <input class="form-control" id="new-maintainer-id" data-bind="textInput: id" />
+          </div>
+          
+          <button class="btn btn-primary" type="button" data-bind="click: $root.addMaintainer, enable: enable">Add</button>
+      </div>
+    </div>
+
     <br />
 
     <div><h3>Log Entries</h3></div>
@@ -99,6 +111,9 @@
                   <td>
                     <div data-bind="if: $root.canVerify($data)">
                       <button class="btn btn-default" data-bind="enable: allowChanges, click: $root.verify">Verify</button>
+                      <div data-bind="if: displayStatus">
+                        <span class="alert alert-info" data-bind="html: displayStatus"></span>
+                      </div>
                     </div>
                   </td>
               </tr>    
@@ -118,35 +133,62 @@
           </tbody>
         </table>
 
-        <div class="status-panel">
-            <div data-bind="if: errorText">
-              <div data-bind="html: errorText" class="alert alert-danger"></div>
-            </div>
-            <div data-bind="if: infoText">
-              <div data-bind="html: infoText" class="alert alert-info"></div>
-            </div>
-            <div data-bind="if: successText">
-                <div data-bind="html: successText" class="alert alert-success"></div>
-              </div>            
-        </div>
+        <vmr-status-bar data-bind=""></vmr-status-bar>
 
-        <div class="row">
+        <div class="row" data-bind="if: canAddLogEntries">
             <div data-bind="with: newLogEntry">
-                <h2>Add Log Entry (authorised maintainers only)</h2>
-                <strong>Maintainer Id:</strong>: <input data-bind="value: maintainerId" /> <br />
-                <strong>Id:</strong> (must be unique): <input data-bind="value: id" /> <br />
-                <strong>Title:</strong>: <input data-bind="value: title" /><br />
-                <strong>Description:</strong>: <input data-bind="value: description" /><br />
-                <button class="btn btn-default" type="button" data-bind="click: $root.addLogEntry, enable: enable">Add</button>
-                <br />
+
+              <h2>Add Log Entry</h2>
+
+              <div class="formGroup">
+                  <label for="new-log-entry-maintainerId">Maintainer Id:</label>
+                  <select class="form-control" id="new-log-entry-maintainerId" data-bind="options: $root.authorisedMaintainers,
+                  optionsText: 'id',
+                  optionsValue: 'id',
+                  value: maintainerId,
+                  optionsCaption: 'Choose...'"></select>
+              </div>
+
+              <div class="formGroup">
+                <label for="new-log-entry-id">Id (must be unique):</label>
+                <input class="form-control" id="new-log-entry-id" data-bind="value: id" />
+              </div>
+
+              <div class="formGroup">
+                <label for="new-log-entry-title">Title:</label> 
+                <input class="form-control" id="new-log-entry-title" data-bind="value: title" />
+              </div>
+              <div class="formGroup">
+                <label for="new-log-entry-description">Description:</label>
+                <input class="form-control" id="new-log-entry-description" data-bind="value: description" />
+              </div>
+              
+              <button class="btn btn-primary" type="button" data-bind="click: $root.addLogEntry, enable: enable">Add</button>
+              
+
             </div>  
+
             <div data-bind="with: newDoc">
                 <h2>Add Doc to Log Entry</h2>
-                <strong>Log Number:</strong>: <input data-bind="value: logNumber" /><br />
-                <strong>Title:</strong>: <input data-bind="value: title" /><br />
-                <strong>IPFS Address:</strong>: <input data-bind="value: ipfsAddress" /><br />
-                <button class="btn btn-default" type="button" data-bind="enable: enable, click: $root.addDoc" >Add</button>
-                <br />          
+
+                <div class="formGroup">
+                  <label for="new-doc-log-number">Log Number: </label>
+                  <select class="form-control" id="new-doc-log-number" data-bind="options: $root.logEntries,
+                  optionsText: 'logNumber',
+                  optionsValue: 'logNumber',
+                  value: logNumber,
+                  optionsCaption: 'Choose...'"></select>
+                </div>
+
+                <div class="formGroup">
+                  <label for="new-doc-title">Title:</label> 
+                  <input class="form-control" id="new-doc-title" data-bind="value: title" />
+                </div>
+                <div class="formGroup">
+                  <label for="new-doc-ipfs-address">IPFS Address:</label> 
+                  <input id="new-doc-ipfs-address" class="form-control" data-bind="value: ipfsAddress" />
+                </div>
+                <button class="btn btn-primary" type="button" data-bind="enable: enable, click: $root.addDoc" >Add</button>
             </div>
           </div>
     </div>    
@@ -160,6 +202,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
+    <script src="js/utils.js"></script>    
     <script src="js/models.js"></script>
     <script src="js/contract-factory.js"></script>
     <script src="js/maintenance-log.js"></script>

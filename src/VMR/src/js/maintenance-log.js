@@ -1,103 +1,28 @@
-function getParameterByName(name, url) {
-  if (!url) url = window.location.href;
-  name = name.replace(/[\[\]]/g, '\\$&');
-  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
-
-function lengthInUtf8Bytes(str) {
-  // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
-  var m = encodeURIComponent(str).match(/%[89ABab]/g);
-  return str.length + (m ? m.length : 0);
-}
-
-function NewLogEntryModel() {
-  var self = this;
-  self.id = ko.observable("");
-  self.maintainerId = ko.observable("");
-  self.title = ko.observable("");
-  self.description = ko.observable("");
-  self.enable = ko.observable(true);
-
-  self.reset  = function() {
-    self.id("");
-    self.title("");
-    self.description("");
-  };
-
-  self.isValid = function(errorCallback) {
-    if(self.id() == "" || self.maintainerId() == "" || self.title() == "" || self.description() == "") {
-      errorCallback("All fields must be completed");
-      return false;
-    }
-
-    if(lengthInUtf8Bytes(self.id()) > 32){
-      errorCallback("The id field is too long for a 32 byte value");
-      return false;
-    }
-
-    return true;
-  };
-}
-
-function NewDocModel() {
-  var self = this;
-  self.logNumber  = ko.observable(0);
-  self.title = ko.observable("");
-  self.ipfsAddress = ko.observable("");
-  self.enable = ko.observable(true);
-
-  self.reset = function() {
-    self.title("");
-    self.ipfsAddress("");
-  };
-
-  self.isIpfsValid = function() {
-      return lengthInUtf8Bytes(self.ipfsAddress()) === 46;
-  };
-
-  self.isValid = function(errorCallBack) {
-
-    if(self.logNumber() < 1) {
-      errorCallBack("invalid log number");
-      return false;
-    }
-
-    if(self.title() == "") {
-        errorCallBack("document title can not be empty");
-        return false;
-    }
-    if(!self.isIpfsValid()) {
-      errorCallBack("not a valid ipfs address");
-      return false;
-  }    
-    return true;
-  }
-}
-
 function MaintenanceLogViewModel() {
   var self = this;
 
   self.logEntries = ko.observableArray([]);
   self.maintainers = ko.observableArray([]);
+  self.authorisedMaintainers = ko.observableArray([]);
   self.newLogEntry = new NewLogEntryModel();
   self.newDoc = new NewDocModel();
+  self.newMaintainer = new NewMaintainerModel();
   self.errorText = ko.observable("");
   self.infoText = ko.observable("");
   self.successText = ko.observable("");
-  self.vin = ko.observable("")
+  self.vin = ko.observable("");
   self.contractOwner = ko.observable("");
   self.logAddress = ko.observable("");
+  self.canAddLogEntries = ko.observable(false);
+  self.isContractOwner = ko.observable(false);
   
   self.init = function() {
 
     self.clearStatus();
     self.showInfo("initialising");
-    self.logAddress(getParameterByName("address"));
+    self.logAddress(VMRUtils.getParameterByName("address"));
     console.log("maintenance log address: " + self.logAddress());
+
 
     ContractFactory.init(async function() {
 
@@ -106,7 +31,7 @@ function MaintenanceLogViewModel() {
       self.maintainerRegistry = ContractFactory.getMaintainerRegistryContract();
       self.vin(web3.toUtf8(await self.maintenanceLogContract.vin.call()));
       self.contractOwner(await self.maintenanceLogContract.owner.call());
-      self.isContractOwner = self.currentAccount == self.contractOwner();
+      self.isContractOwner(self.currentAccount == self.contractOwner());
       self.loadMaintainers();
       self.loadEntries();
 
@@ -115,10 +40,10 @@ function MaintenanceLogViewModel() {
         self.init();
       };
     });
-  }  
+  };
 
   self.canVerify = function(logEntry) {
-    return self.isContractOwner && !logEntry.verified();
+    return self.isContractOwner() && !logEntry.verified();
   };
 
   self.loadEntries = async function() {
@@ -149,11 +74,124 @@ function MaintenanceLogViewModel() {
   self.loadMaintainers = async function() {
     self.showInfo("loading maintainers");
     self.maintainers([]);
+    self.authorisedMaintainers([]);
+    self.canAddLogEntries(false);
+
     var totalCount = await self.maintenanceLogContract.getMaintainerCount();
     for(var i = 1; i <= totalCount; i++) {
       let maintainerValues = await self.maintenanceLogContract.getMaintainer(i);
       let maintainer = new MaintainerViewModel(maintainerValues);
       self.maintainers.push(maintainer);
+      if(maintainer.authorised) {
+
+        var owner = await self.maintainerRegistry.getMemberOwner(maintainer.id);
+        if(owner == self.currentAccount) {
+          self.authorisedMaintainers.push(maintainer);
+          self.canAddLogEntries(true);
+        } 
+      }
+    }
+  };
+
+  self.authoriseMaintainer = async function(maintainer) {
+    try {
+      self.clearStatus();
+      self.showInfo("Sending authorisation request...");
+      let tx = await self.maintenanceLogContract.addWorkAuthorisation(maintainer.id);
+      self.showSuccess("Authorisation request accepted");
+
+      await web3.eth.getTransactionReceipt(tx.tx, async function(error, result){
+        if(error != null) {
+          self.showError(error);
+          return;
+        }
+
+        if(result.status != "0x01") {
+          self.showError("error occurred - unexpected status - " + result.status);
+          return;
+        }
+
+        self.showSuccess("Transaction receipt delivered - reloading maintainers in 3 seconds");
+        setTimeout(() => {
+          self.loadMaintainers();
+        }, 3000);
+        
+      });
+    }
+    catch(err) {
+      self.showError(err);
+    }
+    finally {
+
+    }
+  };
+
+  self.unAuthoriseMaintainer = async function(maintainer) {
+    try {
+      self.clearStatus();
+      self.showInfo("Sending remove authorisation request...");
+      let tx = await self.maintenanceLogContract.removeWorkAuthorisation(maintainer.id);
+      self.showSuccess("Remove authorisation request accepted");
+      await web3.eth.getTransactionReceipt(tx.tx, async function(error, result){
+        if(error != null) {
+          self.showError(error);
+          return;
+        }
+
+        if(result.status != "0x01") {
+          self.showError("error occurred - unexpected status - " + result.status);
+          return;
+        }
+
+        self.showSuccess("Transaction receipt delivered - reloading maintainers in 3 seconds");
+        setTimeout(() => {
+          self.loadMaintainers();
+        }, 3000);
+      });
+    }
+    catch(err) {
+      self.showError(err);
+    }
+    finally {
+
+    }
+  };
+
+  self.addMaintainer = async function() {
+    try{
+      self.clearStatus();
+      self.showInfo("Adding maintainer authorisation");
+
+      let isRegisteredAndEnabled = await self.maintainerRegistry.isMemberRegisteredAndEnabled(self.newMaintainer.id());
+      if(!isRegisteredAndEnabled) {
+        self.showError("Not a registered maintainer id");
+        return;
+      }
+
+      let existing = self.maintainers().find((m) => {return m.id == self.newMaintainer.id()});
+      if(existing != null) {
+        self.showError(self.newMaintainer.id() + " is already a maintainer");
+        return;
+      }
+
+      let tx = await self.maintenanceLogContract.addWorkAuthorisation(self.newMaintainer.id());
+      self.showSuccess("Authorisation submitted");
+
+      await web3.eth.getTransactionReceipt(tx.tx, async function(error, result) {
+        if(error != null) {
+          self.showError(error);
+          return;
+        }
+
+        await self.loadMaintainers();
+
+      });
+    }
+    catch(err) {
+      self.showError(err);
+    }
+    finally {
+
     }
   };
 
@@ -176,6 +214,7 @@ function MaintenanceLogViewModel() {
       self.showInfo("submitting verification");
       console.log("calling verify for log entry: " + logEntry.logNumber);
       let tx = await self.maintenanceLogContract.verify(logEntry.logNumber);
+      logEntry.displayStatus("verifying");
       self.showSuccess("verify tx received " + tx.txt);
       console.log("verify tx: " + tx.tx);
       
@@ -191,6 +230,7 @@ function MaintenanceLogViewModel() {
 
         console.log("setTimeout to get new values for logEntry");
         setTimeout(async function() {
+          logEntry.displayStatus("");
           self.updateLogEntry(logEntry);
         }, 3000);
 
@@ -205,6 +245,7 @@ function MaintenanceLogViewModel() {
   };
 
   self.showError = function(error) {
+    self.clearStatus();
     console.log(error);
     self.errorText(error);
   };
@@ -252,7 +293,7 @@ function MaintenanceLogViewModel() {
         })) return;
       
       let id = web3.fromUtf8(self.newLogEntry.id());
-      let maintainerId = web3.fromUtf8(self.newLogEntry.maintainerId());
+      let maintainerId = self.newLogEntry.maintainerId();
       let title = self.newLogEntry.title();
       let description = self.newLogEntry.description();
 
@@ -426,9 +467,18 @@ function MaintenanceLogViewModel() {
 
 $(function() {
   $(window).load(function() {
-    ko.applyBindings(new MaintenanceLogViewModel());
+
+    let viewModel = new MaintenanceLogViewModel();
+
+    ko.components.register('vmr-status-bar', {
+      viewModel: { instance: viewModel },
+      template: "<div class='status-panel'><div data-bind='if: errorText'><div data-bind='html: errorText' class='alert alert-danger'></div></div><div data-bind='if: infoText'><div data-bind='html: infoText' class='alert alert-info'></div></div><div data-bind='if: successText'><div data-bind='html: successText' class='alert alert-success'></div></div></div>"
+    });
+
+    ko.applyBindings(viewModel);
   });
 });
+
 
 
     //const ipfs = window.IpfsApi('ipfs.infura.io', '5001', {protocol: 'https'});

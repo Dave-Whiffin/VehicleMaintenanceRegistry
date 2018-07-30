@@ -14,7 +14,17 @@ function MaintainerViewModel(values) {
     self.id =  web3.toUtf8(values[1]);
     self.authorised = values[2];
   }
-  
+
+function NewMaintainerModel() {
+    var self = this;
+    self.id = ko.observable("");
+    self.enable = ko.observable(false);
+
+    self.id.subscribe(function(newVal) {
+      self.enable( newVal != "");
+    });
+}
+
 function VehicleAttributeModel(values) {
     var self = this;
 
@@ -58,6 +68,8 @@ function MaintenanceLogEntryModel(values) {
 
     self.allowChanges = ko.observable(true);
 
+    self.displayStatus = ko.observable("");
+
     self.merge = function(updatedLogValues) {
         let updatedLogEntry = new MaintenanceLogEntryModel(updatedLogValues);
         self.mergeFrom(updatedLogEntry);
@@ -83,3 +95,73 @@ function MaintenanceLogDocModel(values) {
     self.title = values[1];
     self.ipfsAddress = values[2];
 }
+
+function lengthInUtf8Bytes(str) {
+    // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
+    var m = encodeURIComponent(str).match(/%[89ABab]/g);
+    return str.length + (m ? m.length : 0);
+  }
+  
+  function NewLogEntryModel() {
+    var self = this;
+    self.id = ko.observable("");
+    self.maintainerId = ko.observable("");
+    self.title = ko.observable("");
+    self.description = ko.observable("");
+    self.enable = ko.observable(true);
+  
+    self.reset  = function() {
+      self.id("");
+      self.title("");
+      self.description("");
+    };
+  
+    self.isValid = function(errorCallback) {
+      if(self.id() == "" || self.maintainerId() == "" || self.title() == "" || self.description() == "") {
+        errorCallback("All fields must be completed");
+        return false;
+      }
+  
+      if(lengthInUtf8Bytes(self.id()) > 32){
+        errorCallback("The id field is too long for a 32 byte value");
+        return false;
+      }
+  
+      return true;
+    };
+  }
+  
+  function NewDocModel() {
+    var self = this;
+    self.logNumber  = ko.observable(0);
+    self.title = ko.observable("");
+    self.ipfsAddress = ko.observable("");
+    self.enable = ko.observable(true);
+  
+    self.reset = function() {
+      self.title("");
+      self.ipfsAddress("");
+    };
+  
+    self.isIpfsValid = function() {
+        return lengthInUtf8Bytes(self.ipfsAddress()) === 46;
+    };
+  
+    self.isValid = function(errorCallBack) {
+  
+      if(self.logNumber() < 1) {
+        errorCallBack("invalid log number");
+        return false;
+      }
+  
+      if(self.title() == "") {
+          errorCallBack("document title can not be empty");
+          return false;
+      }
+      if(!self.isIpfsValid()) {
+        errorCallBack("not a valid ipfs address");
+        return false;
+    }    
+      return true;
+    }
+  }

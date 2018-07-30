@@ -1,14 +1,3 @@
-
-function getParameterByName(name, url) {
-  if (!url) url = window.location.href;
-  name = name.replace(/[\[\]]/g, '\\$&');
-  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
-
 function VehicleViewModel() {
   var self = this;
   self.vehicle = ko.observable();
@@ -18,7 +7,7 @@ function VehicleViewModel() {
   self.init = async function() {
     ContractFactory.init(async function() {
       self.vehicleRegistry = ContractFactory.vehicleRegistryInstance;      
-      let vin = getParameterByName("vin");
+      let vin = VMRUtils.getParameterByName("vin");
       let number = await self.vehicleRegistry.getMemberNumber(web3.fromUtf8(vin));
       let vehicleValues = await self.vehicleRegistry.getMember(number);
       self.vehicle(new VehicleModel(vehicleValues));
