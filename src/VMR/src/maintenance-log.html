@@ -192,14 +192,17 @@
                 </div>
 
                 <div class="formGroup">
+                    <input id="uploadIpfsFilePicker" onchange="return false;" type="file" class="form-control" value="Upload" data-bind="files: files, event: {change: $root.handleIpfsUpload} " />
+                    <label for="new-doc-ipfs-address">IPFS Address:</label> 
+                    <input id="new-doc-ipfs-address" class="form-control" data-bind="value: ipfsAddress" placeholder="ipfs address" />
+
+                  </div>                
+
+                <div class="formGroup">
                   <label for="new-doc-title">Title:</label> 
                   <input class="form-control" id="new-doc-title" data-bind="value: title" placeholder="title" />
                 </div>
-                <div class="formGroup">
-                  <label for="new-doc-ipfs-address">IPFS Address:</label> 
-                  <input id="new-doc-ipfs-address" class="form-control" data-bind="value: ipfsAddress" placeholder="ipfs address" />
-                  <input id="uploadIpfsFilePicker" onchange="return false;" type="file" class="form-control" value="Upload" data-bind="files: files, event: {change: $root.handleIpfsUpload} " />
-                </div>
+
                 <button class="btn btn-primary" type="button" data-bind="enable: enable, click: $root.addDoc" >Add</button>
             </div>
           </div>
