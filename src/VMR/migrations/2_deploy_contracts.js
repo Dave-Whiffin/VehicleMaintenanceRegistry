@@ -45,6 +45,7 @@ module.exports = function(deployer, network, accounts) {
     let vehicleRegistryOwner = accounts[7];
     let ford = accounts[8];
     let fordServiceCentre = accounts[9];
+    let smithsGarage = accounts[10];
     let mockFee = 0;
 
     deployer.deploy(MockFeeChecker, mockFee);
@@ -129,6 +130,15 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(function(result){
       return maintainerRegistry.acceptMemberOwnership(1, transferKey, {from: fordServiceCentre});
+    }) 
+    .then(function(result){
+      return maintainerRegistry.registerMember("Smiths Garage", {from: maintainerRegistryOwner});
+    })
+    .then(function(result){
+      return maintainerRegistry.transferMemberOwnership(2, smithsGarage, transferKeyHash, {from: maintainerRegistryOwner});
+    })
+    .then(function(result){
+      return maintainerRegistry.acceptMemberOwnership(2, transferKey, {from: smithsGarage});
     }) 
     .then(function(result){
       console.log("registering vin: " + vin + " length: " + vin.length);

@@ -24,18 +24,19 @@ Actors:
  - Anyone
 
 ### 1 - The Vehicle Owner Authorizes a maintainer to work on the vehicle
-The owner opens up the web app.  They type their vin.  The web app recognises that they own the vin and provides an option to authorise a maintainer.  They specify a known id for the maintainer and submit. The app confirms success.  The maintainer is now able to log work against the vehicle.
+The owner opens up the web app.  They view the vehicle details and opens the maintenance log.  The web app recognises that they own the vin and provides an option to authorise a maintainer.  They specify a known id for the maintainer and submit. The app confirms success.  The maintainer is now able to log work against the vehicle.
 
 ### 2 - The Maintainer logs an entry in to the maintenance log
-The maintainer opens up the web app.  They type the vin and their maintainer id and the app recognises that they are authorised to log work for the vin.  The maintainer adds a job id, title, description and a document to the log.  It is expected that the maintainer would then pass the job id to the vehicle owner by other means (telephone, email etc).  The maintainer has added the log which the vehicle owner can then check and verify.
+The maintainer opens up the web app, they find the vehicle and opens the maintenance log.  The app recognises that they are authorised to log work for the vin.  The maintainer adds a job id, title, description and a document to the log. The maintainer has added the log which the vehicle owner can then check and verify.
 
 ### 3 - The Vehicle Owner verifies the log entry
-The owner opens the web app and types their vin.  The app recognises they own the vin and provides an option to verify.  They type the job id (from the maintainer).  They view the details of the log entry and associated document.  They click "verify" which verifies the log entry.  This allows anyone to see that they authorised the work and verified it was done.
+The owner opens the web app and finds their vehicle and opens the maintenance log.  The app recognises they own the vin and provides an option to verify against non-verified log entries. They click "verify" which verifies the log entry.  This allows anyone to see that they authorised the work and verified it was done.
 
 ### 4 - Anyone can view the maintenance log for a vehicle:
-Anyone opens the web app and types the vin.  The basic vehicle details are displayed including attributes.  Anyone can view the log history.  They are presented with each log entry and an option to view documents for each.  They can see whether or not a log was verified.
+Anyone opens the web app and finds the vehicle.  The basic vehicle details are displayed including attributes.  Anyone can view the maintenance log and see the log entries and maintainers linked to it.  They are presented with each log entry and an option to view documents for each.  They can see whether or not a log was verified.
 
 ### Caveats and Assumptions:
+* App tested against Chrome Version 67.0.3396.99 (Official Build) (64-bit)
 * Manufacturer, Maintainer and Vehicle registry will be pre populated with static data.
 * The vehicle owner will be one of the auto generated ganache-cli addresses.
 
