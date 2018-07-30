@@ -1,3 +1,5 @@
+const ipfs = window.IpfsApi('127.0.0.1', '5001');
+
 function MaintenanceLogViewModel() {
   var self = this;
 
@@ -404,6 +406,41 @@ function MaintenanceLogViewModel() {
       return true;
   };
 
+  self.uploadToIpfs = async function(reader) {
+
+    let buffer = ipfs.Buffer.from(reader.result);
+    ipfs.files.add(buffer, function(error, response)  {
+
+      if(error != null) {
+        self.showError(error);
+        return;
+      }
+
+      let ipfsId = response[0].hash;
+      self.newDoc.ipfsAddress(ipfsId);
+
+    });
+  };
+
+  self.handleIpfsUpload = async function() {
+    try {
+      let file = document.getElementById("uploadIpfsFilePicker").files[0];
+      let reader = new window.FileReader();
+
+      if(self.newDoc.title() == "") {
+        self.newDoc.title(file.name);
+      };
+
+      reader.onloadend = function () {
+        self.uploadToIpfs(reader);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+    catch(err) {
+      self.showError(err);
+    }
+  };
+
   self.addDoc = async function() {
     try {
       self.newDoc.enable(false);
@@ -472,21 +509,16 @@ $(function() {
 
     ko.components.register('vmr-status-bar', {
       viewModel: { instance: viewModel },
-      template: "<div class='status-panel'><div data-bind='if: errorText'><div data-bind='html: errorText' class='alert alert-danger'></div></div><div data-bind='if: infoText'><div data-bind='html: infoText' class='alert alert-info'></div></div><div data-bind='if: successText'><div data-bind='html: successText' class='alert alert-success'></div></div></div>"
+      template: "<div class='status-panel' style='height: 80px'><div data-bind='if: errorText'><div data-bind='html: errorText' class='alert alert-danger'></div></div><div data-bind='if: infoText'><div data-bind='html: infoText' class='alert alert-info'></div></div><div data-bind='if: successText'><div data-bind='html: successText' class='alert alert-success'></div></div></div>"
     });
 
     ko.applyBindings(viewModel);
   });
 });
 
-
-
-    //const ipfs = window.IpfsApi('ipfs.infura.io', '5001', {protocol: 'https'});
-
-    //let a = ipfs.add("Qmcq1AVPSg2rP7JKV6SHKwTwWZAvhMZTYBAVX7sJJozdMV");
     
     /*
-    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"http://example.com\"]"
-    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
-    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods "[\"PUT\", \"POST\", \"GET\"]"
+    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+  	ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+  	ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'    
     */

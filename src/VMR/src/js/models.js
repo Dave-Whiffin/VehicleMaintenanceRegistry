@@ -126,9 +126,21 @@ function lengthInUtf8Bytes(str) {
         errorCallback("The id field is too long for a 32 byte value");
         return false;
       }
+
+      if(self.title().length > 100) {
+        errorCallback("Title must not exceeed 100 characters");
+        return false;
+      }
+
+      if(self.description().length > 500) {
+        errorCallback("Description must not exceeed 500 characters");
+        return false;
+      }      
   
       return true;
     };
+
+
   }
   
   function NewDocModel() {
@@ -137,6 +149,7 @@ function lengthInUtf8Bytes(str) {
     self.title = ko.observable("");
     self.ipfsAddress = ko.observable("");
     self.enable = ko.observable(true);
+    self.files = ko.observable("");
   
     self.reset = function() {
       self.title("");

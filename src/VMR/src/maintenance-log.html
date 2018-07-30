@@ -18,24 +18,24 @@
     <![endif]-->
   </head>
   <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12 col-sm-12 col-sm-push-0">
-          <h1 class="text-center">Vehicle Maintenance Log</h1>
-          <hr/>
+    <nav class="navbar navbar-default navbar-fixed-top">
 
+      <div class="container">
+        <h1 class="text-center">Vehicle Maintenance Log</h1>
           <vmr-status-bar data-bind=""></vmr-status-bar>
-
-          <h2>Contract Details</h2>
-          <strong>VIN</strong>: <span data-bind="html: vin">VIN</span><br/>
-          <strong>Contract Address</strong>: <span data-bind="html: logAddress">address</span><br/>
-          <strong>Owner</strong>: <span data-bind="html: contractOwner">owner</span><br/>
-        
       </div>
-    </div>
+    </nav>
 
-    <div><h3>Maintainers</h3></div>
-    <div class="row">
+    <div class="container" style="padding-top: 100px">
+      <div>
+        <h2>Contract Details</h2>
+        <strong>VIN</strong>: <span data-bind="html: vin">VIN</span><br/>
+        <strong>Contract Address</strong>: <span data-bind="html: logAddress">address</span><br/>
+        <strong>Owner</strong>: <span data-bind="html: contractOwner">owner</span><br/>
+    </div>        
+
+    <div>
+        <h3>Maintainers</h3>
         <table class="table">
             <thead><tr>
                 <th scope="col">Number</th>
@@ -66,35 +66,34 @@
     </div>
 
     <div data-bind="if: isContractOwner">
-      <div data-bind="with: newMaintainer">
-      <h4>Add an authorised maintainer</h4>
-        <div class="formGroup">
-            <label for="new-maintainer-id">Id:</label>
-            <input class="form-control" id="new-maintainer-id" data-bind="textInput: id" />
+
+      <div class="form-inline" data-bind="with: newMaintainer">
+
+          <div class="form-group mb-2">
+              <h4>Add Maintainer</h4>
+            </div>
+
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="new-maintainer-id" class="sr-only">Id:</label>
+            <input class="form-control" id="new-maintainer-id" data-bind="textInput: id" placeholder="maintainer id" />
           </div>
           
           <button class="btn btn-primary" type="button" data-bind="click: $root.addMaintainer, enable: enable">Add</button>
       </div>
     </div>
 
-    <br />
+    <hr />
 
-    <div><h3>Log Entries</h3></div>
-    <div class="row">
+    <div>
+        <h3>Log Entries</h3>
         <table class="table">
             <thead><tr>
                 <th scope="col">Number</th>
                 <th scope="col">Id</th>
-                <th scope="col">Manufacturer Id</th>
-                <th scope="col">Manufacturer Address</th>
+                <th scope="col">Maintainer</th>
+                <th scope="col">Maintainer Address</th>
                 <th scope="col">Date</th>
-                <th scope="col">Title</th>
-                <th scope="col">Description</th>
                 <th scope="col">Verified</th>
-                <th scope="col">Verifier</th>
-                <th scope="col">Verification Date</th>
-                <th scope="col">
-                </th>
             </tr></thead>
           <tbody data-bind="foreach: logEntries">
               <tr>
@@ -103,40 +102,52 @@
                   <td data-bind="text: maintainerId"></td>
                   <td data-bind="text: maintainerAddress"></td>
                   <td data-bind="text: properDate"></td>
-                  <td data-bind="text: title"></td>
-                  <td data-bind="text: description"></td>
                   <td data-bind="text: verified"></td>
-                  <td data-bind="text: formattedVerifier"></td>
-                  <td data-bind="text: formattedVerificationDate"></td>
-                  <td>
-                    <div data-bind="if: $root.canVerify($data)">
-                      <button class="btn btn-default" data-bind="enable: allowChanges, click: $root.verify">Verify</button>
-                      <div data-bind="if: displayStatus">
-                        <span class="alert alert-info" data-bind="html: displayStatus"></span>
+              </tr>    
+              <tr class="active">
+                  <td></td>
+                  <td colspan="5">
+
+                    <div class="card">
+
+                      <h4>Details</h4>
+                      <div>
+                        Title: <strong><span data-bind="html: title"></span></strong><br />
+                        Description: <span data-bind="html: description"></span>
                       </div>
+
+                      <div data-bind="if: docs().length > 0">
+                          <h4>Documents</h4>
+                          <div data-bind="foreach: docs">
+                              <div>
+                                <span data-bind="html: title"></span> - <span data-bind="html: ipfsAddress"></span>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div data-bind="if: verified">
+                          <h4>Verification Details</h4>
+                          <div>
+                          Verifier: <span data-bind="html: formattedVerifier"></span><br />
+                          Date: <span data-bind="html: formattedVerificationDate"></span>
+                        </div>
+                      </div>
+
+                      <div data-bind="if: $root.canVerify($data)">
+                          <button class="btn btn-primary" data-bind="enable: allowChanges, click: $root.verify">Verify</button>
+                          <div data-bind="if: displayStatus">
+                            <span class="alert alert-info" data-bind="html: displayStatus"></span>
+                          </div>
+                      </div>                    
                     </div>
                   </td>
-              </tr>    
-              <tr data-bind="if: docs().length > 0">
-                <td></td>
-                <td colspan="10">
-                  <div>
-                    <h4>Documents</h4>
-                    <div data-bind="foreach: docs">
-                        <div>
-                          <span data-bind="html: title"></span> - <span data-bind="html: ipfsAddress"></span>
-                        </div>
-                    </div>
-                  </div>
-                </td>
-              <tr>
+              </tr>                 
           </tbody>
         </table>
 
-        <vmr-status-bar data-bind=""></vmr-status-bar>
-
         <div class="row" data-bind="if: canAddLogEntries">
-            <div data-bind="with: newLogEntry">
+
+            <div data-bind="with: newLogEntry" class="col-sm-6">
 
               <h3>Add Log Entry</h3>
 
@@ -151,16 +162,16 @@
 
               <div class="formGroup">
                 <label for="new-log-entry-id">Id (must be unique):</label>
-                <input class="form-control" id="new-log-entry-id" data-bind="value: id" />
+                <input class="form-control" id="new-log-entry-id" data-bind="value: id" placeholder="id" />
               </div>
 
               <div class="formGroup">
                 <label for="new-log-entry-title">Title:</label> 
-                <input class="form-control" id="new-log-entry-title" data-bind="value: title" />
+                <input class="form-control" id="new-log-entry-title" data-bind="value: title" placeholder="title" />
               </div>
               <div class="formGroup">
                 <label for="new-log-entry-description">Description:</label>
-                <input class="form-control" id="new-log-entry-description" data-bind="value: description" />
+                <input class="form-control" id="new-log-entry-description" data-bind="value: description" placeholder="description" />
               </div>
               
               <button class="btn btn-primary" type="button" data-bind="click: $root.addLogEntry, enable: enable">Add</button>
@@ -168,7 +179,7 @@
 
             </div>  
 
-            <div data-bind="with: newDoc">
+            <div data-bind="with: newDoc" class="col-sm-6">
                 <h3>Add Doc to Log Entry</h3>
 
                 <div class="formGroup">
@@ -182,21 +193,22 @@
 
                 <div class="formGroup">
                   <label for="new-doc-title">Title:</label> 
-                  <input class="form-control" id="new-doc-title" data-bind="value: title" />
+                  <input class="form-control" id="new-doc-title" data-bind="value: title" placeholder="title" />
                 </div>
                 <div class="formGroup">
                   <label for="new-doc-ipfs-address">IPFS Address:</label> 
-                  <input id="new-doc-ipfs-address" class="form-control" data-bind="value: ipfsAddress" />
+                  <input id="new-doc-ipfs-address" class="form-control" data-bind="value: ipfsAddress" placeholder="ipfs address" />
+                  <input id="uploadIpfsFilePicker" onchange="return false;" type="file" class="form-control" value="Upload" data-bind="files: files, event: {change: $root.handleIpfsUpload} " />
                 </div>
                 <button class="btn btn-primary" type="button" data-bind="enable: enable, click: $root.addDoc" >Add</button>
             </div>
           </div>
     </div>    
-
+    </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- <script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script> -->
+    <script src="js/ipfs.min.js"></script>
     <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>

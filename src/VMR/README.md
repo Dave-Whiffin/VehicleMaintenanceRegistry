@@ -39,6 +39,19 @@ Anyone opens the web app and finds the vehicle.  The basic vehicle details are d
 * App tested against Chrome Version 67.0.3396.99 (Official Build) (64-bit)
 * Manufacturer, Maintainer and Vehicle registry will be pre populated with static data.
 * The vehicle owner will be one of the auto generated ganache-cli addresses.
+* To upload files (aka log entry documents) (ipfs)
+    * ipfs must be installed locally
+    * ipfs config must be set so that CORS doesn't block the requests:
+    ```
+        ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+  	    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+  	    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'    
+    ```
+    * the ipfs daemon must be running on localhost:5001
+        ```
+        ipfs daemon 
+
+        ```
 
 Notes (for UI implementation):
 * Get the maintenance log address from the vehicle registry.
