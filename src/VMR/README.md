@@ -1,6 +1,8 @@
 Vehicle Maintenance Registry (VMR)
 ==================================
 
+[the dApp](#The-Primary-dApp)  |  [the contracts](#Primary-Solidity-Contracts)   |  [the tests](#Tests)
+
 # An on-chain digital log book for all vehicle maintenance work
 
 Instead of having a paper based log book which is stamped thoughout the life of the vehicle, on on-chain version provides:
@@ -108,7 +110,6 @@ Import the accounts below, the number in brackets is the account index. The priv
     909acfe79360b98131c4208ddaddbc4727359d6400a2747debbba8578b410525
 
 ** IMPORTANT: It may be necessary to reset the accounts (especially if you have used them before) - Metamask, Settings, Reset Account.
-
 
 # Primary Solidity Contracts
 
@@ -244,3 +245,19 @@ Implements IRegistryLookup.
 
 ## MockFeeChecker
 Implements IFeeChecker.
+
+# Tests
+
+There are a range of Solidity and Javascript tests for each contract. However the libraries are not tested in isolation.  
+This is because the libary functionality is called implicitly when testing the contracts.   Ideally tests for these libraries can be added later.
+
+## FeeChecker.Test.js
+This tests the oraclize based FeeChecker contract.  It is the test that is most likely to fail due to configuration and setup problems. It requires the ethereum-bridge to be running and it also requires ganache-cli to be started with a specific mnemonic.
+
+For more info on istalling and using ethereum bridge - (go to ethereum bridge on git hub)[https://github.com/oraclize/ethereum-bridge]
+
+Once ethereum bridge is installed, VMR requires the bridge to be started with the arguments below:
+```
+ethereum-bridge -H localhost:8545 -a 49 --dev
+```
+

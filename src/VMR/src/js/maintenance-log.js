@@ -58,11 +58,78 @@ function MaintenanceLogViewModel() {
       self.loadMaintainers();
       self.loadEntries();
 
+      self.subscribeToEvents(self.maintenanceLogContract);
+
       ContractFactory.currentAddressChanged = function() {
         self.showInfo("account changed - re-initialising");
         self.init();
       };
     });
+  };
+
+  self.subscribeToEvents = function(maintenanceLogContract) {
+
+    let workAuthorisationAdded = maintenanceLogContract.WorkAuthorisationAdded();
+    let workAuthorisationRemoved = maintenanceLogContract.WorkAuthorisationRemoved();
+    let logAdded = maintenanceLogContract.LogAdded();
+    let docAdded = maintenanceLogContract.DocAdded();
+    let logVerified = maintenanceLogContract.LogVerified();
+
+    workAuthorisationAdded.watch((error, result) => {
+        if(error != null) {
+          self.showError(error);
+          return;
+        }
+        self.showInfo("Event: Work Auth Added.  maintainer Id: " + web3.toUtf8(result.args.maintainerId));
+        self.loadMaintainers();
+    });
+
+    workAuthorisationRemoved.watch((error, result) => {
+      //maintainerId
+      if(error != null) {
+        self.showError(error);
+        return;
+      }      
+      self.showInfo("Event: Work Auth Removed.  maintainer Id: " + web3.toUtf8(result.args.maintainerId));
+      self.loadMaintainers();
+    });
+
+    logAdded.watch((error, result) => {
+      if(error != null) {
+        self.showError(error);
+        return;
+      }
+      let logNumber = parseInt(result.args.logNumber);
+      self.showInfo("Event: Log Entry Added. Log Number: " + logNumber + "  maintainer Id: " + web3.toUtf8(result.args.maintainerId));
+      self.loadEntryByLogNumber(logNumber);
+    });
+
+    docAdded.watch((error, result) => {
+      if(error != null) {
+        self.showError(error);
+        return;
+      }
+      let logNumber = parseInt(result.args.logNumber);
+      self.showInfo("Event: Log Entry Added. Log Number: " + logNumber + "  doc Number: " + parseInt(result.args.docNumber));
+      let log = self.getLogEntry(logNumber);
+      self.loadDocs(log);
+    });
+
+    logVerified.watch((error, result) => {
+      if(error != null) {
+        self.showError(error);
+        return;
+      }
+      let logNumber = parseInt(result.args.logNumber);
+
+      self.showInfo("Event: Log Verified. Log Number: " + parseInt(logNumber));
+
+      let logEntry = self.logEntries().find((e) => { return e.logNumber == logNumber;});
+      if(logEntry != null) {
+        self.updateLogEntry(logEntry);
+      }
+    });
+
   };
 
   self.canVerify = function(logEntry) {
@@ -132,13 +199,7 @@ function MaintenanceLogViewModel() {
         if(result.status != "0x01") {
           self.showError("error occurred - unexpected status - " + result.status);
           return;
-        }
-
-        self.showSuccess("Transaction receipt delivered - reloading maintainers in 3 seconds");
-        setTimeout(() => {
-          self.loadMaintainers();
-        }, 3000);
-        
+        }        
       });
     }
     catch(err) {
@@ -165,11 +226,6 @@ function MaintenanceLogViewModel() {
           self.showError("error occurred - unexpected status - " + result.status);
           return;
         }
-
-        self.showSuccess("Transaction receipt delivered - reloading maintainers in 3 seconds");
-        setTimeout(() => {
-          self.loadMaintainers();
-        }, 3000);
       });
     }
     catch(err) {
@@ -205,9 +261,6 @@ function MaintenanceLogViewModel() {
           self.showError(error);
           return;
         }
-
-        await self.loadMaintainers();
-
       });
     }
     catch(err) {
@@ -247,13 +300,6 @@ function MaintenanceLogViewModel() {
           self.showError(err);
           return;
         }
-
-        console.log("setTimeout to get new values for logEntry");
-        setTimeout(async function() {
-          logEntry.displayStatus("");
-          self.updateLogEntry(logEntry);
-        }, 3000);
-
       });
     }
     catch(err) {
@@ -357,6 +403,7 @@ function MaintenanceLogViewModel() {
       self.showInfo("Submitting Log Entry...");
       let tx = await self.maintenanceLogContract.add(id, maintainerId, date, title, description);
       self.showSuccess("Log entry submitted.  Waiting for receipt.");
+      self.newLogEntry.reset();
 
       await web3.eth.getTransactionReceipt(tx.tx, async function(error, result) {
 
@@ -366,9 +413,6 @@ function MaintenanceLogViewModel() {
           }
 
           console.log("transaction finished. status: " + result.status);
-          self.showSuccess("Transaction receipt received. Log entry added");
-          self.loadEntryById(id);
-          self.newLogEntry.reset();
       });
     }
     catch(err) {
@@ -379,8 +423,7 @@ function MaintenanceLogViewModel() {
     }
   };
 
-  self.loadEntryById = async function(id) {
-    var logNumber = await self.maintenanceLogContract.getLogNumber(id);
+  self.loadEntryByLogNumber = async function(logNumber) {
     var logValues = await self.maintenanceLogContract.getLog(logNumber);
     var logEntry = new MaintenanceLogEntryModel(logValues);
     self.logEntries.push(logEntry);
@@ -500,20 +543,12 @@ function MaintenanceLogViewModel() {
         return;
       }
     
-      let log = self.getLogEntry(self.newDoc.logNumber());
-
       self.newDoc.reset();
 
       await web3.eth.getTransactionReceipt(txHash.tx, async function(error, result) {
         self.showInfo("Transaction receipt received");
         if(error != null) {
           self.showError(error);
-        }
-        else {
-          setTimeout(async function() {
-            self.showInfo("reloading docs for log number: " + log.logNumber);
-            self.loadDocs(log);
-          }, 3000);
         }
       });
     }
