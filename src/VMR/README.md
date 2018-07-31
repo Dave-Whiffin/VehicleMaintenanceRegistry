@@ -91,6 +91,8 @@ Import the accounts below, the number in brackets is the account index. The priv
 * Default account (0) - mimic an unknown user (e.g. account[0])
 909acfe79360b98131c4208ddaddbc4727359d6400a2747debbba8578b410525
 
+** IMPORTANT: It may be necessary to reset the accounts (especially if you have used them before) - Metamask, Settings, Reset Account.
+
 
 # Primary Solidity Contracts
 

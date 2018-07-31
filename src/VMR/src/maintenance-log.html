@@ -120,7 +120,7 @@
                           <h4>Documents</h4>
                           <div data-bind="foreach: docs">
                               <div>
-                                <span data-bind="html: title"></span> - <span data-bind="html: ipfsAddress"></span>
+                                  <a alt="View this document in a new browser window" data-bind="attr: {href: href}" target="_blank"><span data-bind="html: title"></span></a> - <span data-bind="html: ipfsAddress"></span>
                               </div>
                           </div>
                       </div>

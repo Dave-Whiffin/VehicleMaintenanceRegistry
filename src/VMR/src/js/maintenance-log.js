@@ -429,7 +429,7 @@ function MaintenanceLogViewModel() {
 
   self.uploadToIpfs = async function(reader) {
 
-    self.showInfo("adding file to ipfs - please allow up to 30 seconds");
+    self.showInfo("adding file to ipfs...");
     let buffer = ipfs.Buffer.from(reader.result);
     ipfs.files.add(buffer, function(error, response)  {
 

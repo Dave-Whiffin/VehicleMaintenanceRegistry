@@ -94,6 +94,7 @@ function MaintenanceLogDocModel(values) {
     self.documentNumber = parseInt(values[0]);
     self.title = values[1];
     self.ipfsAddress = values[2];
+    self.href = "https://ipfs.infura.io/ipfs/" + self.ipfsAddress;
 }
 
 function lengthInUtf8Bytes(str) {
