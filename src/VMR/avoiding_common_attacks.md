@@ -140,8 +140,6 @@ We have mitigated against this risk by:
 
 The registries have little to gain for this system.  
 
-
-
 ## TODO! - Off-chain Safety  
 Rather than attack the contract itself, an attacker may trick users into interacting with a different contract or into sending funds to her address instead of the real contract. This could be done by phishing, by taking control of the website hosting, or by attacking github or social media accounts. An attacker may also attempt to steal Ethereum account private keys from users (or from the contract administrators). For some contracts, accidental loss of private keys belonging to a user important to the contract's contuining operation (e.g. the creator) could prevent operation of the contract.
 
@@ -153,7 +151,7 @@ Following OWASP guidelines for avoiding web vulnerabilities in websites related 
 Keeping sensitive data (e.g. passphrases, keys) in encrypted storage on physically separated hardware, with encrypted off-site backups.
 Ensuring that the contract does not rely on the creator or external services to perform any actions.
 
-C12. Cross-chain Replay Attacks
+## TODO! - Cross-chain Replay Attacks
 Following the Ethereum hard-fork, activity has also continued on the Ethereum Classic Chain. Transactions on one chain can be replayed on the other.
 
 We have mitigated against this risk by:
@@ -162,11 +160,10 @@ Including a warning about accidental ETC transfers in our instructions.
 Creating these contracts from a hard-fork-only address, so they appear only on the Ethereum Foundation Hard-Fork chain. This does however mean that ETC sent to the addresses will likely be lost.
 
 ## Tx.Origin Problem
-This is kind of a "confused depty" problem. If a contract relies on Solidity 'tx.origin' to decide who the caller is (e.g. to see if they're allowed to withdraw their funds), there's a danger that a malicious intermediary contract could make calls to the contract on behalf of the user (who presumably thought the malicious intermediary contract would do something else). See vessenes.com - Tx.Origin And Ethereum Oh My! for a better description.
 
 Mitigation:
 
-Not used tx.origin at all.
+tx.origin is not used at all.
 
 ##  TODO - Solidity Function Signatures and Fallback Data Collisions
 
@@ -192,14 +189,14 @@ We have mitigated against this risk by:
 
 No use of cryptography.
 
-##. Gas Limits
+## Gas Limits
 It's quite hard to calculate the maximum amount of gas a contract can use - famously Governmental got stuck due to this. To make matters worse, the maximum gas limit on the network can vary over time based on transaction fees.
 
 We have mitigated against this risk by:
 
-No looping over unbounded arrays.
-Using bytes32 in favour of strings.
-Ensuring tests pass.
++ No looping over unbounded arrays.
++ Using bytes32 in favour of strings.
++ Ensuring tests pass.
 
 ## Stack Depth Exhaustion
 The Ethereum Virtual Machine has a stack depth limit of 1024 - this can cause calls/sends between contracts to unexpectedly fail. An attacker can set things up so that her contract eats up nearly all the stack just before calling the victim contract.

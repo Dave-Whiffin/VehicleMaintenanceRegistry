@@ -50,11 +50,23 @@ Anyone opens the web app and finds the vehicle.  The basic vehicle details are d
 ### Starting the app
 Go to the main truffle root of the project: "\src\VMR":
 
+
 Run Ganache-Cli -(it should be started with the mnemonic below to ensure that the private keys listed below remain consistent).
 
 ```
 ganache-cli --mnemonic "baby marble measure police ball portion piece town topple guitar inspire enroll" --accounts 50
 ```
+
+Truffle contract dependencies
+```
+truffle install oraclize-api
+```
+
+npm dependencies (such as openzeppelin-solidity, lite-server etc)
+```
+npm install
+```
+
 Run the truffle commands below (build, migrate, deploy contracts and seed data).
 ```
 truffle build
