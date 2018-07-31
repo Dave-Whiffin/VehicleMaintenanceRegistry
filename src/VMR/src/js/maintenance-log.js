@@ -1,9 +1,11 @@
-const ipfs = window.IpfsApi('127.0.0.1', '5001');
+//const ipfs = window.IpfsApi('127.0.0.1', '5001');
+const ipfs = window.IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: 'https'});
 
 function MaintenanceLogViewModel() {
   var self = this;
 
   self.logEntries = ko.observableArray([]);
+  self.logEntriesAllowingNewDocs = ko.observableArray([]);
   self.maintainers = ko.observableArray([]);
   self.authorisedMaintainers = ko.observableArray([]);
   self.newLogEntry = new NewLogEntryModel();
@@ -17,7 +19,28 @@ function MaintenanceLogViewModel() {
   self.logAddress = ko.observable("");
   self.canAddLogEntries = ko.observable(false);
   self.isContractOwner = ko.observable(false);
-  
+
+  self.setEntriesAllowingDocs = function() {
+    self.logEntriesAllowingNewDocs([]);
+
+    self.logEntries().forEach((e) => {
+      if(!e.verified()) {
+        let maintainer = self.authorisedMaintainers().find((m) => {return m.id == e.maintainerId;});
+        if(maintainer != null) {
+          self.logEntriesAllowingNewDocs.push(e);
+        }
+    }
+    });
+  };
+
+  self.logEntries.subscribe(function(changes) {
+    self.setEntriesAllowingDocs();
+  });
+
+  self.authorisedMaintainers.subscribe(function(changes) {
+    self.setEntriesAllowingDocs();
+  });
+
   self.init = function() {
 
     self.clearStatus();
@@ -25,9 +48,7 @@ function MaintenanceLogViewModel() {
     self.logAddress(VMRUtils.getParameterByName("address"));
     console.log("maintenance log address: " + self.logAddress());
 
-
     ContractFactory.init(async function() {
-
       self.currentAccount = web3.eth.accounts[0];
       self.maintenanceLogContract = ContractFactory.getMaintenanceLogContract(self.logAddress());      
       self.maintainerRegistry = ContractFactory.getMaintainerRegistryContract();
@@ -214,11 +235,9 @@ function MaintenanceLogViewModel() {
       self.clearStatus();
       logEntry.allowChanges(false);
       self.showInfo("submitting verification");
-      console.log("calling verify for log entry: " + logEntry.logNumber);
       let tx = await self.maintenanceLogContract.verify(logEntry.logNumber);
       logEntry.displayStatus("verifying");
       self.showSuccess("verify tx received " + tx.txt);
-      console.log("verify tx: " + tx.tx);
       
       await web3.eth.getTransactionReceipt(tx.tx, async function(err, result) {
 
@@ -226,7 +245,6 @@ function MaintenanceLogViewModel() {
 
         if(err != null) {
           self.showError(err);
-          console.log(err);
           return;
         }
 
@@ -256,13 +274,16 @@ function MaintenanceLogViewModel() {
     self.errorText("");
   };
 
-  self.showInfo = function(info) {
+  self.showInfo = function(info, timeout) {
+
+    timeout = !timeout || isNan(timeout) || timeout == 0 ? 5000 : timeout;
+
     console.log(info);
     self.infoText(info);
 
     setTimeout(function() {
       self.clearInfo();
-    }, 3000);
+    }, timeout);
   };
 
   self.clearInfo = function() {
@@ -408,8 +429,11 @@ function MaintenanceLogViewModel() {
 
   self.uploadToIpfs = async function(reader) {
 
+    self.showInfo("adding file to ipfs - please allow up to 30 seconds");
     let buffer = ipfs.Buffer.from(reader.result);
     ipfs.files.add(buffer, function(error, response)  {
+
+      self.newDoc.displayStatus("");
 
       if(error != null) {
         self.showError(error);
@@ -417,6 +441,7 @@ function MaintenanceLogViewModel() {
       }
 
       let ipfsId = response[0].hash;
+      self.showInfo("file added to ipfs:" + ipfsId);
       self.newDoc.ipfsAddress(ipfsId);
 
     });
@@ -424,14 +449,15 @@ function MaintenanceLogViewModel() {
 
   self.handleIpfsUpload = async function() {
     try {
+      self.clearStatus();
+      self.showInfo("reading file");
       let file = document.getElementById("uploadIpfsFilePicker").files[0];
       let reader = new window.FileReader();
 
-      if(self.newDoc.title() == "") {
-        self.newDoc.title(file.name);
-      };
+      self.newDoc.title(file.name);
 
       reader.onloadend = function () {
+        self.newDoc.displayStatus("uploading file, please be patient, it may take up to a minute, sorry!");
         self.uploadToIpfs(reader);
       };
       reader.readAsArrayBuffer(file);

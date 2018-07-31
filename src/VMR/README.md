@@ -16,21 +16,27 @@ Instead of having a paper based log book which is stamped thoughout the life of 
 
 # The Primary dApp.
 
+An app to view and edit the maintenance log for a registered vehicle.  The app recognises vehicle owners, maintainers and unknown users and behaves accordingly.
+
+The manufacturer of the vehicle is the initial owner.  The pre-loaded data contains a vehicle that is owned by the manufacturer (to mimic a vehicle that has not yet been sold).
+
+There are registries for maintainers, manufacturers and vehicles.  These are important as the maintenance log has dependencies on them. Their related contracts are fully tested. However the primary focus of the Dapp is the vehicle maintenance log.  The other registries will be populated with static data in order for the Dapp to run.  Separate Dapps could be built for each registry or using a combination of them for different use cases.
+
 ## User Stories
 
 Actors:
- - Vehicle Owner
+ - Vehicle Owner (manufacturer)
  - Maintainer
  - Anyone
 
 ### 1 - The Vehicle Owner Authorizes a maintainer to work on the vehicle
-The owner opens up the web app.  They view the vehicle details and opens the maintenance log.  The web app recognises that they own the vin and provides an option to authorise a maintainer.  They specify a known id for the maintainer and submit. The app confirms success.  The maintainer is now able to log work against the vehicle.
+The owner opens up the web app.  The initial owner of a vehicle is always the manufacturer.  They view the vehicle details and open the maintenance log.  The web app recognises that they own the vin and provides an option to authorise a maintainer.  They specify a known id for the maintainer and submit. The app confirms success.  The maintainer is now able to log work against the vehicle.  The maintainers can be authorised and unauthorised by the vehicle owner (they can't be removed).
 
 ### 2 - The Maintainer logs an entry in to the maintenance log
-The maintainer opens up the web app, they find the vehicle and opens the maintenance log.  The app recognises that they are authorised to log work for the vin.  The maintainer adds a job id, title, description and a document to the log. The maintainer has added the log which the vehicle owner can then check and verify.
+The maintainer opens up the web app, they find the vehicle and open the maintenance log.  The app recognises that they are authorised to log work for the vin.  The maintainer adds a job id, title, description.  They can then one or many documents to the log.  Documents are uploaded to IPFS and their address is stored in the maintenance log. The state of the new log entries is "unverified".
 
 ### 3 - The Vehicle Owner verifies the log entry
-The owner opens the web app and finds their vehicle and opens the maintenance log.  The app recognises they own the vin and provides an option to verify against non-verified log entries. They click "verify" which verifies the log entry.  This allows anyone to see that they authorised the work and verified it was done.
+The owner opens the web app and finds their vehicle and opens the maintenance log.  The app recognises they own the vin and provides an option to verify  non-verified log entries. They click "verify" which verifies the log entry.  This allows anyone to see that they authorised the work and verified it was done.
 
 ### 4 - Anyone can view the maintenance log for a vehicle:
 Anyone opens the web app and finds the vehicle.  The basic vehicle details are displayed including attributes.  Anyone can view the maintenance log and see the log entries and maintainers linked to it.  They are presented with each log entry and an option to view documents for each.  They can see whether or not a log was verified.
@@ -38,32 +44,53 @@ Anyone opens the web app and finds the vehicle.  The basic vehicle details are d
 ### Caveats and Assumptions:
 * App tested against Chrome Version 67.0.3396.99 (Official Build) (64-bit)
 * Manufacturer, Maintainer and Vehicle registry will be pre populated with static data.
-* The vehicle owner will be one of the auto generated ganache-cli addresses.
-* To upload files (aka log entry documents) (ipfs)
-    * ipfs must be installed locally
-    * ipfs config must be set so that CORS doesn't block the requests:
-    ```
-        ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
-  	    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
-  	    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'    
-    ```
-    * the ipfs daemon must be running on localhost:5001
-        ```
-        ipfs daemon 
+* The user stories primarily test the maintenance log functionality.  Elements of registry functionality are implicitly tested but are not the prime focus of this particular app.
+* The Fee Checker which is ordinarily an oraclize based contract is mocked out so that the tester does not have to install or run the ethereum bridge.
 
-        ```
+### Starting the app
+Go to the main truffle root of the project: "\src\VMR":
 
-Notes (for UI implementation):
-* Get the maintenance log address from the vehicle registry.
-* Get the log information from the maintenance log
-    * To iterate through all logs:
-        * Logs are numbered sequentially from 1
-        * Get the log count and iterate the number to retrieve each log
-        * The docs for each log are also sequentially numbered and can be iterated in the same way
-    * The log number can be retrieved from a known log entry id.
+Run Ganache-Cli -(it should be started with the mnemonic below to ensure that the private keys listed below remain consistent).
 
-# Registries
-There are registries for maintainers, manufacturers and vehicles.  These are important as the maintenance log has dependencies on them. Their related contracts are fully tested. However the primary focus of the Dapp is the vehicle maintenance log which is not focussed on the process of membership and transferral.  The other registries will be populated with static data in order for the Dapp to run.  Separate Dapps could be built for each registry or using a combination of them for different use cases.
+```
+ganache-cli --mnemonic "baby marble measure police ball portion piece town topple guitar inspire enroll" --accounts 50
+```
+Run the truffle commands below (build, migrate, deploy contracts and seed data).
+```
+truffle build
+truffle migrate --reset
+```
+Run the app
+```
+npm run dev
+```
+This launches lite server on localhost:3000.
+
+### Preset Account configuration (for reference):
+
+* Manufacturer Registry Owner = accounts[5]
+* Maintainer Registry Owner = accounts[6];
+* Vehicle Registry Owner = accounts[7];
+* Ford (Manufacturer) = accounts[8];
+    * Ford is the owner of the vehicle as it has not been sold yet.
+* Ford Service Centre (Maintainer) = accounts[9];
+* Smiths Garage (Maintainer) = accounts[10];
+
+### Metamask accounts to import
+Import the accounts below, the number in brackets is the account index. The private key for each is listed below.
+
+* Ford (8) - mimic a manufacturer and the initial vehicle owner
+5fc52d1eb267d00fab8cf78d1e78d4d832418f5650cbadcab743d3c5e1513ebf
+
+* Ford Service Centre (9) - mimic a maintainer
+77a0b942e144b6827e5d1cb51e1d76a3c670aaa1354769a3d4321eec2bd93f20
+
+* Smiths Garage (10) - mimic another maintainer
+14b89b59972c8a6744eb2c62931f09e274a64dd08b6da4ac415b3691dd4ffe7d
+
+* Default account (0) - mimic an unknown user (e.g. account[0])
+909acfe79360b98131c4208ddaddbc4727359d6400a2747debbba8578b410525
+
 
 # Primary Solidity Contracts
 

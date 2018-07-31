@@ -150,6 +150,8 @@ function lengthInUtf8Bytes(str) {
     self.ipfsAddress = ko.observable("");
     self.enable = ko.observable(true);
     self.files = ko.observable("");
+
+    self.displayStatus = ko.observable("");
   
     self.reset = function() {
       self.title("");
