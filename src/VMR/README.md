@@ -20,7 +20,7 @@ An app to view and edit the maintenance log for a registered vehicle.  The app r
 
 The manufacturer of the vehicle is the initial owner.  The pre-loaded data contains a vehicle that is owned by the manufacturer (to mimic a vehicle that has not yet been sold).
 
-There are registries for maintainers, manufacturers and vehicles.  These are important as the maintenance log has dependencies on them. Their related contracts are fully tested. However the primary focus of the Dapp is the vehicle maintenance log.  The other registries will be populated with static data in order for the Dapp to run.  Separate Dapps could be built for each registry or using a combination of them for different use cases.
+There are registries for maintainers, manufacturers and vehicles.  These are important as the maintenance log has dependencies on them. Their related contracts are fully tested. However the primary focus of the dApp is the vehicle maintenance log.  The other registries will be populated with static data in order for the Dapp to run.  Separate Dapps could be built for each registry or using a combination of them for different use cases.
 
 ## User Stories
 
@@ -88,20 +88,24 @@ This launches lite server on localhost:3000.
 * Ford Service Centre (Maintainer) = accounts[9];
 * Smiths Garage (Maintainer) = accounts[10];
 
+### Preset Maintainer Id's
+* Ford Service Centre
+* Smiths Garage
+
 ### Metamask accounts to import
 Import the accounts below, the number in brackets is the account index. The private key for each is listed below.
 
 * Ford (8) - mimic a manufacturer and the initial vehicle owner
-5fc52d1eb267d00fab8cf78d1e78d4d832418f5650cbadcab743d3c5e1513ebf
+    5fc52d1eb267d00fab8cf78d1e78d4d832418f5650cbadcab743d3c5e1513ebf
 
 * Ford Service Centre (9) - mimic a maintainer
-77a0b942e144b6827e5d1cb51e1d76a3c670aaa1354769a3d4321eec2bd93f20
+    77a0b942e144b6827e5d1cb51e1d76a3c670aaa1354769a3d4321eec2bd93f20
 
 * Smiths Garage (10) - mimic another maintainer
-14b89b59972c8a6744eb2c62931f09e274a64dd08b6da4ac415b3691dd4ffe7d
+    14b89b59972c8a6744eb2c62931f09e274a64dd08b6da4ac415b3691dd4ffe7d
 
 * Default account (0) - mimic an unknown user (e.g. account[0])
-909acfe79360b98131c4208ddaddbc4727359d6400a2747debbba8578b410525
+    909acfe79360b98131c4208ddaddbc4727359d6400a2747debbba8578b410525
 
 ** IMPORTANT: It may be necessary to reset the accounts (especially if you have used them before) - Metamask, Settings, Reset Account.
 
