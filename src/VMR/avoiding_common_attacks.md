@@ -1,11 +1,11 @@
-Module 9 Lesson 3
-
 # Favour Pull Over Push
 The VMR system doesn't batch distribute payments or do anything of a batch nature.  
 
 For ownership transfer it follows a transfer and claim/accept pattern.  The owner makes a transfer which sets a pending owner, the pending owner must then accept/claim the ownership.
 
-Slighty abstract - but none of the contracts return arrays - the caller must enumerate using a client side counter and retrieve each record via it's number.
+The registry contract has a withdraw function which transfers an amount from the balance of the contract to the owner.  This uses the transfer function which would revert if there were insufficient funds or the transfer failed.  Internal state would not be corrupted.
+
+Slighty abstract - but none of the contracts return arrays - the caller must enumerate using a client side counter and retrieve each record via it's number.  This means the contract isn't "pushing" out arrays - the caller must "pull" each item.
 
 # On Chain Data is public
 * Transfer member routine of registry only stores hash of transfer key. 
@@ -13,45 +13,44 @@ Slighty abstract - but none of the contracts return arrays - the caller must enu
 # Known Attacks
 
 ## Reentrancy
+The contracts do not make external calls to untrusted parties before updating state.  Trusted parties are the eternal storage contracts and libraries which are pre verified to ensure they behave properly.
 
 # Solidity
 
 ## Parties dropping off line
+There is a risk that owners of the contracts drop off line. For registry contracts this could prevent new members from being added as the registry owner is required to perform this action.  However, the registry owner is seen as trusted account and whoever owns this would be expected to take extra precautions to ensure the registry is without an active owner.  The owner does have the ability to transfer to another owner should they need to.
 
-## Enforce invariants with assert
+For vehicles and maintenance logs - again yes, there is a risk that the owner would drop off line.  This would prevent the log entries from being verified and from new maintainers being authorised to log new entries.  The ownership of the vehicle could not be transferred.  There is no back door for another party to regain ownership of the vehicle.  For example if the vehicle owner died, the vehicle could be left in limbo.  In future, an option for the registry owner to take ownership could be made available but was not deemed essential at the moment.
 
 ## Use assert and require properly
 
+
 ## Remember Ether can forcibly be sent to an account
+There is no functionality that would break.  None of the contracts attempt to correlate the balance on the contracts with anything else.
 
 ## Be aware of the trade offs between abstract contracts and interfaces
 
 ## Keep fallback functions simple
-
-## Check data length in fallback functions
+There is only one fallback function on the registry and it has no implementation code.  It is only there to allow ether to be sent to the contract for testing purposes.
 
 ## Explicity mark visibility in functions and state variables
+All functions and variables have an explicitly marked visibility.
 
 ## Lock pragmas to specific compiler version
-// bad
-pragma solidity ^0.4.4;
-// good
-pragma solidity 0.4.4;
+For flexibility during development the pragmas are not currently locked down (i.e. ^0.4.23).  However before deployment to a proper test net or main, the pragmas would be locked down (i.e. 0.4.23).
 
 ## Differentiate functions from events
+Functions start with a lower case letter, events start with uppercase.
 
 ## Prefer newer Solidity constructs
 
-Prefer constructs/aliases such as selfdestruct (over suicide) and keccak256 (over sha3). Patterns like require(msg.sender.send(1 ether)) can also be simplified to using transfer(), as in msg.sender.transfer(1 ether).
+All newer constructs are used VMR specific contracts: keccack256 over sha3 and selfdestruct over suicide.  Some referenced open-zeppelin and oraclize contracts may induce compiler warnings because of older constructs. 
 
 ## Be aware that 'Built-ins' can be shadowed
-
-## Avoid using tx.origin
-
-## Timestamp Dependence
-
+Only trusted contracts are involved.  All contracts are tested thoroughly.  The contents of contracts are checked to ensure that there is no shadowing of built ins that could be in any way harmful or odd.
 
 # Avoiding common attacks
+Credit for the description of some of the attacks goes to King Of Ether.  The mitigation steps are in reference to VMR.
 
 ## Logic Bugs
 Simple programming mistakes can cause the contract to behave differently to its stated rules, especially on 'edge cases'.
@@ -68,21 +67,20 @@ Mitigation
 * Not storing secret data on the block chain
 
 ## Failed Sends
-The system does not send payments.  It does receive values.  The registries receive payment for registration and transfer.  This goes in to the balance on each registry contract.  There is no option to send it to another party.  There is a mechanism for killing the contracts and sending the balance back to the owner.  The contracts inherit TokenDestructable contract from open-zeppelin allowing tokens to be sent back to the owner when the contract is destructed.
+The contracts in the does not send payments, except when a registry owner withdraws from the contract balance. The registries receive payment for registration and transfer.  This goes in to the balance on each registry contract.  The withdraw function is protected and tested to ensure only the owner can call it.  It does not attempt to change any other state, so if the transfer to the owner fails then state is not corrupted.  There is a mechanism for killing the contracts and sending the balance back to the owner.  The contracts inherit TokenDestructable contract from open-zeppelin allowing tokens to be sent back to the owner when the contract is destructed.
 
 ## Reentry / Recursive Calls
 Famously, the original DAO contract exhibited unintended behaviour where a "recursive split" technique was used to move Ether worth over US$ 100 Million out of the DAO. This was possible because when a contract sends payment to another contract, the receiving contract's fallback function can call back into the sending contract, which can often produce behaviour the developer of the sending contract developer had not anticipated.
 
 Mitigation:
 
-The system doesn't make calls where internal state is updated after an external call.  
+The system doesn't make any calls where internal state is updated after an external call to an untrusted contract.
 
 External calls within contracts are only to verified/trusted addresses.
 
 External calls are often used in pre execution validation modifiers (e.g. registry lookups).  Where these throw, the function will not proceed and state would not be modified.  External calls are made to a trusted contract storage address where state data is actually stored.  Protection is in place to prevent this address from being changed by anyone but the owner.
 
-The contracts do not transfer Ether (msg.value) to other addresses.  Only the registries accept a msg.value for initial registration or transfer.  This value is held in the balance of the registry contract.  Only the owner of the contract can redeem it on self destruction.  
-
+The contracts do not transfer Ether (msg.value) to other addresses.  Only the registries accept a msg.value for initial registration or transfer.  This value is held in the balance of the registry contract.  Only the owner of the contract can withdraw from this balance or receive it on self destruction.  
 
 ## Integer Arithmetic Overflow
 Numbers in Solidity code silently "wrap-around" if they become too large. This can lead to surprising behaviour - e.g. a check like "if (amountOne + amountTwo < myBalance) {...}" can appear to be true if one of the amounts is large enough to cause over-flow.
@@ -104,7 +102,7 @@ It is easy to accidentally expose a contract function which was meant to be inte
 
 Mitigation:
 
-Deliberately minimising the number of functions in each contract 
+Deliberately minimising the number of functions in each contract.
 Ensuring only the owning contract can set data in the Eternal Storage contracts (unit tested).
 Checking the ABI to ensure that no unexpected functions are present.
 
@@ -138,26 +136,7 @@ If a contract gives the creator/owner of the contract too much power, they may t
 
 We have mitigated against this risk by:
 
-The registries have little to gain for this system.  
-
-## TODO! - Off-chain Safety  
-Rather than attack the contract itself, an attacker may trick users into interacting with a different contract or into sending funds to her address instead of the real contract. This could be done by phishing, by taking control of the website hosting, or by attacking github or social media accounts. An attacker may also attempt to steal Ethereum account private keys from users (or from the contract administrators). For some contracts, accidental loss of private keys belonging to a user important to the contract's contuining operation (e.g. the creator) could prevent operation of the contract.
-
-We have mitigated against this risk by:
-
-Using HTTPS with strong security settings on websites related to the contract (including origin servers).
-Using security measures such as strong passwords and two-factor authentication (where available) on hosting provider, DNS, email, reddit and github accounts.
-Following OWASP guidelines for avoiding web vulnerabilities in websites related to the contract, and employing ISO-27001 controls (where applicable) internally.
-Keeping sensitive data (e.g. passphrases, keys) in encrypted storage on physically separated hardware, with encrypted off-site backups.
-Ensuring that the contract does not rely on the creator or external services to perform any actions.
-
-## TODO! - Cross-chain Replay Attacks
-Following the Ethereum hard-fork, activity has also continued on the Ethereum Classic Chain. Transactions on one chain can be replayed on the other.
-
-We have mitigated against this risk by:
-
-Including a warning about accidental ETC transfers in our instructions.
-Creating these contracts from a hard-fork-only address, so they appear only on the Ethereum Foundation Hard-Fork chain. This does however mean that ETC sent to the addresses will likely be lost.
+The registries have little to gain for this particular system.  
 
 ## Tx.Origin Problem
 
@@ -165,34 +144,21 @@ Mitigation:
 
 tx.origin is not used at all.
 
-##  TODO - Solidity Function Signatures and Fallback Data Collisions
+##  Solidity Function Signatures and Fallback Data Collisions
 
-This one is a little bit obscure - but it might catch someone out.
-
-Under the hood, when you call a non-constant external function on a Solidity contract you are really just sending a transaction to the contract with some "magic" data. This works because the Solidity compiler has put some special bytecode at the start of the contract which checks the magic data and invokes the correct function.
-
-Solidity contracts can also have a "fallback" function which is called if there is no data present in the transaction, or if the data does not match any of the contract functions. The fallback function can examine the data sent using the msg.data property.
-
-This can lead to problems in two ways:
-
-Phishing - A user might be tricked into calling a function on a contract - e.g. 'sendAllMyTokensTo(address)' - by being told by another user to send some special data to the contract.
-Poisoning - There are some items of data that can never be sent to a fallback function, because they clash with a function signature. For example, if my contract has a function whose signature is foo(uint256), then I can never send data starting with 2FBEBD38 to the fallback function.
-We have mitigated against this risk by:
-
-The KingOfTheEther fallback function only accepts monarch names sent to it in msg.data if they are prefixed with 'NAME:' in ASCII, which does not clash with any Solidity function signatures.
-However, in hindsight, we think having a fallback function read msg.data is a mistake - it makes things unnecessarily complicated. It is sometimes desirable to allow users to interact with the contract by sending simple transactions to it (e.g. from web wallets) without having to copy-and-paste an enormous ABI or run a native app. Perhaps it is better to provide some off-chain means (e.g. a Javascript converter) to generate the "magic" data needed to invoke the desired Solidity function? There is a risk of encouraging phishing attacks though by encouraging people to send mysterious data to contracts.
+The only fallback function implemented is on the registry contract.  It is only present to allow the balance of the contract to be increased via a simple transaction send. This was primarily for testing purposes. It does not have any implementation code other than the signature.
 
 ## Incorrect use of Cryptography
 Cryptographic primitives are notoriously difficult to use correctly - see e.g. If you're typing the letters A-E-S into your code you're doing it wrong.
 
-We have mitigated against this risk by:
+Mitigation:
 
 No use of cryptography.
 
 ## Gas Limits
 It's quite hard to calculate the maximum amount of gas a contract can use - famously Governmental got stuck due to this. To make matters worse, the maximum gas limit on the network can vary over time based on transaction fees.
 
-We have mitigated against this risk by:
+Mitigation:
 
 + No looping over unbounded arrays.
 + Using bytes32 in favour of strings.

@@ -520,5 +520,6 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         owner.transfer(_amount);
     }
 
+    /** @dev a fallback function - present so that the balance of the contract can be increased (primarily for testing withdrawal) */
     function() public payable {}
 }

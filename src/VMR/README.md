@@ -14,7 +14,7 @@ Instead of having a paper based log book which is stamped thoughout the life of 
 * protection against information loss
 * protection from log tampering by bad actors
 * protection against fraudelent claims of work done to the vehicle
-* Small registration and transfer fees for the related registries
+* Registration and transfer fees for the related registries
 
 # The Primary dApp.
 
@@ -170,6 +170,8 @@ This is a contract which provides the core registry functionality.  It's not an 
 It implements the IRegistyLookup which provides a loosely coupled option for other contracts to read from a registry.
 
 The contract imposes a fee for each registration or transfer. On construction the registry is passed the address of a contract implementing IFeeChecker.  This contract is responsible for returning the fee amount. 
+
+The owner of the registry can transfer funds from the balance of the registry contract to themselves via the "withdraw" function.
 
 Each member of the registry 
 * is registered with a user defined but unique reference (bytes32)
