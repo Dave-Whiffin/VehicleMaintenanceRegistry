@@ -4,6 +4,11 @@ const ipfs = window.IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: 'ht
 function MaintenanceLogViewModel() {
   var self = this;
 
+  var isTxSuccess = function(result) {
+    let status = result.status;
+    return status === "0x01" || status === "0x1";
+  };
+
   VMRUtils.addStatusHandlers(self);
 
   self.logEntries = ko.observableArray([]);
@@ -280,7 +285,7 @@ function MaintenanceLogViewModel() {
           return;
         }
 
-        if(result.status != "0x01") {
+        if(!isTxSuccess(result)) {
           self.showError("error occurred - unexpected status - " + result.status);
           return;
         }        
@@ -306,7 +311,7 @@ function MaintenanceLogViewModel() {
           return;
         }
 
-        if(result.status != "0x01") {
+        if(!isTxSuccess(result)) {
           self.showError("error occurred - unexpected status - " + result.status);
           return;
         }
