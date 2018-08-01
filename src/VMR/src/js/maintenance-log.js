@@ -4,6 +4,8 @@ const ipfs = window.IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: 'ht
 function MaintenanceLogViewModel() {
   var self = this;
 
+  VMRUtils.addStatusHandlers(self);
+
   self.logEntries = ko.observableArray([]);
   self.logEntriesAllowingNewDocs = ko.observableArray([]);
   self.maintainers = ko.observableArray([]);
@@ -11,9 +13,6 @@ function MaintenanceLogViewModel() {
   self.newLogEntry = new NewLogEntryModel();
   self.newDoc = new NewDocModel();
   self.newMaintainer = new NewMaintainerModel();
-  self.errorText = ko.observable("");
-  self.infoText = ko.observable("");
-  self.successText = ko.observable("");
   self.vin = ko.observable("");
   self.contractOwner = ko.observable("");
   self.logAddress = ko.observable("");
@@ -40,6 +39,10 @@ function MaintenanceLogViewModel() {
   self.authorisedMaintainers.subscribe(function(changes) {
     self.setEntriesAllowingDocs();
   });
+
+  self.getVinHref = function() {
+    return "vehicle.html?vin=" + self.vin();
+  };
 
   self.init = function() {
 
@@ -310,6 +313,7 @@ function MaintenanceLogViewModel() {
     }
   };
 
+  /*
   self.showError = function(error) {
     self.clearStatus();
     console.log(error);
@@ -350,6 +354,7 @@ function MaintenanceLogViewModel() {
     self.clearError();
     self.clearInfo();
   };
+  */
 
   self.addLogEntry = async function() {
 
@@ -570,16 +575,9 @@ $(function() {
 
     ko.components.register('vmr-status-bar', {
       viewModel: { instance: viewModel },
-      template: "<div class='status-panel' style='height: 80px'><div data-bind='if: errorText'><div data-bind='html: errorText' class='alert alert-danger'></div></div><div data-bind='if: infoText'><div data-bind='html: infoText' class='alert alert-info'></div></div><div data-bind='if: successText'><div data-bind='html: successText' class='alert alert-success'></div></div></div>"
+      template: VMRUtils.statusBarMarkup
     });
 
     ko.applyBindings(viewModel);
   });
 });
-
-    
-    /*
-    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
-  	ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
-  	ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'    
-    */

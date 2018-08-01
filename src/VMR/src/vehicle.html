@@ -18,12 +18,17 @@
     <![endif]-->
   </head>
   <body>
-    <div class="container">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <h1 class="text-center">Vehicle Details</h1>
+            <vmr-status-bar data-bind=""></vmr-status-bar>
+        </div>
+      </nav>
+
+    <div class="container" style="padding-top: 200px">
       <div class="row" data-bind="with: vehicle">
         <div class="col-xs-12 col-sm-12 col-sm-push-0">
-          <h1 class="text-center">Vehicle Details</h1>
-          <hr/>
-          <br/>
           <strong>Vehicle Number</strong>: <span data-bind="html: vehicleNumber"></span><br/>
           <strong>VIN</strong>: <span data-bind="html: vin"></span><br/>
           <strong>Owner</strong>: <span data-bind="html: owner">owner</span><br/>
@@ -63,7 +68,6 @@
     
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>

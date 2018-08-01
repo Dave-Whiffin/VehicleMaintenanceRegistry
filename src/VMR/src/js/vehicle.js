@@ -1,5 +1,6 @@
 function VehicleViewModel() {
   var self = this;
+  VMRUtils.addStatusHandlers(self);
   self.vehicle = ko.observable();
   self.vehicleRegistry = null;
   self.vehicleAttributes = ko.observableArray([]);
@@ -36,6 +37,14 @@ function VehicleViewModel() {
 
 $(function() {
   $(window).load(function() {
-    ko.applyBindings(new VehicleViewModel());
+
+    let viewModel = new VehicleViewModel();
+
+    ko.components.register('vmr-status-bar', {
+      viewModel: { instance: viewModel },
+      template: VMRUtils.statusBarMarkup
+    });
+
+    ko.applyBindings(viewModel);
   });
 });

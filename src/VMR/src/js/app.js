@@ -1,6 +1,7 @@
 function AppViewModel() {
   var self = this;
 
+  VMRUtils.addStatusHandlers(self);
   self.test = "dave";
   self.vehicleRegistry = null;
   self.vehicles = ko.observableArray([]);  
@@ -11,9 +12,10 @@ function AppViewModel() {
 
   self.init = function() {
     ContractFactory.init(function() {
+      self.showInfo("Initialising..");
       self.vehicleRegistry = ContractFactory.vehicleRegistryInstance;
       self.vehicles([]);
-      self.loadVehicles();
+      self.loadVehicles(() => { self.clearStatus()});
     });
   };
 
@@ -21,20 +23,34 @@ function AppViewModel() {
     window.location.href = "vehicle.html?vin=" + vehicle.vin;
   };
 
-  self.loadVehicles = async function() {
+  self.loadVehicles = async function(callback) {
     let memberCount = await self.vehicleRegistry.getMemberTotalCount();
     for (i = 1; i <= memberCount; i++) {
       let vehicleValArray = await self.vehicleRegistry.getMember(i);
       let vehicle = new VehicleModel(vehicleValArray);
       self.vehicles.push(vehicle);
     }
+    callback();
   };  
 
-  self.init();
+  try{
+    self.init();
+  }
+  catch(err) {
+    self.showError(err);
+  }
 }
 
 $(function() {
   $(window).load(function() {
-    ko.applyBindings(new AppViewModel());
+
+    let viewModel = new AppViewModel();
+
+    ko.components.register('vmr-status-bar', {
+      viewModel: { instance: viewModel },
+      template: VMRUtils.statusBarMarkup
+    });
+
+    ko.applyBindings(viewModel);
   });
 });

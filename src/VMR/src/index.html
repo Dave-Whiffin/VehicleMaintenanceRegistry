@@ -18,39 +18,39 @@
     <![endif]-->
   </head>
   <body>
-    <div class="container">
-      <div class="row">
-          <h1 class="text-center">Registered Vehicles</h1>
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <h1 class="text-center">Registered Vehicles</h1>
+          <vmr-status-bar data-bind=""></vmr-status-bar>
       </div>
+    </nav>
 
-      <div class="row">
-
-      <table class="table">
-          <thead><tr>
-              <th scope="col">Number</th>
-              <th scope="col">VIN</th>
-              <th scope="col">Owner</th>
-              <th scope="col">Enabled</th>
-              <th scope="col">Created Date</th>
-              <th scope="col"></th>
-          </tr></thead>
-        <tbody data-bind="foreach: vehicles">
-            <tr>
-                <th scope="row" data-bind="text: vehicleNumber"></th>
-                <td data-bind="text: vin"></td>
-                <td data-bind="text: owner"></td>
-                <td data-bind="text: enabled"></td>
-                <td data-bind="text: createdDate"></td>
-                <td><button class="btn btn-primary" type="button" data-bind="click: $root.goToDetails" data-id="0">vehicle details</button></td>
-            </tr>    
-        </tbody>
-      </table>
-
+    <div class="container" style="padding-top: 200px">
+        <table class="table">
+            <thead><tr>
+                <th scope="col">Number</th>
+                <th scope="col">VIN</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Enabled</th>
+                <th scope="col">Created Date</th>
+                <th scope="col"></th>
+            </tr></thead>
+          <tbody data-bind="foreach: vehicles">
+              <tr>
+                  <th scope="row" data-bind="text: vehicleNumber"></th>
+                  <td data-bind="text: vin"></td>
+                  <td data-bind="text: owner"></td>
+                  <td data-bind="text: enabled"></td>
+                  <td data-bind="text: createdDate"></td>
+                  <td><button class="btn btn-primary" type="button" data-bind="click: $root.goToDetails" data-id="0">vehicle details</button></td>
+              </tr>    
+          </tbody>
+        </table>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
