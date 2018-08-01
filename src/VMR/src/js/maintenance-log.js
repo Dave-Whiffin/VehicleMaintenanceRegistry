@@ -115,7 +115,9 @@ function MaintenanceLogViewModel() {
       let logNumber = parseInt(result.args.logNumber);
       self.showInfo("Event: Log Entry Added. Log Number: " + logNumber + "  doc Number: " + parseInt(result.args.docNumber));
       let log = self.getLogEntry(logNumber);
-      self.loadDocs(log);
+      if(log != null) {
+        self.loadDocs(log);
+      }
     });
 
     logVerified.watch((error, result) => {
@@ -313,49 +315,6 @@ function MaintenanceLogViewModel() {
     }
   };
 
-  /*
-  self.showError = function(error) {
-    self.clearStatus();
-    console.log(error);
-    self.errorText(error);
-  };
-
-  self.clearError = function() {
-    self.errorText("");
-  };
-
-  self.showInfo = function(info, timeout) {
-
-    timeout = !timeout || isNan(timeout) || timeout == 0 ? 5000 : timeout;
-
-    console.log(info);
-    self.infoText(info);
-
-    setTimeout(function() {
-      self.clearInfo();
-    }, timeout);
-  };
-
-  self.clearInfo = function() {
-    self.infoText("");
-  };  
-
-  self.showSuccess = function(msg) {
-    self.successText(msg);
-    setTimeout(() => self.successText(""), 3000);
-  };
-
-  self.clearSuccess = function() {
-    self.successText("");
-  };
-
-  self.clearStatus = function() {
-    self.clearSuccess();
-    self.clearError();
-    self.clearInfo();
-  };
-  */
-
   self.addLogEntry = async function() {
 
     self.newLogEntry.enable(false);
@@ -429,9 +388,12 @@ function MaintenanceLogViewModel() {
   };
 
   self.loadEntryByLogNumber = async function(logNumber) {
-    var logValues = await self.maintenanceLogContract.getLog(logNumber);
-    var logEntry = new MaintenanceLogEntryModel(logValues);
-    self.logEntries.push(logEntry);
+    let existingLogEntry = self.getLogEntry(logNumber);
+    if(existingLogEntry == null) {
+      var logValues = await self.maintenanceLogContract.getLog(logNumber);
+      var logEntry = new MaintenanceLogEntryModel(logValues);
+      self.logEntries.push(logEntry);
+    }
   };
 
   self.getLogEntry = function(logNumber) {
