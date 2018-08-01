@@ -64,6 +64,45 @@ contract('Registry', function (accounts) {
     await assertRevert(registry.registerMember(memberId, {from: nonOwner}));
   });
 
+  describe("when there is a balance", async function() {
+    let registryBalance;
+    let nonOwner;
+    let registryOwnerAddress;
+
+    before(async function() {
+      registryOwnerAddress = registryOwner.toString();
+      nonOwner = accounts[1];
+      await registry.sendTransaction({from: accounts[0], value: web3.toWei(1, 'ether')});
+      registryBalance = parseInt(await web3.eth.getBalance(registry.address));
+      console.log("registry balance: " + registryBalance);
+    });
+    
+    it("owners can not withdraw more than balance", async function(){
+      let amountToWithdraw = registryBalance + web3.toWei(1, 'ether');
+      await assertRevert(registry.withdraw(amountToWithdraw), {from: registryOwner});
+    });
+
+    it("non owners can not withdraw", async function(){
+      await assertRevert(registry.withdraw(registryBalance, {from: nonOwner}));
+    });    
+
+    it("the owner can withdraw", async function() {
+      let initialOwnerBalance = parseInt(await web3.eth.getBalance(registryOwnerAddress));
+
+      await registry.withdraw(registryBalance, {from: registryOwner});
+
+      let newBalance = parseInt(await web3.eth.getBalance(registry.address));
+      assert.equal(0, newBalance);
+
+      let newOwnerBalance = parseInt(await web3.eth.getBalance(registryOwnerAddress));
+      console.log("initial owner balance:" + initialOwnerBalance);
+      console.log("new owner balance: " + newOwnerBalance);
+
+      assert.isTrue(newOwnerBalance > initialOwnerBalance, "expected new balance to be higher than initial following withdrawal from contract");
+    });
+
+  });
+
   describe("when registry fee exceeds value", function() {
     before(async function(){
       await registryFeeChecker.setFeeInWei(10);

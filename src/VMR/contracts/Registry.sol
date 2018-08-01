@@ -511,5 +511,14 @@ contract Registry is Claimable, TokenDestructible, Pausable, IRegistryLookup {
         public
          {
         feeLookupAddress = _feeLookupAddress;
-    }         
+    }     
+
+    /** @dev Allows the owner transfer some or all of the balance to themselves
+     * @param _amount the amount to transfer
+     */
+    function withdraw(uint256 _amount) public onlyOwner() payable {
+        owner.transfer(_amount);
+    }
+
+    function() public payable {}
 }
