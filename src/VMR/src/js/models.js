@@ -109,12 +109,13 @@ function lengthInUtf8Bytes(str) {
     self.maintainerId = ko.observable("");
     self.title = ko.observable("");
     self.description = ko.observable("");
-    self.enable = ko.observable(true);
+    self.lock = ko.observable(false);
   
     self.reset  = function() {
       self.id("");
       self.title("");
       self.description("");
+      self.lock(false);
     };
   
     self.isValid = function(errorCallback) {
@@ -141,7 +142,9 @@ function lengthInUtf8Bytes(str) {
       return true;
     };
 
-
+    self.enableSubmit = ko.computed(function() {
+      return !self.lock() && self.isValid((e) => {});
+    }, self);    
   }
   
   function NewDocModel() {
@@ -149,14 +152,15 @@ function lengthInUtf8Bytes(str) {
     self.logNumber  = ko.observable(0);
     self.title = ko.observable("");
     self.ipfsAddress = ko.observable("");
-    self.enable = ko.observable(true);
     self.files = ko.observable("");
+    self.lock = ko.observable(false);
 
     self.displayStatus = ko.observable("");
   
     self.reset = function() {
       self.title("");
       self.ipfsAddress("");
+      self.lock(false);
     };
   
     self.isIpfsValid = function() {
@@ -179,5 +183,9 @@ function lengthInUtf8Bytes(str) {
         return false;
     }    
       return true;
-    }
+    };
+
+    self.enableSubmit = ko.computed(function() {
+      return !self.lock() && self.isValid((e) => {});
+    }, self);    
   }

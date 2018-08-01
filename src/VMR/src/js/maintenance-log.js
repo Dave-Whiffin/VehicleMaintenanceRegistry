@@ -54,14 +54,14 @@ function MaintenanceLogViewModel() {
     ContractFactory.init(async function() {
       self.currentAccount = web3.eth.accounts[0];
       self.maintenanceLogContract = ContractFactory.getMaintenanceLogContract(self.logAddress());      
+      self.subscribeToEvents(self.maintenanceLogContract);
+
       self.maintainerRegistry = ContractFactory.getMaintainerRegistryContract();
       self.vin(web3.toUtf8(await self.maintenanceLogContract.vin.call()));
       self.contractOwner(await self.maintenanceLogContract.owner.call());
       self.isContractOwner(self.currentAccount == self.contractOwner());
-      self.loadMaintainers();
-      self.loadEntries();
-
-      self.subscribeToEvents(self.maintenanceLogContract);
+      await self.loadMaintainers();
+      await self.loadEntries();
 
       ContractFactory.currentAddressChanged = function() {
         self.showInfo("account changed - re-initialising");
@@ -70,13 +70,26 @@ function MaintenanceLogViewModel() {
     });
   };
 
+  self.eventWatchers = [];
+
   self.subscribeToEvents = function(maintenanceLogContract) {
+
+    var eventWatchers = self.eventWatchers;
+
+    eventWatchers.forEach(e => e.stopWatching());
+    eventWatchers = [];
 
     let workAuthorisationAdded = maintenanceLogContract.WorkAuthorisationAdded();
     let workAuthorisationRemoved = maintenanceLogContract.WorkAuthorisationRemoved();
     let logAdded = maintenanceLogContract.LogAdded();
     let docAdded = maintenanceLogContract.DocAdded();
     let logVerified = maintenanceLogContract.LogVerified();
+
+    eventWatchers.push(workAuthorisationAdded);
+    eventWatchers.push(workAuthorisationRemoved);
+    eventWatchers.push(logAdded);
+    eventWatchers.push(docAdded);
+    eventWatchers.push(logVerified);
 
     workAuthorisationAdded.watch((error, result) => {
         if(error != null) {
@@ -317,7 +330,7 @@ function MaintenanceLogViewModel() {
 
   self.addLogEntry = async function() {
 
-    self.newLogEntry.enable(false);
+    self.newLogEntry.lock(true);
     self.clearStatus();
 
     try {
@@ -383,7 +396,7 @@ function MaintenanceLogViewModel() {
       self.showError(err);
     }
     finally {
-      self.newLogEntry.enable(true);
+      self.newLogEntry.lock(false);
     }
   };
 
@@ -437,7 +450,9 @@ function MaintenanceLogViewModel() {
       return true;
   };
 
-  self.uploadToIpfs = async function(reader) {
+  self.uploadToIpfs = async function(reader, attemptNumber) {
+
+    attemptNumber = attemptNumber || 1;
 
     self.showInfo("adding file to ipfs...");
     let buffer = ipfs.Buffer.from(reader.result);
@@ -447,12 +462,20 @@ function MaintenanceLogViewModel() {
 
       if(error != null) {
         self.showError(error);
+        if(attemptNumber < 3) {
+          attemptNumber++;
+          self.clearStatus();
+          self.showInfo("retrying ipfs upload");
+          self.newDoc.displayStatus("uploading file, please be patient, it may take up to a minute, sorry!");
+          self.uploadToIpfs(reader, attemptNumber);
+        }
         return;
       }
 
       let ipfsId = response[0].hash;
       self.showInfo("file added to ipfs:" + ipfsId);
       self.newDoc.ipfsAddress(ipfsId);
+      self.newDoc.displayStatus("");
 
     });
   };
@@ -468,7 +491,7 @@ function MaintenanceLogViewModel() {
 
       reader.onloadend = function () {
         self.newDoc.displayStatus("uploading file, please be patient, it may take up to a minute, sorry!");
-        self.uploadToIpfs(reader);
+        self.uploadToIpfs(reader, 1);
       };
       reader.readAsArrayBuffer(file);
     }
@@ -479,7 +502,7 @@ function MaintenanceLogViewModel() {
 
   self.addDoc = async function() {
     try {
-      self.newDoc.enable(false);
+      self.newDoc.lock(true);
       self.clearStatus();
 
       if(!self.newDoc.isValid(function(error){
@@ -523,7 +546,7 @@ function MaintenanceLogViewModel() {
       self.showError(err);
     }
     finally {
-      self.newDoc.enable(true);
+      self.newDoc.lock(false);
     }
   };    
 
