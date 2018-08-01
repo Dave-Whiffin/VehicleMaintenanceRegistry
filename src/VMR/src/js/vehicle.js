@@ -9,7 +9,7 @@ function VehicleViewModel() {
     ContractFactory.init(async function() {
       self.vehicleRegistry = ContractFactory.vehicleRegistryInstance;      
       let vin = VMRUtils.getParameterByName("vin");
-      let number = await self.vehicleRegistry.getMemberNumber(web3.fromUtf8(vin));
+      let number = parseInt(await self.vehicleRegistry.getMemberNumber(web3.fromUtf8(vin)));
       let vehicleValues = await self.vehicleRegistry.getMember(number);
       self.vehicle(new VehicleModel(vehicleValues));
       self.vehicleAttributes([]);
