@@ -64,7 +64,9 @@ ganache-cli --mnemonic "baby marble measure police ball portion piece town toppl
 
 //start ethereum-bridge (FeeLookup tests depend on oraclize)
 //IMPORTANT! USE CMD (RUN AS ADMIN) - NOT POWERSHELL
-ethereum-bridge -H localhost:8545 -a 49 --dev
+//ethereum-bridge -H localhost:8545 -a 49 --dev
+mac
+sh ethereum-bridge -H localhost:8545 -a 49 --dev
 
 //try this
 //ensure the address resolver is 0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475
