@@ -26,6 +26,7 @@ function MaintenanceLogViewModel() {
   self.eventWatchers = [];
   self.initialised = false;
   self.eventTxHashes = [];
+  self.currentAccount = ko.observable("");
 
   self.eventHasBeenHandled = function(result) {
     let id = result.transactionHash + result.event;
@@ -80,14 +81,14 @@ function MaintenanceLogViewModel() {
     console.log("maintenance log address: " + self.logAddress());
 
     ContractFactory.init(async function() {
-      self.currentAccount = web3.eth.accounts[0];
+      self.currentAccount(ContractFactory.currentAddress);
       self.maintenanceLogContract = ContractFactory.getMaintenanceLogContract(self.logAddress());      
       self.subscribeToEvents(self.maintenanceLogContract);
 
       self.maintainerRegistry = ContractFactory.getMaintainerRegistryContract();
       self.vin(web3.toUtf8(await self.maintenanceLogContract.vin.call()));
       self.contractOwner(await self.maintenanceLogContract.owner.call());
-      self.isContractOwner(self.currentAccount == self.contractOwner());
+      self.isContractOwner(self.currentAccount() == self.contractOwner());
       await self.loadMaintainers();
       await self.loadEntries();
 
@@ -253,7 +254,7 @@ function MaintenanceLogViewModel() {
 
     if(maintainer.authorised) {
       var owner = await self.maintainerRegistry.getMemberOwner(maintainer.id);
-      if(owner == self.currentAccount) {
+      if(owner == self.currentAccount()) {
         self.authorisedMaintainers.push(maintainer);
         self.canAddLogEntries(true);
       } 
@@ -442,7 +443,7 @@ function MaintenanceLogViewModel() {
 
       self.showInfo("Ensuring current user is linked to the maintainer");
       let maintainerOwner = await self.maintainerRegistry.getMemberOwner(maintainerId);
-      if(self.currentAccount != maintainerOwner) {
+      if(self.currentAccount() != maintainerOwner) {
         self.showError("only the owner of the maintainer is allowed to log an entry");
         return;
       };
@@ -513,7 +514,7 @@ function MaintenanceLogViewModel() {
   
       let maintainerOwner = await self.maintainerRegistry.getMemberOwner(currentLogEntry.maintainerId);
       
-      if(self.currentAccount != maintainerOwner) {
+      if(self.currentAccount() != maintainerOwner) {
         callBack("Denied - You are not the owner of the maintainer");
         return false;
       }
@@ -632,6 +633,11 @@ $(function() {
     ko.components.register('vmr-status-bar', {
       viewModel: { instance: viewModel },
       template: VMRUtils.statusBarMarkup
+    });
+
+    ko.components.register('vmr-current-address-bar', {
+      viewModel: { instance: viewModel },
+      template: VMRUtils.currentAccountBarMarkup
     });
 
     ko.applyBindings(viewModel);

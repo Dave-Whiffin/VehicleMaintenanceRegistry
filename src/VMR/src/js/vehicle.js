@@ -4,6 +4,7 @@ function VehicleViewModel() {
   self.vehicle = ko.observable();
   self.vehicleRegistry = null;
   self.vehicleAttributes = ko.observableArray([]);
+  self.currentAccount = ko.observable("");
 
   self.init = async function() {
     ContractFactory.init(async function() {
@@ -14,6 +15,13 @@ function VehicleViewModel() {
       self.vehicle(new VehicleModel(vehicleValues));
       self.vehicleAttributes([]);
       self.loadAttributes(self.vehicle().vehicleNumber);
+
+      self.currentAccount(ContractFactory.currentAddress);
+
+      ContractFactory.currentAddressChanged = function() {
+        self.currentAccount(ContractFactory.currentAddress);
+      };
+
     });
   };
 
@@ -44,6 +52,11 @@ $(function() {
       viewModel: { instance: viewModel },
       template: VMRUtils.statusBarMarkup
     });
+
+    ko.components.register('vmr-current-address-bar', {
+      viewModel: { instance: viewModel },
+      template: VMRUtils.currentAccountBarMarkup
+    });       
 
     ko.applyBindings(viewModel);
   });

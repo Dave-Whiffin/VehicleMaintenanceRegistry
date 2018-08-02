@@ -10,7 +10,9 @@ VMRUtils =
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     },
 
-    statusBarMarkup : "<div class='status-panel' style='height: 80px'><div data-bind='if: errorText'><div data-bind='html: errorText' class='alert alert-danger'></div></div><div data-bind='if: infoText'><div data-bind='html: infoText' class='alert alert-info'></div></div><div data-bind='if: successText'><div data-bind='html: successText' class='alert alert-success'></div></div></div>",
+    statusBarMarkup : "<div class='status-panel'><div data-bind='if: errorText'><div data-bind='html: errorText' class='alert alert-danger'></div></div><div data-bind='if: infoText'><div data-bind='html: infoText' class='alert alert-info'></div></div><div data-bind='if: successText'><div data-bind='html: successText' class='alert alert-success'></div></div></div>",
+
+    currentAccountBarMarkup : "<div class='text-center'>Current Account: <span data-bind='html: currentAccount'></span></div>",
 
     addStatusHandlers : function(self) {
 
