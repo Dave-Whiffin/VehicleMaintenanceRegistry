@@ -6,19 +6,7 @@ var EternalStorage = artifacts.require('EternalStorage');
 contract('EternalStorage', function (accounts) {
   let eternalStorage;
 
-  /*
-  var block = web3.eth.getBlock("latest");
-  console.log("gasLimit: " + block.gasLimit); 
-
-  var gasPrice = web3.eth.gasPrice;
-  console.log("gas price: " +  gasPrice.toString(10));
-
-  var balance = web3.eth.getBalance(accounts[0]);
-  console.log("account balance: " + balance.toNumber());
-  */
-
   beforeEach(async function () {
-
     eternalStorage = await EternalStorage.new();
   });
 

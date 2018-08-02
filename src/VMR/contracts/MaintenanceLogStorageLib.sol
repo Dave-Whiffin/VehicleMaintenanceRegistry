@@ -595,6 +595,5 @@ library MaintenanceLogStorageLib {
         public view returns (uint256) {
         return EternalStorage(_storageAccount).getUint256Value(
             keccak256(abi.encodePacked(_logNumber, "verificationDate")));
-    }                 
-  
+    }  
 }

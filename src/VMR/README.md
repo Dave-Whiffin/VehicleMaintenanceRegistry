@@ -49,19 +49,21 @@ Anyone opens the web app and finds the vehicle.  The basic vehicle details are d
 * The user stories primarily test the maintenance log functionality.  Elements of registry functionality are implicitly tested but are not the prime focus of this particular app.
 * The Fee Checker which is ordinarily an oraclize based contract is mocked out so that the tester does not have to install or run the ethereum bridge.
 
-### Starting the app
-Go to the main truffle root of the project: "\src\VMR":
+### Setup
+Go to the main truffle root of the project: "./src/VMR":
 
+#### Prequisites:
+The following must be installed
+* npm is installed
+* Ganache-Cli
+* Truffle
+* git
 
-Run Ganache-Cli -(it should be started with the mnemonic below to ensure that the private keys listed below remain consistent).
+#### Installing Dependencies
+Run Ganache-Cli -(it must be started with the mnemonic below to ensure that the private keys listed below remain consistent).
 
 ```
 ganache-cli --mnemonic "baby marble measure police ball portion piece town topple guitar inspire enroll" --accounts 50
-```
-
-Truffle contract dependencies
-```
-truffle install oraclize-api
 ```
 
 npm dependencies (such as openzeppelin-solidity, lite-server etc)
@@ -69,11 +71,27 @@ npm dependencies (such as openzeppelin-solidity, lite-server etc)
 npm install
 ```
 
+Truffle contract dependencies (ensure npm install is done first)
+```
+truffle install oraclize-api
+```
+
+Ethereum Bridge (required to test the FeeChecker contract)
+* Clone [ethereum-bridge](https://github.com/oraclize/ethereum-bridge)
+* Ensure ganache-cli is already running with the mnemonic above
+* Run the bridge with the command below
+``` 
+ethereum-bridge -H localhost:8545 -a 49 --dev
+```
+
+#### Build and Migrate
 Run the truffle commands below (build, migrate, deploy contracts and seed data).
 ```
 truffle build
 truffle migrate --reset
 ```
+
+#### Running the app
 Run the app
 ```
 npm run dev
@@ -255,6 +273,8 @@ This is because the libary functionality is called implicitly when testing the c
 
 ## FeeChecker.Test.js
 This tests the oraclize based FeeChecker contract.  It is the test that is most likely to fail due to configuration and setup problems. It requires the ethereum-bridge to be running and it also requires ganache-cli to be started with a specific mnemonic.
+
+For initial setup see [Set up instructions](#Setup)
 
 For more info on istalling and using ethereum bridge - (go to ethereum bridge on git hub)[https://github.com/oraclize/ethereum-bridge]
 

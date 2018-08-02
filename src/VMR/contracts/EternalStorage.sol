@@ -143,5 +143,4 @@ contract EternalStorage is Claimable {
     function setBooleanValue(bytes32 key, bool value) onlyRegisteredCaller() public {
         BooleanStorage[key] = value;
     }
-
 }
